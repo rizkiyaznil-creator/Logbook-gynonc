@@ -16,6 +16,7 @@ const diseases = load('diseases.json');
 const clinical = load('clinical-management.json');
 const procedures = load('procedures.json');
 const knowledge = load('knowledge.json');
+const aggregation = load('aggregation-rules.json');
 
 let sql = `-- AUTO-GENERATED oleh scripts/generate-seed.mjs — JANGAN edit manual.
 -- Sumber: data/*.json (Kepkonsil HK.01.02/KKI/1318/2026)
@@ -56,6 +57,21 @@ sql += '\n-- Tabel 36: pengetahuan prosedur (di-generate dari procedures)\n';
 for (const p of procedures.items) {
   const kode = 'K' + p.kode; // KPR-01..
   sql += `insert into knowledge_items (kode, topik, kategori, procedure_id, osce_min, mcq_min) select ${q(kode)}, ${q('Pengetahuan: ' + p.nama)}, 'prosedur', id, ${knowledge.ambang.osce_min}, ${knowledge.ambang.mcq_min} from procedures where kode=${q(p.kode)} on conflict (kode) do update set topik=excluded.topik;\n`;
+}
+
+// Aturan auto-agregasi (kebijakan prodi) — dijalankan setelah referensi terisi
+sql += '\n-- Auto-agregasi: peran_dihitung override (prosedur non-bedah = {} hitung semua)\n';
+for (const kode of aggregation.peran_dihitung_override.kosong_hitung_semua) {
+  sql += `update procedures set peran_dihitung = '{}' where kode = ${q(kode)};\n`;
+}
+
+sql += '\n-- Auto-agregasi: pemetaan prosedur -> kompetensi penatalaksanaan\n';
+const map = aggregation.procedure_clinical_map;
+for (const pr of Object.keys(map)) {
+  if (pr === 'catatan') continue;
+  for (const pk of map[pr]) {
+    sql += `insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode=${q(pr)} and c.kode=${q(pk)} on conflict do nothing;\n`;
+  }
 }
 
 sql += '\ncommit;\n';

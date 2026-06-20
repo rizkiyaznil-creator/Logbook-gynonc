@@ -174,4 +174,31 @@ insert into knowledge_items (kode, topik, kategori, procedure_id, osce_min, mcq_
 insert into knowledge_items (kode, topik, kategori, procedure_id, osce_min, mcq_min) select 'KPR-56', 'Pengetahuan: Terapi paliatif nyeri pada keganasan ginekologi dengan penyulit', 'prosedur', id, 70, 70 from procedures where kode='PR-56' on conflict (kode) do update set topik=excluded.topik;
 insert into knowledge_items (kode, topik, kategori, procedure_id, osce_min, mcq_min) select 'KPR-57', 'Pengetahuan: Terapi paliatif nutrisi pada keganasan ginekologi dengan penyulit', 'prosedur', id, 70, 70 from procedures where kode='PR-57' on conflict (kode) do update set topik=excluded.topik;
 
+-- Auto-agregasi: peran_dihitung override (prosedur non-bedah = {} hitung semua)
+update procedures set peran_dihitung = '{}' where kode = 'PR-01';
+update procedures set peran_dihitung = '{}' where kode = 'PR-02';
+update procedures set peran_dihitung = '{}' where kode = 'PR-53';
+update procedures set peran_dihitung = '{}' where kode = 'PR-54';
+update procedures set peran_dihitung = '{}' where kode = 'PR-55';
+update procedures set peran_dihitung = '{}' where kode = 'PR-56';
+update procedures set peran_dihitung = '{}' where kode = 'PR-57';
+
+-- Auto-agregasi: pemetaan prosedur -> kompetensi penatalaksanaan
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-01' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-02' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-03' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-04' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-05' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-06' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-08' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-09' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-02' and c.kode='PK-03' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-02' and c.kode='PK-04' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-53' and c.kode='PK-06' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-53' and c.kode='PK-07' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-55' and c.kode='PK-06' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-55' and c.kode='PK-07' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-56' and c.kode='PK-08' on conflict do nothing;
+insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-57' and c.kode='PK-08' on conflict do nothing;
+
 commit;
