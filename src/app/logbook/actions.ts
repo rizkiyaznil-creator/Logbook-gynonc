@@ -1,0 +1,84 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+
+export async function createEntry(_prev: unknown, formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Sesi berakhir, silakan masuk lagi." };
+
+  const entryType = String(formData.get("entry_type") ?? "");
+  const val = (k: string) => {
+    const v = formData.get(k);
+    return v === null || v === "" ? null : String(v);
+  };
+  const num = (k: string) => {
+    const v = val(k);
+    return v === null ? null : Number(v);
+  };
+
+  // "draft" atau "diajukan" tergantung tombol yang ditekan
+  const aksi = String(formData.get("aksi") ?? "draft");
+  const status = aksi === "ajukan" ? "diajukan" : "draft";
+
+  const { error } = await supabase.from("log_entries").insert({
+    resident_id: user.id,
+    entry_type: entryType,
+    entry_date: val("entry_date"),
+    procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
+    clinical_competency_id:
+      entryType === "penatalaksanaan" ? val("clinical_competency_id") : null,
+    disease_id: val("disease_id"),
+    patient_code: val("patient_code"),
+    patient_age: num("patient_age"),
+    figo_stage: val("figo_stage"),
+    setting: val("setting"),
+    surgical_role: entryType === "prosedur" ? val("surgical_role") : null,
+    supervision_level: val("supervision_level"),
+    complications: val("complications"),
+    catatan: val("catatan"),
+    status,
+    submitted_at: status === "diajukan" ? new Date().toISOString() : null,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/logbook");
+  redirect("/logbook");
+}
+
+/** Supervisor/staf memverifikasi atau menolak entri. */
+export async function reviewEntry(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const entryId = String(formData.get("entry_id"));
+  const keputusan = String(formData.get("keputusan")); // diverifikasi | revisi | ditolak
+  const note = String(formData.get("verifier_note") ?? "");
+
+  await supabase
+    .from("log_entries")
+    .update({
+      status: keputusan,
+      verifier_note: note || null,
+      verified_by: user.id,
+      verified_at: new Date().toISOString(),
+    })
+    .eq("id", entryId);
+
+  await supabase.from("entry_reviews").insert({
+    entry_id: entryId,
+    reviewer_id: user.id,
+    status_baru: keputusan,
+    catatan: note || null,
+  });
+
+  revalidatePath("/verifikasi");
+}
