@@ -64,6 +64,9 @@ sql += '\n-- Auto-agregasi: peran_dihitung override (prosedur non-bedah = {} hit
 for (const kode of aggregation.peran_dihitung_override.kosong_hitung_semua) {
   sql += `update procedures set peran_dihitung = '{}' where kode = ${q(kode)};\n`;
 }
+for (const kode of aggregation.peran_dihitung_override.operator_utama_saja || []) {
+  sql += `update procedures set peran_dihitung = '{operator_utama}' where kode = ${q(kode)};\n`;
+}
 
 sql += '\n-- Auto-agregasi: pemetaan prosedur -> kompetensi penatalaksanaan\n';
 const map = aggregation.procedure_clinical_map;

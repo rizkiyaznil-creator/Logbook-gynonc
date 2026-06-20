@@ -4,8 +4,9 @@
   "peran_dihitung_default": ["operator_utama", "ko_operator"],
 
   "peran_dihitung_override": {
-    "catatan": "Prosedur non-bedah: peran bedah tidak relevan -> dihitung tanpa syarat peran ([] = hitung semua).",
-    "kosong_hitung_semua": ["PR-01", "PR-02", "PR-53", "PR-54", "PR-55", "PR-56", "PR-57"]
+    "catatan": "Override per prosedur. kosong_hitung_semua: non-bedah ([] = hitung semua peran). operator_utama_saja: hanya operator utama yang dihitung untuk kompetensi minimal.",
+    "kosong_hitung_semua": ["PR-01", "PR-02", "PR-53", "PR-54", "PR-55", "PR-56", "PR-57"],
+    "operator_utama_saja": ["PR-41", "PR-42"]
   },
 
   "procedure_clinical_map": {

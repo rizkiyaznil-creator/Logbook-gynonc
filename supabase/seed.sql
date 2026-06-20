@@ -182,6 +182,8 @@ update procedures set peran_dihitung = '{}' where kode = 'PR-54';
 update procedures set peran_dihitung = '{}' where kode = 'PR-55';
 update procedures set peran_dihitung = '{}' where kode = 'PR-56';
 update procedures set peran_dihitung = '{}' where kode = 'PR-57';
+update procedures set peran_dihitung = '{operator_utama}' where kode = 'PR-41';
+update procedures set peran_dihitung = '{operator_utama}' where kode = 'PR-42';
 
 -- Auto-agregasi: pemetaan prosedur -> kompetensi penatalaksanaan
 insert into procedure_clinical_map (procedure_id, clinical_competency_id) select p.id, c.id from procedures p, clinical_competencies c where p.kode='PR-01' and c.kode='PK-01' on conflict do nothing;
