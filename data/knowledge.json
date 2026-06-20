@@ -1,0 +1,16 @@
+{
+  "sumber": "Tabel 30 (hal. 331–333) & Tabel 36 (hal. 411–431) — Penguasaan Pengetahuan",
+  "catatan": "Seluruh butir pengetahuan diuji dengan ambang sama: OSCE ≥70% dan MCQ ≥70%. Butir mengikuti komponen pada Tabel 18 (penatalaksanaan) dan Tabel 24 (prosedur).",
+  "ambang": { "osce_min": 70, "mcq_min": 70, "satuan": "persen" },
+  "pengetahuan_penatalaksanaan": [
+    { "no": 1, "kode": "KP-01", "topik": "Anamnesis ginekologi-onkologi terstruktur" },
+    { "no": 2, "kode": "KP-02", "topik": "Pemeriksaan fisik ginekologi-onkologi" },
+    { "no": 3, "kode": "KP-03", "topik": "Pemilihan pemeriksaan penunjang (IHC/biomarker, CT/MRI/PET)" },
+    { "no": 4, "kode": "KP-04", "topik": "Interpretasi hasil pemeriksaan & baseline RECIST" },
+    { "no": 5, "kode": "KP-05", "topik": "Penetapan diagnosis kerja & banding (FIGO)" },
+    { "no": 6, "kode": "KP-06", "topik": "Perencanaan terapi (NCCN/ESGO/FIGO)" },
+    { "no": 7, "kode": "KP-07", "topik": "Evaluasi respon & penyesuaian terapi" },
+    { "no": 8, "kode": "KP-08", "topik": "Penetapan prognosis & survivorship" }
+  ],
+  "pengetahuan_prosedur_catatan": "57 butir pengetahuan prosedur 1:1 dengan kode PR-01..PR-57 pada procedures.json (mis. KPR-41 = pengetahuan histerektomi radikal). Tidak diduplikasi di sini untuk hindari redundansi; di database di-generate dari procedures.json dengan prefiks 'KPR-'."
+}

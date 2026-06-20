@@ -1,0 +1,33 @@
+{
+  "sumber": "Tabel 10 — Spektrum Penyakit & Kondisi Klinis (Kepkonsil HK.01.02/KKI/1318/2026, hal. 107–112)",
+  "catatan": "Dipakai sebagai katalog diagnosis (dropdown) saat input kasus. Kode ICD wajib diverifikasi terhadap PDF asli.",
+  "items": [
+    { "no": 1,  "nama_id": "Kanker vulva", "nama_en": "Malignant neoplasm of vulva", "icd10": "C51.*", "icd11": "2C70.*", "kelompok": "kanker" },
+    { "no": 2,  "nama_id": "Kanker vagina", "nama_en": "Malignant neoplasm of vagina", "icd10": "C52", "icd11": "2C71.*", "kelompok": "kanker" },
+    { "no": 3,  "nama_id": "Kanker serviks uteri", "nama_en": "Malignant neoplasm of cervix uteri", "icd10": "C53.*", "icd11": "2C77.*", "kelompok": "kanker" },
+    { "no": 4,  "nama_id": "Kanker endometrium", "nama_en": "Malignant neoplasm of endometrium", "icd10": "C54.1", "icd11": "2C76.*", "kelompok": "kanker" },
+    { "no": 5,  "nama_id": "Leiomiosarkoma uteri", "nama_en": "Uterine leiomyosarcoma", "icd10": "C54.2 ; C54.9", "icd11": "2B58.1", "kelompok": "sarkoma" },
+    { "no": 6,  "nama_id": "Sarkoma stroma endometrium", "nama_en": "Endometrial stromal sarcoma", "icd10": "C54.1", "icd11": "2B5C", "kelompok": "sarkoma" },
+    { "no": 7,  "nama_id": "Rabdomiosarkoma (organ genital perempuan)", "nama_en": "Rhabdomyosarcoma (female genital organs)", "icd10": "C55", "icd11": "2B55.*", "kelompok": "sarkoma" },
+    { "no": 8,  "nama_id": "Adenosarkoma korpus uteri", "nama_en": "Adenosarcoma of corpus uteri", "icd10": "C54.9", "icd11": "2B5D.1", "kelompok": "sarkoma" },
+    { "no": 9,  "nama_id": "Karsinosarkoma uteri", "nama_en": "Carcinosarcoma of uterus", "icd10": "C54.9", "icd11": "2C76.43", "kelompok": "kanker" },
+    { "no": 10, "nama_id": "Kanker tuba falopi", "nama_en": "Malignant neoplasm of Fallopian tube", "icd10": "C57.0", "icd11": "2C74.*", "kelompok": "kanker" },
+    { "no": 11, "nama_id": "Kanker ovarium", "nama_en": "Malignant neoplasm of ovary", "icd10": "C56", "icd11": "2C73.*", "kelompok": "kanker" },
+    { "no": 12, "nama_id": "Penyakit trofoblastik maligna", "nama_en": "Gestational trophoblastic neoplasia", "icd10": "C58", "icd11": "2C75.0", "kelompok": "trofoblastik" },
+    { "no": 13, "nama_id": "Koriokarsinoma", "nama_en": "Choriocarcinoma", "icd10": "C58", "icd11": "2C75.0", "kelompok": "trofoblastik" },
+    { "no": 14, "nama_id": "Mola hidatidosa dengan komplikasi", "nama_en": "Hydatidiform mole with complication", "icd10": "O01.* ; D39.2", "icd11": "JA02.*", "kelompok": "trofoblastik" },
+    { "no": 15, "nama_id": "Lesi intraepitel skuamosa derajat rendah vulva (VIN I)", "nama_en": "LSIL of vulva (VIN I)", "icd10": "N90.0", "icd11": "GA13.1", "kelompok": "pra-kanker" },
+    { "no": 16, "nama_id": "Karsinoma in situ vulva (HSIL / VIN II-III)", "nama_en": "Carcinoma in situ of vulva (HSIL; VIN III)", "icd10": "D07.1", "icd11": "2E67.1", "kelompok": "pra-kanker" },
+    { "no": 17, "nama_id": "Lesi intraepitel skuamosa derajat rendah vagina (VaIN I)", "nama_en": "LSIL of vagina (VaIN I)", "icd10": "N89.0", "icd11": "GA14.6", "kelompok": "pra-kanker" },
+    { "no": 18, "nama_id": "Karsinoma in situ vagina (HSIL / VaIN II-III)", "nama_en": "Carcinoma in situ of vagina (HSIL; VaIN III)", "icd10": "D07.2", "icd11": "2E67.22", "kelompok": "pra-kanker" },
+    { "no": 19, "nama_id": "Lesi intraepitel skuamosa derajat rendah serviks (CIN I)", "nama_en": "LSIL of cervix (CIN I)", "icd10": "N87.0", "icd11": "GA15.7", "kelompok": "pra-kanker" },
+    { "no": 20, "nama_id": "Lesi intraepitel skuamosa derajat tinggi serviks (HSIL / CIN II-III)", "nama_en": "HSIL of cervix (CIS; CIN II-III)", "icd10": "D06.*", "icd11": "2E66.2", "kelompok": "pra-kanker" },
+    { "no": 21, "nama_id": "Hiperplasia endometrium atipik", "nama_en": "Endometrial hyperplasia, atypical", "icd10": "N85.1", "icd11": "GA16.0", "kelompok": "pra-kanker" },
+    { "no": 22, "nama_id": "Karsinoma in situ endometrium", "nama_en": "Carcinoma in situ of endometrium", "icd10": "D07.0", "icd11": "2E67.0", "kelompok": "pra-kanker" },
+    { "no": 23, "nama_id": "Plasenta previa dengan kecurigaan akreta", "nama_en": "Placenta praevia with suspected placenta accreta", "icd10": "O43.2 ; O44.* ; O72.*", "icd11": "JA8A.2", "kelompok": "obstetri-onkologi" },
+    { "no": 24, "nama_id": "Skrining kanker payudara", "nama_en": "Screening for malignant neoplasm of breast", "icd10": "Z12.3", "icd11": "QA09.3", "kelompok": "skrining" },
+    { "no": 25, "nama_id": "Tumor epitel borderline ovarium", "nama_en": "Borderline epithelial tumour of ovary", "icd10": "D39.1", "icd11": "2F76", "kelompok": "borderline" },
+    { "no": 26, "nama_id": "Ruptur uteri dengan penyulit lainnya", "nama_en": "Uterine rupture with complication", "icd10": "O71.1 ; O72.*", "icd11": "JB0A.0 ; JB0A.1", "kelompok": "obstetri-onkologi" },
+    { "no": 27, "nama_id": "Leiomioma uteri dengan penyulit lainnya", "nama_en": "Uterine leiomyoma with complication", "icd10": "D25.*", "icd11": "2E86.0", "kelompok": "jinak-kompleks" }
+  ]
+}

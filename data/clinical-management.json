@@ -1,0 +1,100 @@
+{
+  "sumber": "Tabel 18 — Kompetensi Penatalaksanaan Klinis (Kepkonsil 2026, hal. 156–159)",
+  "catatan": "Tiap komponen punya target jumlah minimal kasus/aktivitas. Angka wajib diverifikasi terhadap PDF asli.",
+  "items": [
+    {
+      "no": 1,
+      "kode": "PK-01",
+      "komponen": "Anamnesis",
+      "penjabaran": "Anamnesis onkologi komprehensif: gejala konstitusional/organ-spesifik, ECOG, riwayat herediter (BRCA/Lynch), toksisitas terapi, isu fertilitas/kontrasepsi, nyeri-nutrisi-psikososial, red flags; informed consent singkat; ringkasan masalah.",
+      "kriteria_kinerja": "Kelengkapan data kunci; identifikasi red flags; ECOG terdokumentasi.",
+      "target_min": 120,
+      "target_satuan": "encounter anamnesis onkologi mandiri",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 2,
+      "kode": "PK-02",
+      "komponen": "Pemeriksaan Fisik",
+      "penjabaran": "Pemeriksaan umum & onkologi ginekologi (termasuk nodal basin, rektovaginal/EUA bila indikasi) dengan pendamping; aseptik; keselamatan/kenyamanan; dokumentasi.",
+      "kriteria_kinerja": "Teknik benar & aman; temuan kunci (nodal/organ infiltration) teridentifikasi; dokumentasi lengkap.",
+      "target_min": 120,
+      "target_satuan": "pemeriksaan fisik onkologi komprehensif",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 3,
+      "kode": "PK-03",
+      "komponen": "Penentuan Kebutuhan Pemeriksaan Penunjang",
+      "penjabaran": "Seleksi laboratorium, imaging (USG/CT/MRI/PET-CT), penanda tumor, histopatologi/IHC, biomarker (ER/PR, p16, p53, HER2, MMR/MSI, BRCA/HRD, PD-L1); prioritisasi biaya-manfaat; permintaan terstandar.",
+      "kriteria_kinerja": "Ketepatan indikasi/prioritas; pemeriksaan tidak perlu minimal; pemesanan tepat waktu.",
+      "target_min": 80,
+      "target_satuan": "keputusan paket work-up onkologi",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 4,
+      "kode": "PK-04",
+      "komponen": "Interpretasi Hasil Pemeriksaan",
+      "penjabaran": "Integrasi radiologi-patologi-biomarker; penetapan FIGO sementara; baseline RECIST; rekomendasi tindak lanjut.",
+      "kriteria_kinerja": "Akurasi interpretasi; konsistensi staging klinis; rekomendasi tindak lanjut tepat.",
+      "target_min": 80,
+      "target_satuan": "interpretasi terintegrasi",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 5,
+      "kode": "PK-05",
+      "komponen": "Penetapan Diagnosis Kerja dan Banding",
+      "penjabaran": "Problem list; primer vs metastasis/unknown primary/sinkron; pengelompokan risiko; penetapan FIGO; rasionalisasi banding.",
+      "kriteria_kinerja": "Akurasi diagnosis kerja; daftar banding relevan; penetapan FIGO konsisten.",
+      "target_min": 80,
+      "target_satuan": "penetapan diagnosis/staging",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 6,
+      "kode": "PK-06",
+      "komponen": "Perencanaan Terapi (Farmakologis/Nonfarmakologis)",
+      "penjabaran": "Rencana multimodal berbasis NCCN/ESGO/FIGO: urutan operasi-CT-RT/targeted-imuno/hormonal; fertility-sparing bila layak; pencegahan VTE/antiemetik; informed consent; koordinasi MDT.",
+      "kriteria_kinerja": "Adherence guideline; kesalahan dosis/kontraindikasi minimal.",
+      "target_min": 50,
+      "target_satuan": "rencana terapi individual",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 7,
+      "kode": "PK-07",
+      "komponen": "Evaluasi Respon dan Penyesuaian Terapi",
+      "penjabaran": "Penilaian respons RECIST; penilaian toksisitas; modifikasi dosis/jadwal; supportive care.",
+      "kriteria_kinerja": "Klasifikasi RECIST tepat; penanganan toksisitas sesuai protokol; tindak lanjut tepat waktu.",
+      "target_min": 50,
+      "target_satuan": "evaluasi respons/toksisitas",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 8,
+      "kode": "PK-08",
+      "komponen": "Penetapan Prognosis",
+      "penjabaran": "Faktor prognostik (stadium, grade, LVSI, nodal, biomarker/genetik); kelompok risiko; survivorship plan; indikasi paliatif.",
+      "kriteria_kinerja": "Estimasi risiko konsisten dengan bukti; komunikasi prognosis jelas; rencana kontrol terdokumentasi.",
+      "target_min": 20,
+      "target_satuan": "diskusi prognosis & rencana kontrol",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 9,
+      "kode": "PK-09",
+      "komponen": "Dokumentasi Medis dan Komunikasi Hasil",
+      "penjabaran": "Rekam medis onkologi terstruktur (SOAP, staging, biomarker); ringkasan klinis; MDT tumor board; rujukan genetic counseling; breaking bad news; handover (SBAR).",
+      "kriteria_kinerja": "Kelengkapan dokumentasi; presentasi MDT efektif; komunikasi hasil tepat waktu.",
+      "target_min": 150,
+      "target_satuan": "entri/handover terverifikasi",
+      "sub_target": [
+        { "nama": "Presentasi MDT", "target_min": 20 },
+        { "nama": "Breaking bad news", "target_min": 10 }
+      ],
+      "perlu_verifikasi": false
+    }
+  ]
+}
