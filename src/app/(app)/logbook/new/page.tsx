@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { EntryForm } from "@/components/entry-form";
-import { createEntry } from "@/app/logbook/actions";
+import { createEntry } from "@/app/(app)/logbook/actions";
 import type { Disease, Procedure, ClinicalCompetency } from "@/lib/types";
 
 export default async function NewEntryPage() {
@@ -13,7 +14,14 @@ export default async function NewEntryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-lg font-semibold text-slate-800">Entri Logbook Baru</h1>
+      <div>
+        <Link href="/dashboard" className="text-sm text-teal-700 hover:underline">
+          ← Kembali ke Dashboard
+        </Link>
+        <h1 className="mt-2 text-lg font-semibold text-slate-800">
+          Entri Logbook Baru
+        </h1>
+      </div>
       <EntryForm
         action={createEntry}
         diseases={(d.data ?? []) as Disease[]}

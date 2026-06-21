@@ -20,7 +20,7 @@ const ROLE_LABEL: Record<UserRole, string> = {
   admin: "Administrator",
 };
 
-export default async function DashboardLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;

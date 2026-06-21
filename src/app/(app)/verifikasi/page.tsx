@@ -1,6 +1,6 @@
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { reviewEntry } from "@/app/logbook/actions";
+import { reviewEntry } from "@/app/(app)/logbook/actions";
 import type { EntryType } from "@/lib/types";
 
 type Row = {

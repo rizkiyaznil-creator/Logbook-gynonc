@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EntryForm } from "@/components/entry-form";
-import { updateEntry, deleteEntry } from "@/app/logbook/actions";
+import { updateEntry, deleteEntry } from "@/app/(app)/logbook/actions";
 import type {
   Disease,
   Procedure,
@@ -39,6 +40,9 @@ export default async function EditEntryPage({
 
   return (
     <div className="space-y-6">
+      <Link href="/logbook" className="text-sm text-teal-700 hover:underline">
+        ← Kembali ke Logbook
+      </Link>
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-slate-800">Sunting Entri</h1>
         <form action={deleteEntry}>

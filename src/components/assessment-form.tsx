@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { createAssessment } from "@/app/penilaian/actions";
+import { createAssessment } from "@/app/(app)/penilaian/actions";
 
 const input =
   "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
