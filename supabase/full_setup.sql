@@ -690,6 +690,15 @@ drop table if exists supervisor_assignments cascade;
 
 alter table log_entries add column rumah_sakit text;
 
+-- >>>>>>>>>> 0014_baca_verifikator.sql <<<<<<<<<<
+-- =====================================================================
+-- 0014_baca_verifikator.sql — Nama verifikator (supervisor/KPS/admin)
+-- boleh dibaca semua pengguna login, agar tampil di riwayat verifikasi.
+-- =====================================================================
+
+create policy "profil_baca_verifikator" on profiles for select to authenticated
+  using (role in ('supervisor', 'kps', 'admin'));
+
 -- >>>>>>>>>> seed.sql <<<<<<<<<<
 -- AUTO-GENERATED oleh scripts/generate-seed.mjs — JANGAN edit manual.
 -- Sumber: data/*.json (Kepkonsil HK.01.02/KKI/1318/2026)

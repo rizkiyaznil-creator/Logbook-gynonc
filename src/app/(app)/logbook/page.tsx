@@ -27,7 +27,10 @@ export default async function LogbookPage() {
         "id, entry_date, entry_type, status, rumah_sakit, supervisor_id, verified_by, verified_at, verifier_note, procedures(kode,nama), clinical_competencies(kode,komponen)",
       )
       .order("entry_date", { ascending: false }),
-    supabase.from("profiles").select("id, full_name").eq("role", "supervisor"),
+    supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("role", ["supervisor", "kps", "admin"]),
   ]);
 
   const rows = (entryRes.data ?? []) as unknown as Row[];
