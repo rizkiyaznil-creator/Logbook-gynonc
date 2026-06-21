@@ -52,7 +52,7 @@ export default async function EditEntryPage({
   const hospitals = Array.from(new Set([...RS_BAKU, ...used]));
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <Link href="/logbook" className="text-sm text-teal-700 hover:underline">
         ← Kembali ke Logbook
       </Link>

@@ -20,7 +20,7 @@ export default async function ProfilPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-xl space-y-6">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Profil Saya
       </h1>

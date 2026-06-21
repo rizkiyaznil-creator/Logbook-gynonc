@@ -58,7 +58,7 @@ export default async function NewEntryPage({
     : undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <Link
           href="/dashboard"
