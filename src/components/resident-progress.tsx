@@ -115,12 +115,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex-1">
-          <ResidentIdentity residentId={residentId} />
-        </div>
-        <PrintButton />
-      </div>
+      <ResidentIdentity residentId={residentId} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
@@ -204,6 +199,10 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       </Suspense>
 
       <SignatureBlock residentId={residentId} />
+
+      <div className="no-print flex justify-end border-t border-slate-200 pt-4 dark:border-slate-800">
+        <PrintButton />
+      </div>
     </div>
   );
 }

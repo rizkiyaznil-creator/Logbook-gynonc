@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Icons } from "@/components/icons";
 
 export function PrintButton() {
   // Saat mencetak, paksa mode terang agar dokumen PDF tetap putih & formal,
@@ -25,8 +26,9 @@ export function PrintButton() {
   return (
     <button
       onClick={() => window.print()}
-      className="no-print rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      className="no-print inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
     >
+      <Icons.printer className="h-4 w-4" />
       Cetak / Simpan PDF
     </button>
   );
