@@ -13,7 +13,7 @@ export function CreateUserForm() {
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
+      className="max-w-2xl space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
     >
       <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Buat User Baru</h2>
       <div className="grid gap-4 sm:grid-cols-2">

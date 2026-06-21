@@ -28,7 +28,7 @@ export function AssessmentForm({
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
+      className="max-w-2xl space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
     >
       <div>
         <label className={label}>Residen</label>

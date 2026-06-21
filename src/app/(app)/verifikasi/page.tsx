@@ -46,7 +46,7 @@ export default async function VerifikasiPage() {
   })[];
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Antrean Verifikasi
         <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-sm text-amber-700">
