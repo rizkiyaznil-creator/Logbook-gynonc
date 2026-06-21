@@ -37,7 +37,7 @@ sql += '\n-- Tabel 18: kompetensi penatalaksanaan\n';
 for (const c of clinical.items) {
   sql += `insert into clinical_competencies (kode, no, komponen, penjabaran, kriteria_kinerja, target_min, satuan, perlu_verifikasi) values (${q(c.kode)}, ${c.no}, ${q(c.komponen)}, ${q(c.penjabaran)}, ${q(c.kriteria_kinerja)}, ${c.target_min}, ${q(c.target_satuan)}, ${!!c.perlu_verifikasi}) on conflict (kode) do update set komponen=excluded.komponen, penjabaran=excluded.penjabaran, kriteria_kinerja=excluded.kriteria_kinerja, target_min=excluded.target_min, satuan=excluded.satuan, perlu_verifikasi=excluded.perlu_verifikasi;\n`;
   for (const s of c.sub_target || []) {
-    sql += `insert into clinical_competency_subtargets (competency_id, nama, target_min) select id, ${q(s.nama)}, ${s.target_min} from clinical_competencies where kode=${q(c.kode)} and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode=${q(c.kode)} and st.nama=${q(s.nama)});\n`;
+    sql += `insert into clinical_competency_subtargets (competency_id, nama, kode, target_min) select id, ${q(s.nama)}, ${q(s.kode)}, ${s.target_min} from clinical_competencies where kode=${q(c.kode)} and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode=${q(c.kode)} and st.nama=${q(s.nama)});\n`;
   }
 }
 

@@ -19,6 +19,11 @@ export type EntryStatus =
   | "diverifikasi"
   | "revisi"
   | "ditolak";
+export type DokumentasiJenis =
+  | "mdt"
+  | "breaking_bad_news"
+  | "handover"
+  | "lainnya";
 
 export interface Profile {
   id: string;
@@ -75,6 +80,7 @@ export interface LogEntry {
   surgical_role: SurgicalRole | null;
   supervision_level: SupervisionLevel | null;
   complications: string | null;
+  dokumentasi_jenis: DokumentasiJenis | null;
   catatan: string | null;
   status: EntryStatus;
   verifier_note: string | null;
@@ -99,6 +105,18 @@ export interface ClinicalProgress {
   competency_id: string;
   kode: string;
   komponen: string;
+  target_min: number;
+  jumlah_terverifikasi: number;
+  persen: number;
+  tercapai: boolean;
+}
+
+export interface SubtargetProgress {
+  resident_id: string;
+  subtarget_id: string;
+  competency_kode: string;
+  nama: string;
+  subtarget_kode: string;
   target_min: number;
   jumlah_terverifikasi: number;
   persen: number;

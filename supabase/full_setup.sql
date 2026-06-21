@@ -1,7 +1,7 @@
 -- ============================================================
 -- full_setup.sql — Setup lengkap database Logbook Onko-Gin
 -- Tempel seluruh isi file ini ke Supabase SQL Editor lalu Run.
--- Berisi: 10 migrasi + seed data. Aman dijalankan di proyek baru.
+-- Berisi: semua migrasi + seed data. Aman dijalankan di proyek baru.
 -- ============================================================
 
 -- >>>>>>>>>> 0001_init.sql <<<<<<<<<<
@@ -599,6 +599,53 @@ create policy "residen_baca_penguji" on residents for select to authenticated
 create policy "profil_baca_penguji" on profiles for select to authenticated
   using (current_role_name() = 'penguji');
 
+-- >>>>>>>>>> 0011_subtargets.sql <<<<<<<<<<
+-- =====================================================================
+-- 0011_subtargets.sql — Penanda jenis dokumentasi & progress sub-target
+-- Untuk PK-09: Presentasi MDT (>=20) & Breaking bad news (>=10).
+-- =====================================================================
+
+-- Jenis dokumentasi khusus pada entri penatalaksanaan PK-09.
+create type dokumentasi_jenis as enum ('mdt', 'breaking_bad_news', 'handover', 'lainnya');
+
+alter table log_entries
+  add column dokumentasi_jenis dokumentasi_jenis;
+
+-- Kode penghubung sub-target -> nilai enum entri.
+alter table clinical_competency_subtargets
+  add column kode text;
+
+-- Backfill kode untuk sub-target yang sudah ada (cocokkan dari nama).
+update clinical_competency_subtargets set kode = 'mdt'
+  where lower(nama) like '%mdt%';
+update clinical_competency_subtargets set kode = 'breaking_bad_news'
+  where lower(nama) like '%breaking%';
+
+-- View progress sub-target (per residen x sub-target), hanya entri diverifikasi.
+create view v_subtarget_progress as
+select
+  r.id                          as resident_id,
+  st.id                         as subtarget_id,
+  c.kode                        as competency_kode,
+  st.nama,
+  st.kode                       as subtarget_kode,
+  st.target_min,
+  count(e.id) filter (where e.status = 'diverifikasi') as jumlah_terverifikasi,
+  least(round(
+    count(e.id) filter (where e.status = 'diverifikasi')::numeric
+    / nullif(st.target_min, 0) * 100, 1), 100)         as persen,
+  (count(e.id) filter (where e.status = 'diverifikasi') >= st.target_min) as tercapai
+from residents r
+cross join clinical_competency_subtargets st
+join clinical_competencies c on c.id = st.competency_id
+left join log_entries e
+  on e.resident_id = r.id
+  and e.entry_type = 'penatalaksanaan'
+  and e.dokumentasi_jenis::text = st.kode
+group by r.id, st.id, c.kode;
+
+alter view v_subtarget_progress set (security_invoker = on);
+
 -- >>>>>>>>>> seed.sql <<<<<<<<<<
 -- AUTO-GENERATED oleh scripts/generate-seed.mjs — JANGAN edit manual.
 -- Sumber: data/*.json (Kepkonsil HK.01.02/KKI/1318/2026)
@@ -645,8 +692,8 @@ insert into clinical_competencies (kode, no, komponen, penjabaran, kriteria_kine
 insert into clinical_competencies (kode, no, komponen, penjabaran, kriteria_kinerja, target_min, satuan, perlu_verifikasi) values ('PK-07', 7, 'Evaluasi Respon dan Penyesuaian Terapi', 'Penilaian respons RECIST; penilaian toksisitas; modifikasi dosis/jadwal; supportive care.', 'Klasifikasi RECIST tepat; penanganan toksisitas sesuai protokol; tindak lanjut tepat waktu.', 50, 'evaluasi respons/toksisitas', false) on conflict (kode) do update set komponen=excluded.komponen, penjabaran=excluded.penjabaran, kriteria_kinerja=excluded.kriteria_kinerja, target_min=excluded.target_min, satuan=excluded.satuan, perlu_verifikasi=excluded.perlu_verifikasi;
 insert into clinical_competencies (kode, no, komponen, penjabaran, kriteria_kinerja, target_min, satuan, perlu_verifikasi) values ('PK-08', 8, 'Penetapan Prognosis', 'Faktor prognostik (stadium, grade, LVSI, nodal, biomarker/genetik); kelompok risiko; survivorship plan; indikasi paliatif.', 'Estimasi risiko konsisten dengan bukti; komunikasi prognosis jelas; rencana kontrol terdokumentasi.', 20, 'diskusi prognosis & rencana kontrol', false) on conflict (kode) do update set komponen=excluded.komponen, penjabaran=excluded.penjabaran, kriteria_kinerja=excluded.kriteria_kinerja, target_min=excluded.target_min, satuan=excluded.satuan, perlu_verifikasi=excluded.perlu_verifikasi;
 insert into clinical_competencies (kode, no, komponen, penjabaran, kriteria_kinerja, target_min, satuan, perlu_verifikasi) values ('PK-09', 9, 'Dokumentasi Medis dan Komunikasi Hasil', 'Rekam medis onkologi terstruktur (SOAP, staging, biomarker); ringkasan klinis; MDT tumor board; rujukan genetic counseling; breaking bad news; handover (SBAR).', 'Kelengkapan dokumentasi; presentasi MDT efektif; komunikasi hasil tepat waktu.', 150, 'entri/handover terverifikasi', false) on conflict (kode) do update set komponen=excluded.komponen, penjabaran=excluded.penjabaran, kriteria_kinerja=excluded.kriteria_kinerja, target_min=excluded.target_min, satuan=excluded.satuan, perlu_verifikasi=excluded.perlu_verifikasi;
-insert into clinical_competency_subtargets (competency_id, nama, target_min) select id, 'Presentasi MDT', 20 from clinical_competencies where kode='PK-09' and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode='PK-09' and st.nama='Presentasi MDT');
-insert into clinical_competency_subtargets (competency_id, nama, target_min) select id, 'Breaking bad news', 10 from clinical_competencies where kode='PK-09' and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode='PK-09' and st.nama='Breaking bad news');
+insert into clinical_competency_subtargets (competency_id, nama, kode, target_min) select id, 'Presentasi MDT', 'mdt', 20 from clinical_competencies where kode='PK-09' and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode='PK-09' and st.nama='Presentasi MDT');
+insert into clinical_competency_subtargets (competency_id, nama, kode, target_min) select id, 'Breaking bad news', 'breaking_bad_news', 10 from clinical_competencies where kode='PK-09' and not exists (select 1 from clinical_competency_subtargets st join clinical_competencies cc on cc.id=st.competency_id where cc.kode='PK-09' and st.nama='Breaking bad news');
 
 -- Tabel 24: prosedur
 insert into procedures (kode, no, nama, target_min, satuan, peran_disyaratkan, syarat_tambahan, perlu_verifikasi) values ('PR-01', 1, 'Diagnosis dan manajemen kanker ginekologi', 100, 'kasus baru', 'penanggung jawab utama', 'dengan verifikasi MDT', false) on conflict (kode) do update set nama=excluded.nama, target_min=excluded.target_min, satuan=excluded.satuan, peran_disyaratkan=excluded.peran_disyaratkan, syarat_tambahan=excluded.syarat_tambahan, perlu_verifikasi=excluded.perlu_verifikasi;

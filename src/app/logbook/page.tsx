@@ -46,12 +46,13 @@ export default async function LogbookPage() {
               <th className="px-4 py-2">Kompetensi</th>
               <th className="px-4 py-2">Diagnosis</th>
               <th className="px-4 py-2 text-right">Status</th>
+              <th className="px-4 py-2 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {rows.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
                   Belum ada entri. Mulai dengan “+ Entri Baru”.
                 </td>
               </tr>
@@ -78,6 +79,16 @@ export default async function LogbookPage() {
                   </td>
                   <td className="px-4 py-2 text-right">
                     <StatusBadge status={r.status} />
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    {(r.status === "draft" || r.status === "revisi") && (
+                      <Link
+                        href={`/logbook/${r.id}/edit`}
+                        className="text-teal-700 hover:underline"
+                      >
+                        Sunting
+                      </Link>
+                    )}
                   </td>
                 </tr>
               );

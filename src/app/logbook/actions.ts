@@ -40,6 +40,8 @@ export async function createEntry(_prev: unknown, formData: FormData) {
     surgical_role: entryType === "prosedur" ? val("surgical_role") : null,
     supervision_level: val("supervision_level"),
     complications: val("complications"),
+    dokumentasi_jenis:
+      entryType === "penatalaksanaan" ? val("dokumentasi_jenis") : null,
     catatan: val("catatan"),
     status,
     submitted_at: status === "diajukan" ? new Date().toISOString() : null,
@@ -47,6 +49,64 @@ export async function createEntry(_prev: unknown, formData: FormData) {
 
   if (error) return { error: error.message };
 
+  revalidatePath("/logbook");
+  redirect("/logbook");
+}
+
+export async function updateEntry(_prev: unknown, formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Sesi berakhir, silakan masuk lagi." };
+
+  const entryId = String(formData.get("entry_id") ?? "");
+  const entryType = String(formData.get("entry_type") ?? "");
+  const val = (k: string) => {
+    const v = formData.get(k);
+    return v === null || v === "" ? null : String(v);
+  };
+  const num = (k: string) => {
+    const v = val(k);
+    return v === null ? null : Number(v);
+  };
+
+  const aksi = String(formData.get("aksi") ?? "draft");
+  const status = aksi === "ajukan" ? "diajukan" : "draft";
+
+  const { error } = await supabase
+    .from("log_entries")
+    .update({
+      entry_date: val("entry_date"),
+      procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
+      clinical_competency_id:
+        entryType === "penatalaksanaan" ? val("clinical_competency_id") : null,
+      disease_id: val("disease_id"),
+      patient_code: val("patient_code"),
+      patient_age: num("patient_age"),
+      figo_stage: val("figo_stage"),
+      setting: val("setting"),
+      surgical_role: entryType === "prosedur" ? val("surgical_role") : null,
+      supervision_level: val("supervision_level"),
+      complications: val("complications"),
+      dokumentasi_jenis:
+        entryType === "penatalaksanaan" ? val("dokumentasi_jenis") : null,
+      catatan: val("catatan"),
+      status,
+      submitted_at: status === "diajukan" ? new Date().toISOString() : null,
+    })
+    .eq("id", entryId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/logbook");
+  redirect("/logbook");
+}
+
+export async function deleteEntry(formData: FormData) {
+  const supabase = await createClient();
+  const entryId = String(formData.get("entry_id") ?? "");
+  await supabase.from("log_entries").delete().eq("id", entryId);
   revalidatePath("/logbook");
   redirect("/logbook");
 }
