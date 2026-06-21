@@ -10,6 +10,7 @@ const NAV: { href: string; label: string; roles: UserRole[] }[] = [
   { href: "/pengetahuan", label: "Pengetahuan Saya", roles: ["residen"] },
   { href: "/verifikasi", label: "Verifikasi", roles: ["supervisor", "kps", "admin"] },
   { href: "/penilaian", label: "Penilaian", roles: ["penguji", "kps", "admin"] },
+  { href: "/admin", label: "Manajemen User", roles: ["kps", "admin"] },
 ];
 
 const ROLE_LABEL: Record<UserRole, string> = {
