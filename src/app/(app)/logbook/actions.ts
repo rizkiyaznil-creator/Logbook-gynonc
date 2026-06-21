@@ -25,15 +25,20 @@ export async function createEntry(_prev: unknown, formData: FormData) {
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
   const supervisorId = val("supervisor_id");
+  const rumahSakit = val("rumah_sakit");
 
   if (status === "diajukan" && !supervisorId) {
     return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
+  }
+  if (status === "diajukan" && !rumahSakit) {
+    return { error: "Isi Rumah Sakit sebelum mengajukan." };
   }
 
   const { error } = await supabase.from("log_entries").insert({
     resident_id: user.id,
     entry_type: entryType,
     entry_date: val("entry_date"),
+    rumah_sakit: rumahSakit,
     supervisor_id: supervisorId,
     procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
     clinical_competency_id:
@@ -80,15 +85,20 @@ export async function updateEntry(_prev: unknown, formData: FormData) {
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
   const supervisorId = val("supervisor_id");
+  const rumahSakit = val("rumah_sakit");
 
   if (status === "diajukan" && !supervisorId) {
     return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
+  }
+  if (status === "diajukan" && !rumahSakit) {
+    return { error: "Isi Rumah Sakit sebelum mengajukan." };
   }
 
   const { error } = await supabase
     .from("log_entries")
     .update({
       entry_date: val("entry_date"),
+      rumah_sakit: rumahSakit,
       supervisor_id: supervisorId,
       procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
       clinical_competency_id:

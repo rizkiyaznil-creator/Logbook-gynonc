@@ -25,6 +25,7 @@ export function EntryForm({
   procedures,
   competencies,
   supervisors,
+  hospitals,
   action,
   initial,
 }: {
@@ -32,6 +33,7 @@ export function EntryForm({
   procedures: Procedure[];
   competencies: ClinicalCompetency[];
   supervisors: SupervisorOption[];
+  hospitals: string[];
   action: FormAction;
   initial?: LogEntry;
 }) {
@@ -84,6 +86,28 @@ export function EntryForm({
             <option>IGD</option>
           </select>
         </div>
+      </div>
+
+      <div>
+        <label className={label}>
+          Rumah Sakit{" "}
+          <span className="text-xs font-normal text-slate-400">
+            (wajib saat diajukan)
+          </span>
+        </label>
+        <input
+          name="rumah_sakit"
+          list="rs-list"
+          defaultValue={initial?.rumah_sakit ?? ""}
+          placeholder="Pilih atau ketik nama RS…"
+          className={input}
+          autoComplete="off"
+        />
+        <datalist id="rs-list">
+          {hospitals.map((h) => (
+            <option key={h} value={h} />
+          ))}
+        </datalist>
       </div>
 
       <div>

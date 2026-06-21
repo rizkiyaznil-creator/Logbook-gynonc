@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EntryForm } from "@/components/entry-form";
 import { updateEntry, deleteEntry } from "@/app/(app)/logbook/actions";
+import { RS_BAKU } from "@/lib/constants";
 import type {
   Disease,
   Procedure,
@@ -33,7 +34,7 @@ export default async function EditEntryPage({
     redirect("/logbook");
   }
 
-  const [d, p, c, s] = await Promise.all([
+  const [d, p, c, s, rs] = await Promise.all([
     supabase.from("diseases").select("*").order("no"),
     supabase.from("procedures").select("*").order("no"),
     supabase.from("clinical_competencies").select("*").order("no"),
@@ -42,7 +43,13 @@ export default async function EditEntryPage({
       .select("id, full_name")
       .eq("role", "supervisor")
       .order("full_name"),
+    supabase.from("log_entries").select("rumah_sakit"),
   ]);
+
+  const used = (rs.data ?? [])
+    .map((r: { rumah_sakit: string | null }) => r.rumah_sakit)
+    .filter((x): x is string => !!x);
+  const hospitals = Array.from(new Set([...RS_BAKU, ...used]));
 
   return (
     <div className="space-y-6">
@@ -73,6 +80,7 @@ export default async function EditEntryPage({
         procedures={(p.data ?? []) as Procedure[]}
         competencies={(c.data ?? []) as ClinicalCompetency[]}
         supervisors={(s.data ?? []) as SupervisorOption[]}
+        hospitals={hospitals}
       />
     </div>
   );

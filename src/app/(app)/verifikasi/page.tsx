@@ -9,6 +9,7 @@ type Row = {
   entry_type: EntryType;
   surgical_role: string | null;
   figo_stage: string | null;
+  rumah_sakit: string | null;
   catatan: string | null;
   residents: { profiles: { full_name: string } | null } | null;
   procedures: { kode: string; nama: string } | null;
@@ -22,7 +23,7 @@ export default async function VerifikasiPage() {
   const { data } = await supabase
     .from("log_entries")
     .select(
-      "id, entry_date, entry_type, surgical_role, figo_stage, catatan, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen)",
+      "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen)",
     )
     .eq("status", "diajukan")
     .order("entry_date");
@@ -68,6 +69,7 @@ export default async function VerifikasiPage() {
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
                     {nama} · {r.entry_date}
+                    {r.rumah_sakit ? ` · ${r.rumah_sakit}` : ""}
                     {r.surgical_role ? ` · ${r.surgical_role}` : ""}
                     {r.figo_stage ? ` · FIGO ${r.figo_stage}` : ""}
                   </div>

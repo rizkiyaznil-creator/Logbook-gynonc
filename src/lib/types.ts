@@ -77,6 +77,7 @@ export interface LogEntry {
   patient_age: number | null;
   figo_stage: string | null;
   setting: string | null;
+  rumah_sakit: string | null;
   surgical_role: SurgicalRole | null;
   supervision_level: SupervisionLevel | null;
   complications: string | null;

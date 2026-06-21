@@ -682,6 +682,14 @@ create policy "profil_baca_supervisor" on profiles for select to authenticated
 -- 5) Hapus konsep penugasan (tabel + kebijakannya).
 drop table if exists supervisor_assignments cascade;
 
+-- >>>>>>>>>> 0013_rumah_sakit.sql <<<<<<<<<<
+-- =====================================================================
+-- 0013_rumah_sakit.sql — Kolom Rumah Sakit (teks bebas) pada entri
+-- Dua RS baku ditawarkan sebagai saran di UI; nama lain bebas diketik.
+-- =====================================================================
+
+alter table log_entries add column rumah_sakit text;
+
 -- >>>>>>>>>> seed.sql <<<<<<<<<<
 -- AUTO-GENERATED oleh scripts/generate-seed.mjs — JANGAN edit manual.
 -- Sumber: data/*.json (Kepkonsil HK.01.02/KKI/1318/2026)
