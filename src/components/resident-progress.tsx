@@ -5,6 +5,7 @@ import { ProgressBar } from "@/components/progress-bar";
 import { DiseaseCoverage } from "@/components/disease-coverage";
 import { ResidentIdentity } from "@/components/resident-identity";
 import { AcademicSummary } from "@/components/academic-summary";
+import { TableCard } from "@/components/table-card";
 import { SignatureBlock } from "@/components/signature-block";
 import { PrintButton } from "@/components/print-button";
 import { Skeleton } from "@/components/skeleton";
@@ -48,7 +49,7 @@ function ProgressTable({
         <span className={`h-4 w-1.5 rounded-full ${ACCENT[accent]}`} />
         {title}
       </h2>
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -93,7 +94,7 @@ function ProgressTable({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </section>
   );
 }

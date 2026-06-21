@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/status-badge";
 import { JENIS_LABEL, TAHAP_LABEL, TINGKAT_LABEL } from "@/components/academic-form";
+import { TableCard } from "@/components/table-card";
 import type { AcademicWork } from "@/lib/types";
 
 export async function AcademicSummary({ residentId }: { residentId: string }) {
@@ -28,7 +29,7 @@ export async function AcademicSummary({ residentId }: { residentId: string }) {
         <span className="h-4 w-1.5 rounded-full bg-fuchsia-500" />
         Karya &amp; Kegiatan Ilmiah
       </h2>
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -74,7 +75,7 @@ export async function AcademicSummary({ residentId }: { residentId: string }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </section>
   );
 }

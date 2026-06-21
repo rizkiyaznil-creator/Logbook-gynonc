@@ -3,6 +3,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CreateUserForm } from "@/components/create-user-form";
 import { UserRowActions } from "@/components/user-row-actions";
+import { TableCard } from "@/components/table-card";
 import type { UserRole } from "@/lib/types";
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -41,7 +42,7 @@ export default async function AdminPage() {
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           Daftar Pengguna ({profiles.length})
         </h2>
-        <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
               <tr>
@@ -70,7 +71,7 @@ export default async function AdminPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </TableCard>
         <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
           Catatan: DPJP penanggung jawab dipilih per-entri oleh residen saat
           mencatat tindakan — tidak ada lagi penugasan tetap.

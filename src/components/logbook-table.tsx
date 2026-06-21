@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/status-badge";
+import { TableCard } from "@/components/table-card";
 import type { EntryStatus, EntryType } from "@/lib/types";
 
 export type FlatRow = {
@@ -133,7 +134,7 @@ export function LogbookTable({ rows }: { rows: FlatRow[] }) {
         Menampilkan {filtered.length} dari {rows.length} entri
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -216,7 +217,7 @@ export function LogbookTable({ rows }: { rows: FlatRow[] }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </div>
   );
 }

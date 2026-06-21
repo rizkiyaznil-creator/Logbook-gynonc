@@ -1,5 +1,6 @@
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { TableCard } from "@/components/table-card";
 
 type KRow = {
   knowledge_item_id: string;
@@ -25,7 +26,7 @@ function Tabel({ title, rows }: { title: string; rows: KRow[] }) {
   return (
     <section>
       <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">{title}</h2>
-      <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
             <tr>
@@ -64,7 +65,7 @@ function Tabel({ title, rows }: { title: string; rows: KRow[] }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </section>
   );
 }

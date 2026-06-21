@@ -10,6 +10,7 @@ import {
   BENTUK_LABEL,
 } from "@/components/academic-form";
 import { StatusBadge } from "@/components/status-badge";
+import { TableCard } from "@/components/table-card";
 import { createWork, updateWork, deleteWork } from "@/app/(app)/karya/actions";
 import type { AcademicWork, SupervisorOption } from "@/lib/types";
 
@@ -166,7 +167,7 @@ export default async function KaryaPage({
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           Karya Ilmiah
         </h2>
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className={THEAD}>
               <tr>
@@ -193,7 +194,7 @@ export default async function KaryaPage({
               ))}
             </tbody>
           </table>
-        </div>
+        </TableCard>
       </section>
 
       <section>
@@ -203,7 +204,7 @@ export default async function KaryaPage({
             (tahapan)
           </span>
         </h2>
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className={THEAD}>
               <tr>
@@ -265,7 +266,7 @@ export default async function KaryaPage({
               ))}
             </tbody>
           </table>
-        </div>
+        </TableCard>
       </section>
     </div>
   );

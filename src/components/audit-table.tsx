@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { TableCard } from "@/components/table-card";
 
 export type AuditRow = {
   id: number;
@@ -88,7 +89,7 @@ export function AuditTable({ rows }: { rows: AuditRow[] }) {
         Menampilkan {filtered.length} dari {rows.length} aktivitas
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -137,7 +138,7 @@ export function AuditTable({ rows }: { rows: AuditRow[] }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </div>
   );
 }

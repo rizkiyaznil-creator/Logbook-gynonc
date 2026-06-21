@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { TableCard } from "@/components/table-card";
 
 type Row = {
   disease_id: string;
@@ -25,7 +26,7 @@ export async function DiseaseCoverage({ residentId }: { residentId: string }) {
         <span className="h-4 w-1.5 rounded-full bg-emerald-500" />
         Spektrum Penyakit (Tabel 10) — {tercakup}/{rows.length} tercakup
       </h2>
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -67,7 +68,7 @@ export async function DiseaseCoverage({ residentId }: { residentId: string }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </section>
   );
 }

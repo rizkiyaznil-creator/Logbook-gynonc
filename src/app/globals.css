@@ -83,6 +83,10 @@ body {
 }
 
 @media print {
+  /* Abaikan skala ukuran teks pilihan pengguna agar PDF konsisten */
+  html {
+    font-size: 100% !important;
+  }
   /* Sembunyikan navigasi & elemen interaktif saat cetak/Simpan PDF */
   header,
   .no-print {

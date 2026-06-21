@@ -3,6 +3,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { BarList } from "@/components/bar-list";
 import { ExportCsvButton } from "@/components/export-csv-button";
+import { TableCard } from "@/components/table-card";
 
 // Asumsi durasi pendidikan (bulan) untuk proyeksi kelulusan — dapat disesuaikan.
 const PROGRAM_BULAN = 24;
@@ -301,7 +302,7 @@ export default async function RekapPage() {
             ])}
           />
         </div>
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50">
               <tr>
@@ -369,7 +370,7 @@ export default async function RekapPage() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableCard>
       </section>
 
       {/* Per angkatan & lagging */}
@@ -396,7 +397,7 @@ export default async function RekapPage() {
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           Beban Verifikasi per DPJP
         </h2>
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50">
               <tr>
@@ -433,7 +434,7 @@ export default async function RekapPage() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableCard>
       </section>
 
       {/* Proyeksi kelulusan */}
@@ -470,7 +471,7 @@ export default async function RekapPage() {
           Asumsi durasi pendidikan {PROGRAM_BULAN} bulan. Laju = capaian ÷ bulan
           berjalan; estimasi = sisa target ÷ laju.
         </p>
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        <TableCard>
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50">
               <tr>
@@ -524,7 +525,7 @@ export default async function RekapPage() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableCard>
       </section>
     </div>
   );

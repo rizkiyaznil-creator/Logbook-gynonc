@@ -25,9 +25,9 @@ export const viewport: Viewport = {
   ],
 };
 
-// Terapkan tema sebelum paint agar tidak ada kedipan (flash) saat memuat.
+// Terapkan tema & ukuran font sebelum paint agar tidak ada kedipan (flash).
 const themeScript = `
-(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();
+(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');var f=parseInt(localStorage.getItem('fontScale'),10);if(!isNaN(f)){f=Math.min(140,Math.max(80,f));document.documentElement.style.fontSize=f+'%';}}catch(e){}})();
 `;
 
 export default function RootLayout({

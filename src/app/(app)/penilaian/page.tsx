@@ -1,6 +1,7 @@
 import { requireProfile } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { TableCard } from "@/components/table-card";
 import {
   AssessmentForm,
   type ResidentOption,
@@ -68,7 +69,7 @@ export default async function PenilaianPage() {
           <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
             Nilai Terbaru
           </h2>
-          <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
+          <TableCard>
             <table className="w-full text-sm">
               <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
@@ -114,7 +115,7 @@ export default async function PenilaianPage() {
                 })}
               </tbody>
             </table>
-          </div>
+          </TableCard>
         </section>
       </div>
     </div>

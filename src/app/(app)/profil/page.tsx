@@ -1,6 +1,7 @@
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileForm, type ResidentData } from "@/components/profile-form";
+import { FontSizeControl } from "@/components/font-size-control";
 
 export default async function ProfilPage() {
   const profile = await requireProfile();
@@ -22,6 +23,11 @@ export default async function ProfilPage() {
         Profil Saya
       </h1>
       <ProfileForm profile={profile} resident={resident} />
+
+      <h2 className="pt-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
+        Tampilan
+      </h2>
+      <FontSizeControl />
     </div>
   );
 }

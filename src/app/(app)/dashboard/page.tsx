@@ -4,6 +4,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ResidentProgress } from "@/components/resident-progress";
 import { AcademicStats, AcademicRekap } from "@/components/academic-stats";
+import { TableCard } from "@/components/table-card";
 import { ProgressSkeleton, Skeleton } from "@/components/skeleton";
 import { Icons } from "@/components/icons";
 import { Avatar } from "@/components/avatar";
@@ -71,7 +72,7 @@ async function StaffDashboard() {
         <AcademicRekap />
       </Suspense>
 
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+      <TableCard>
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
@@ -131,7 +132,7 @@ async function StaffDashboard() {
             )}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </div>
   );
 }
