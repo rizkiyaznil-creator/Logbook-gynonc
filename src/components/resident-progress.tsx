@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/stat-card";
 import { ProgressBar } from "@/components/progress-bar";
+import { DiseaseCoverage } from "@/components/disease-coverage";
+import { PrintButton } from "@/components/print-button";
 import type {
   ResidentSummary,
   ProcedureProgress,
@@ -78,6 +80,10 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
 
   return (
     <div className="space-y-8">
+      <div className="flex justify-end">
+        <PrintButton />
+      </div>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Prosedur" achieved={summary?.prosedur_tercapai ?? 0} total={summary?.prosedur_total ?? 0} />
         <StatCard label="Penatalaksanaan" achieved={summary?.penatalaksanaan_tercapai ?? 0} total={summary?.penatalaksanaan_total ?? 0} />
@@ -123,6 +129,8 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
           menunggu: p.jumlah_menunggu,
         }))}
       />
+
+      <DiseaseCoverage residentId={residentId} />
     </div>
   );
 }
