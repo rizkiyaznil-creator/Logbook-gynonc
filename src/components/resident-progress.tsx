@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/stat-card";
 import { ProgressBar } from "@/components/progress-bar";
 import { DiseaseCoverage } from "@/components/disease-coverage";
+import { ResidentIdentity } from "@/components/resident-identity";
 import { PrintButton } from "@/components/print-button";
 import type {
   ResidentSummary,
@@ -80,7 +81,10 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-end">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <ResidentIdentity residentId={residentId} />
+        </div>
         <PrintButton />
       </div>
 
