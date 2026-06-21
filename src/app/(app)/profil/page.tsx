@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { ProfileForm, type ResidentData } from "@/components/profile-form";
 import { FontSizeControl } from "@/components/font-size-control";
+import { InstallButton } from "@/components/pwa-install";
 import { Icons } from "@/components/icons";
 
 export default async function ProfilPage() {
@@ -25,6 +26,11 @@ export default async function ProfilPage() {
         Profil Saya
       </h1>
       <ProfileForm profile={profile} resident={resident} />
+
+      <h2 className="pt-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
+        Aplikasi
+      </h2>
+      <InstallButton />
 
       <h2 className="pt-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
         Tampilan

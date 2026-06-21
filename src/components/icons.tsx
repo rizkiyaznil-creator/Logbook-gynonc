@@ -108,6 +108,18 @@ export const Icons = {
       <path d="M6 14h12v7H6z" />
     </svg>
   ),
+  download: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M12 3v12" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M5 21h14" />
+    </svg>
+  ),
+  check: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  ),
   bell: (p: P) => (
     <svg {...base} {...p}>
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />

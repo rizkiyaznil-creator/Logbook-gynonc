@@ -1,6 +1,7 @@
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Topbar, type NavItem } from "@/components/topbar";
+import { InstallPopup } from "@/components/pwa-install";
 import type { IconName } from "@/components/icons";
 import type { UserRole } from "@/lib/types";
 
@@ -102,6 +103,7 @@ export default async function AppLayout({
         </div>
         <div className="mt-1">Didesain oleh Muhammad Rizki Yaznil</div>
       </footer>
+      <InstallPopup />
     </div>
   );
 }
