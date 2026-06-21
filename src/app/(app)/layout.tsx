@@ -1,4 +1,5 @@
 import { requireProfile } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { Topbar, type NavItem } from "@/components/topbar";
 import type { IconName } from "@/components/icons";
 import type { UserRole } from "@/lib/types";
@@ -34,6 +35,41 @@ export default async function AppLayout({
     ({ href, label, icon }) => ({ href, label, icon: icon as IconName }),
   );
 
+  // Badge & notifikasi belum dibaca.
+  const supabase = await createClient();
+  const isStaff = ["supervisor", "kps", "admin"].includes(profile.role);
+  const cnt = (q: PromiseLike<{ count: number | null }>) =>
+    q.then((r) => r.count ?? 0);
+
+  const [unreadCount, pendingVerif, revisiCount] = await Promise.all([
+    cnt(
+      supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .is("read_at", null),
+    ),
+    isStaff
+      ? cnt(
+          supabase
+            .from("log_entries")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "diajukan"),
+        )
+      : Promise.resolve(0),
+    profile.role === "residen"
+      ? cnt(
+          supabase
+            .from("log_entries")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "revisi"),
+        )
+      : Promise.resolve(0),
+  ]);
+
+  const badges: Record<string, number> = {};
+  if (pendingVerif > 0) badges["/verifikasi"] = pendingVerif;
+  if (revisiCount > 0) badges["/logbook"] = revisiCount;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Topbar
@@ -41,6 +77,8 @@ export default async function AppLayout({
         fullName={profile.full_name}
         roleLabel={ROLE_LABEL[profile.role]}
         avatarUrl={profile.avatar_url}
+        badges={badges}
+        unreadCount={unreadCount}
       />
       <main className="animate-in mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         {children}

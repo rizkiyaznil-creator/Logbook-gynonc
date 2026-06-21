@@ -7,6 +7,7 @@ import { signOut } from "@/app/login/actions";
 import { Icons, type IconName } from "@/components/icons";
 import { Avatar } from "@/components/avatar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NotificationBell } from "@/components/notification-bell";
 import { BrandLogo } from "@/components/brand-logo";
 
 export type NavItem = { href: string; label: string; icon: IconName };
@@ -16,11 +17,15 @@ export function Topbar({
   fullName,
   roleLabel,
   avatarUrl,
+  badges = {},
+  unreadCount = 0,
 }: {
   items: NavItem[];
   fullName: string;
   roleLabel: string;
   avatarUrl: string | null;
+  badges?: Record<string, number>;
+  unreadCount?: number;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -33,6 +38,7 @@ export function Topbar({
   const link = (n: NavItem, onClick?: () => void) => {
     const active = n.href === activeHref;
     const Icon = Icons[n.icon];
+    const count = badges[n.href] ?? 0;
     return (
       <Link
         key={n.href}
@@ -46,6 +52,11 @@ export function Topbar({
       >
         <Icon className="h-4 w-4 shrink-0" />
         {n.label}
+        {count > 0 && (
+          <span className="grid h-5 min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[11px] font-bold text-white">
+            {count > 99 ? "99+" : count}
+          </span>
+        )}
       </Link>
     );
   };
@@ -75,6 +86,7 @@ export function Topbar({
         </nav>
 
         <div className="flex items-center gap-2">
+          <NotificationBell initialUnread={unreadCount} />
           <ThemeToggle />
           <div className="hidden items-center gap-2 sm:flex">
             <Avatar name={fullName} src={avatarUrl} size={36} />

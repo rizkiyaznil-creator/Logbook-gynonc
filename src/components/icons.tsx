@@ -95,6 +95,12 @@ export const Icons = {
       <path d="M12 8v5M12 16h.01" />
     </svg>
   ),
+  bell: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    </svg>
+  ),
   menu: (p: P) => (
     <svg {...base} {...p}>
       <path d="M4 6h16M4 12h16M4 18h16" />
