@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { Combobox } from "@/components/combobox";
 import type {
   Disease,
   Procedure,
@@ -92,37 +93,27 @@ export function EntryForm({
             (wajib saat diajukan)
           </span>
         </label>
-        <select
+        <Combobox
           name="supervisor_id"
           defaultValue={initial?.supervisor_id ?? ""}
-          className={input}
-        >
-          <option value="">Pilih DPJP…</option>
-          {supervisors.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.full_name}
-            </option>
-          ))}
-        </select>
+          placeholder="Cari DPJP…"
+          options={supervisors.map((s) => ({ value: s.id, label: s.full_name }))}
+        />
       </div>
 
       {type === "prosedur" && (
         <>
           <div>
             <label className={label}>Prosedur</label>
-            <select
+            <Combobox
               name="procedure_id"
-              required
               defaultValue={initial?.procedure_id ?? ""}
-              className={input}
-            >
-              <option value="">Pilih prosedur…</option>
-              {procedures.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.kode} — {p.nama}
-                </option>
-              ))}
-            </select>
+              placeholder="Cari prosedur (mis. ‘radikal’, ‘USG’)…"
+              options={procedures.map((p) => ({
+                value: p.id,
+                label: `${p.kode} — ${p.nama}`,
+              }))}
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -168,19 +159,15 @@ export function EntryForm({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={label}>Komponen Penatalaksanaan</label>
-            <select
+            <Combobox
               name="clinical_competency_id"
-              required
               defaultValue={initial?.clinical_competency_id ?? ""}
-              className={input}
-            >
-              <option value="">Pilih komponen…</option>
-              {competencies.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.kode} — {c.komponen}
-                </option>
-              ))}
-            </select>
+              placeholder="Cari komponen…"
+              options={competencies.map((c) => ({
+                value: c.id,
+                label: `${c.kode} — ${c.komponen}`,
+              }))}
+            />
           </div>
           <div>
             <label className={label}>Jenis dokumentasi (untuk PK-09)</label>
@@ -202,18 +189,15 @@ export function EntryForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className={label}>Diagnosis (spektrum penyakit)</label>
-          <select
+          <Combobox
             name="disease_id"
             defaultValue={initial?.disease_id ?? ""}
-            className={input}
-          >
-            <option value="">—</option>
-            {diseases.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.no}. {d.nama_id}
-              </option>
-            ))}
-          </select>
+            placeholder="Cari diagnosis (mis. ‘serviks’)…"
+            options={diseases.map((d) => ({
+              value: d.id,
+              label: `${d.no}. ${d.nama_id}`,
+            }))}
+          />
         </div>
         <div>
           <label className={label}>Stadium FIGO</label>

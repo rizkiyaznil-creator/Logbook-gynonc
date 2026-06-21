@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { Combobox } from "@/components/combobox";
 import { createAssessment } from "@/app/(app)/penilaian/actions";
 
 const input =
@@ -31,40 +32,26 @@ export function AssessmentForm({
     >
       <div>
         <label className={label}>Residen</label>
-        <select name="resident_id" required className={input}>
-          <option value="">Pilih residen…</option>
-          {residents.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.no_peserta ? `${r.no_peserta} — ` : ""}
-              {r.nama}
-            </option>
-          ))}
-        </select>
+        <Combobox
+          name="resident_id"
+          placeholder="Cari residen…"
+          options={residents.map((r) => ({
+            value: r.id,
+            label: r.no_peserta ? `${r.no_peserta} — ${r.nama}` : r.nama,
+          }))}
+        />
       </div>
 
       <div>
         <label className={label}>Butir Pengetahuan</label>
-        <select name="knowledge_item_id" required className={input}>
-          <option value="">Pilih butir…</option>
-          <optgroup label="Penatalaksanaan">
-            {items
-              .filter((i) => i.kategori === "penatalaksanaan")
-              .map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.kode} — {i.topik}
-                </option>
-              ))}
-          </optgroup>
-          <optgroup label="Prosedur">
-            {items
-              .filter((i) => i.kategori === "prosedur")
-              .map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.kode} — {i.topik}
-                </option>
-              ))}
-          </optgroup>
-        </select>
+        <Combobox
+          name="knowledge_item_id"
+          placeholder="Cari butir (mis. ‘USG’, ‘prognosis’)…"
+          options={items.map((i) => ({
+            value: i.id,
+            label: `${i.kode} — ${i.topik} (${i.kategori})`,
+          }))}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
