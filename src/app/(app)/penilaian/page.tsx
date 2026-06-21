@@ -57,7 +57,7 @@ export default async function PenilaianPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-lg font-semibold text-slate-800">
+      <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Input Nilai Pengetahuan (OSCE / MCQ)
       </h1>
 
@@ -65,12 +65,12 @@ export default async function PenilaianPage() {
         <AssessmentForm residents={residents} items={items} />
 
         <section>
-          <h2 className="mb-3 text-sm font-semibold text-slate-700">
+          <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
             Nilai Terbaru
           </h2>
-          <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+          <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="px-3 py-2">Tanggal</th>
                   <th className="px-3 py-2">Residen</th>
@@ -78,10 +78,10 @@ export default async function PenilaianPage() {
                   <th className="px-3 py-2 text-right">Nilai</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recent.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-3 py-6 text-center text-slate-400">
+                    <td colSpan={4} className="px-3 py-6 text-center text-slate-400 dark:text-slate-500">
                       Belum ada nilai.
                     </td>
                   </tr>
@@ -90,15 +90,15 @@ export default async function PenilaianPage() {
                   const lulus = a.persen >= 70;
                   return (
                     <tr key={a.id}>
-                      <td className="px-3 py-2 text-slate-600">{a.exam_date}</td>
-                      <td className="px-3 py-2 text-slate-700">
+                      <td className="px-3 py-2 text-slate-600 dark:text-slate-300">{a.exam_date}</td>
+                      <td className="px-3 py-2 text-slate-700 dark:text-slate-200">
                         {a.residents?.profiles?.full_name ?? "—"}
                       </td>
                       <td className="px-3 py-2">
-                        <span className="font-mono text-xs text-slate-500">
+                        <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
                           {a.knowledge_items?.kode}
                         </span>{" "}
-                        <span className="uppercase text-xs text-slate-400">
+                        <span className="uppercase text-xs text-slate-400 dark:text-slate-500">
                           {a.exam_type}
                         </span>
                       </td>

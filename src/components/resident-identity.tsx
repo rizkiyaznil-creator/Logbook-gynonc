@@ -5,8 +5,10 @@ import { BrandLogo } from "@/components/brand-logo";
 function Field({ label, value }: { label: string; value: string | null }) {
   return (
     <div>
-      <div className="text-xs text-slate-400">{label}</div>
-      <div className="text-sm text-slate-700">{value || "—"}</div>
+      <div className="text-xs text-slate-400 dark:text-slate-500">{label}</div>
+      <div className="text-sm text-slate-700 dark:text-slate-200">
+        {value || "—"}
+      </div>
     </div>
   );
 }
@@ -39,36 +41,38 @@ export async function ResidentIdentity({ residentId }: { residentId: string }) {
     | null;
 
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+    <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
       {/* Kop institusi (letterhead) */}
-      <div className="mb-3 flex items-center gap-3 border-b-2 border-slate-200 pb-3">
+      <div className="mb-3 flex items-center gap-3 border-b-2 border-slate-200 pb-3 dark:border-slate-700">
         <BrandLogo
           src="/usu-logo.png"
           alt="Logo Universitas Sumatera Utara"
           className="h-14 w-14 shrink-0 object-contain"
         />
         <div className="leading-tight">
-          <div className="text-sm font-bold uppercase tracking-wide text-slate-800">
+          <div className="text-sm font-bold uppercase tracking-wide text-slate-800 dark:text-slate-100">
             Universitas Sumatera Utara
           </div>
-          <div className="text-xs text-slate-600">Fakultas Kedokteran</div>
-          <div className="text-xs text-slate-600">
+          <div className="text-xs text-slate-600 dark:text-slate-400">
+            Fakultas Kedokteran
+          </div>
+          <div className="text-xs text-slate-600 dark:text-slate-400">
             Prodi Subspesialis Obstetri &amp; Ginekologi
           </div>
         </div>
       </div>
 
-      <div className="mb-3 flex items-center gap-4 border-b border-slate-100 pb-3">
+      <div className="mb-3 flex items-center gap-4 border-b border-slate-100 pb-3 dark:border-slate-800">
         <Avatar name={p?.full_name ?? "Residen"} src={p?.avatar_url} size={56} />
         <div>
-          <div className="text-xs uppercase tracking-wide text-slate-400">
+          <div className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
             Rekap Pencapaian Kompetensi — Logbook Subspesialis Onkologi
             Ginekologi
           </div>
-          <div className="text-lg font-semibold text-slate-800">
+          <div className="text-lg font-semibold text-slate-800 dark:text-slate-100">
             {p?.full_name ?? "Residen"}
           </div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-500 dark:text-slate-400">
             PPDS Subspesialis Onkologi Ginekologi
           </div>
         </div>

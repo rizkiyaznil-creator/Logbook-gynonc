@@ -50,22 +50,22 @@ async function StaffDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-100 text-indigo-600">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">
           <Icons.users className="h-5 w-5" />
         </span>
         <div>
-          <h1 className="text-lg font-semibold text-slate-800">
+          <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
             Daftar Residen
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             {list.length} residen terdaftar
           </p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">No. Peserta</th>
               <th className="px-4 py-3">Nama</th>
@@ -73,18 +73,21 @@ async function StaffDashboard() {
               <th className="px-4 py-3 text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {list.map((r) => {
               const prof = Array.isArray(r.profiles)
                 ? r.profiles[0]
                 : r.profiles;
               const nama = prof?.full_name;
               return (
-                <tr key={r.id} className="transition-colors hover:bg-slate-50">
-                  <td className="px-4 py-3 font-mono text-xs text-slate-500">
+                <tr
+                  key={r.id}
+                  className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                >
+                  <td className="px-4 py-3 font-mono text-xs text-slate-500 dark:text-slate-400">
                     {r.no_peserta ?? "—"}
                   </td>
-                  <td className="px-4 py-3 font-medium text-slate-700">
+                  <td className="px-4 py-3 font-medium text-slate-700 dark:text-slate-200">
                     <span className="flex items-center gap-2.5">
                       <Avatar
                         name={nama ?? "?"}
@@ -94,13 +97,13 @@ async function StaffDashboard() {
                       {nama ?? "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-600">
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                     {r.angkatan ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/residen/${r.id}`}
-                      className="inline-flex items-center gap-1 rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-100"
+                      className="inline-flex items-center gap-1 rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-100 dark:bg-teal-500/15 dark:text-teal-300 dark:hover:bg-teal-500/25"
                     >
                       Lihat progress →
                     </Link>
@@ -110,7 +113,10 @@ async function StaffDashboard() {
             })}
             {list.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-slate-400">
+                <td
+                  colSpan={4}
+                  className="px-4 py-8 text-center text-slate-400 dark:text-slate-500"
+                >
                   Belum ada residen terdaftar.
                 </td>
               </tr>

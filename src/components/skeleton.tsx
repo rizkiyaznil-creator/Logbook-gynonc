@@ -24,7 +24,7 @@ export function TableSkeleton({ rows = 6 }: { rows?: number }) {
   return (
     <div className="space-y-6">
       <Skeleton className="h-8 w-56" />
-      <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+      <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
         <Skeleton className="mb-3 h-8 w-full" />
         <div className="space-y-2">
           {Array.from({ length: rows }).map((_, i) => (

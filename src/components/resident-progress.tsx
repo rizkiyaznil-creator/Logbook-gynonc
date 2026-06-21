@@ -42,13 +42,13 @@ function ProgressTable({
 }) {
   return (
     <section>
-      <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
         <span className={`h-4 w-1.5 rounded-full ${ACCENT[accent]}`} />
         {title}
       </h2>
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
             <tr>
               <th className="px-4 py-2.5">Kode</th>
               <th className="px-4 py-2.5">Kompetensi</th>
@@ -56,13 +56,18 @@ function ProgressTable({
               <th className="px-4 py-2.5 text-right">Capaian</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {rows.map((r) => (
-              <tr key={r.kode} className="transition-colors hover:bg-slate-50">
-                <td className="px-4 py-2.5 font-mono text-xs text-slate-500">
+              <tr
+                key={r.kode}
+                className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              >
+                <td className="px-4 py-2.5 font-mono text-xs text-slate-500 dark:text-slate-400">
                   {r.kode}
                 </td>
-                <td className="px-4 py-2.5 text-slate-700">{r.nama}</td>
+                <td className="px-4 py-2.5 text-slate-700 dark:text-slate-200">
+                  {r.nama}
+                </td>
                 <td className="px-4 py-2.5">
                   <ProgressBar value={r.persen} achieved={r.tercapai} />
                 </td>
@@ -70,8 +75,8 @@ function ProgressTable({
                   <span
                     className={
                       r.tercapai
-                        ? "font-semibold text-teal-700"
-                        : "text-slate-600"
+                        ? "font-semibold text-teal-700 dark:text-teal-400"
+                        : "text-slate-600 dark:text-slate-300"
                     }
                   >
                     {r.n}/{r.target}

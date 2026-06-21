@@ -44,8 +44,8 @@ export default async function AppLayout({
       <main className="animate-in mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         {children}
       </main>
-      <footer className="no-print border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        <div className="text-slate-500">
+      <footer className="no-print border-t border-slate-200 py-4 text-center text-xs text-slate-400 dark:border-slate-800 dark:text-slate-500">
+        <div className="text-slate-500 dark:text-slate-400">
           Universitas Sumatera Utara · Fakultas Kedokteran · Prodi Subspesialis
           Obstetri &amp; Ginekologi
         </div>

@@ -39,28 +39,28 @@ function Tabel({
 }) {
   return (
     <section>
-      <h2 className="mb-3 text-sm font-semibold text-slate-700">{title}</h2>
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">{title}</h2>
+      <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-2">{kolom}</th>
               <th className="px-4 py-2 text-right">Total Entri</th>
               <th className="px-4 py-2 text-right">Terverifikasi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {rows.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-6 text-center text-slate-400">
+                <td colSpan={3} className="px-4 py-6 text-center text-slate-400 dark:text-slate-500">
                   Belum ada data.
                 </td>
               </tr>
             )}
             {rows.map((r) => (
               <tr key={r.key}>
-                <td className="px-4 py-2 text-slate-700">{r.label}</td>
-                <td className="px-4 py-2 text-right text-slate-600">
+                <td className="px-4 py-2 text-slate-700 dark:text-slate-200">{r.label}</td>
+                <td className="px-4 py-2 text-right text-slate-600 dark:text-slate-300">
                   {r.total}
                 </td>
                 <td className="px-4 py-2 text-right text-teal-700">
@@ -102,9 +102,9 @@ export default async function RekapPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-lg font-semibold text-slate-800">
+      <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Rekap Kegiatan
-        <span className="ml-2 text-sm font-normal text-slate-400">
+        <span className="ml-2 text-sm font-normal text-slate-400 dark:text-slate-500">
           {rows.length} entri total
         </span>
       </h1>

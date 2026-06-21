@@ -82,7 +82,7 @@ export function AvatarUpload({
             type="button"
             disabled={busy}
             onClick={() => inputRef.current?.click()}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
           >
             {busy ? "Mengunggah…" : url ? "Ganti foto" : "Unggah foto"}
           </button>
@@ -97,7 +97,7 @@ export function AvatarUpload({
             </button>
           )}
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-400 dark:text-slate-500">
           Format gambar (JPG, PNG, WebP), maks 8 MB — otomatis dikecilkan.
           Opsional.
         </p>

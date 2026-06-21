@@ -5,8 +5,8 @@ import { Combobox } from "@/components/combobox";
 import { createAssessment } from "@/app/(app)/penilaian/actions";
 
 const input =
-  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
-const label = "block text-sm font-medium text-slate-700";
+  "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
+const label = "block text-sm font-medium text-slate-700 dark:text-slate-200";
 
 export type ResidentOption = { id: string; nama: string; no_peserta: string | null };
 export type KnowledgeOption = {
@@ -28,7 +28,7 @@ export function AssessmentForm({
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
+      className="space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
     >
       <div>
         <label className={label}>Residen</label>

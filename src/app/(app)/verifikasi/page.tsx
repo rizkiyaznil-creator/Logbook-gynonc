@@ -32,7 +32,7 @@ export default async function VerifikasiPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-lg font-semibold text-slate-800">
+      <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Antrean Verifikasi
         <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-sm text-amber-700">
           {rows.length}
@@ -40,7 +40,7 @@ export default async function VerifikasiPage() {
       </h1>
 
       {rows.length === 0 && (
-        <p className="rounded-xl bg-white p-8 text-center text-slate-400 shadow-sm ring-1 ring-slate-200">
+        <p className="rounded-xl bg-white dark:bg-slate-900 p-8 text-center text-slate-400 dark:text-slate-500 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
           Tidak ada entri yang menunggu verifikasi.
         </p>
       )}
@@ -57,24 +57,24 @@ export default async function VerifikasiPage() {
           return (
             <div
               key={r.id}
-              className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200"
+              className="rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-sm font-medium text-slate-800">
-                    <span className="font-mono text-xs text-slate-500">
+                  <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                    <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
                       {komp}
                     </span>{" "}
                     {judul}
                   </div>
-                  <div className="mt-1 text-xs text-slate-500">
+                  <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     {nama} · {r.entry_date}
                     {r.rumah_sakit ? ` · ${r.rumah_sakit}` : ""}
                     {r.surgical_role ? ` · ${r.surgical_role}` : ""}
                     {r.figo_stage ? ` · FIGO ${r.figo_stage}` : ""}
                   </div>
                   {r.catatan && (
-                    <p className="mt-2 text-sm text-slate-600">{r.catatan}</p>
+                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{r.catatan}</p>
                   )}
                 </div>
               </div>
@@ -84,7 +84,7 @@ export default async function VerifikasiPage() {
                 <input
                   name="verifier_note"
                   placeholder="Catatan (opsional)"
-                  className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-sm"
                 />
                 <button
                   name="keputusan"

@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 export type ComboOption = { value: string; label: string };
 
 const inputCls =
-  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
+  "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
 
 /**
  * Dropdown yang bisa dicari. Mengirim `value` (id) lewat hidden input `name`,
@@ -112,7 +112,7 @@ export function Combobox({
       {open && filtered.length > 0 && (
         <ul
           id={listId}
-          className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 text-sm shadow-lg"
+          className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-1 text-sm shadow-lg"
         >
           {filtered.map((o, i) => (
             <li
@@ -123,7 +123,7 @@ export function Combobox({
               }}
               onMouseEnter={() => setHighlight(i)}
               className={`cursor-pointer px-3 py-1.5 ${
-                i === highlight ? "bg-teal-50 text-teal-800" : "text-slate-700"
+                i === highlight ? "bg-teal-50 text-teal-800" : "text-slate-700 dark:text-slate-200"
               }`}
             >
               {o.label}
@@ -132,7 +132,7 @@ export function Combobox({
         </ul>
       )}
       {open && query.trim().length > 0 && filtered.length === 0 && (
-        <div className="absolute z-20 mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-400 shadow-lg">
+        <div className="absolute z-20 mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-400 dark:text-slate-500 shadow-lg">
           Tidak ada hasil untuk “{query}”.
         </div>
       )}

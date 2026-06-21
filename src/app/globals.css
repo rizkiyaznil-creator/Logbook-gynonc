@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Dark mode berbasis class .dark pada <html> (toggle manual) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f6f8fb;
   --foreground: #0f172a;
+}
+
+.dark {
+  --background: #0b1120;
+  --foreground: #e2e8f0;
 }
 
 body {
@@ -14,6 +22,13 @@ body {
   background-attachment: fixed;
   color: var(--foreground);
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.13) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.1) 0px, transparent 45%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
 }
 
 /* Animasi muncul halus untuk konten halaman */
@@ -41,6 +56,17 @@ body {
   position: relative;
   overflow: hidden;
   background: #e9eef5;
+}
+.dark .skeleton {
+  background: #1e293b;
+}
+.dark .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
 }
 .skeleton::after {
   content: "";

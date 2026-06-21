@@ -33,17 +33,17 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-lg font-semibold text-slate-800">Manajemen User</h1>
+      <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
       <CreateUserForm />
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold text-slate-700">
+        <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           Daftar Pengguna ({profiles.length})
         </h2>
-        <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+        <div className="overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-left text-xs uppercase text-slate-500 dark:text-slate-400">
               <tr>
                 <th className="px-4 py-2">Nama</th>
                 <th className="px-4 py-2">Email</th>
@@ -51,12 +51,12 @@ export default async function AdminPage() {
                 <th className="px-4 py-2 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {profiles.map((p) => (
                 <tr key={p.id}>
-                  <td className="px-4 py-2 text-slate-700">{p.full_name}</td>
-                  <td className="px-4 py-2 text-slate-500">{p.email ?? "—"}</td>
-                  <td className="px-4 py-2 text-slate-600">
+                  <td className="px-4 py-2 text-slate-700 dark:text-slate-200">{p.full_name}</td>
+                  <td className="px-4 py-2 text-slate-500 dark:text-slate-400">{p.email ?? "—"}</td>
+                  <td className="px-4 py-2 text-slate-600 dark:text-slate-300">
                     {ROLE_LABEL[p.role]}
                   </td>
                   <td className="px-4 py-2">
@@ -71,7 +71,7 @@ export default async function AdminPage() {
             </tbody>
           </table>
         </div>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
           Catatan: DPJP penanggung jawab dipilih per-entri oleh residen saat
           mencatat tindakan — tidak ada lagi penugasan tetap.
         </p>

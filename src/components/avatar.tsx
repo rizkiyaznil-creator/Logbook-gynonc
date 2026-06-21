@@ -44,14 +44,14 @@ export function Avatar({
         alt={name}
         loading="lazy"
         style={dim}
-        className={`shrink-0 rounded-full object-cover ring-2 ring-white shadow-sm ${className}`}
+        className={`shrink-0 rounded-full object-cover ring-2 ring-white shadow-sm dark:ring-slate-900 ${className}`}
       />
     );
   }
   return (
     <span
       style={{ ...dim, fontSize: size * 0.4 }}
-      className={`grid shrink-0 place-items-center rounded-full font-semibold text-white ring-2 ring-white shadow-sm ${colorFor(
+      className={`grid shrink-0 place-items-center rounded-full font-semibold text-white ring-2 ring-white shadow-sm dark:ring-slate-900 ${colorFor(
         name,
       )} ${className}`}
     >

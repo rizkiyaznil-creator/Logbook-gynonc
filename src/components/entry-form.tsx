@@ -12,8 +12,8 @@ import type {
 } from "@/lib/types";
 
 const input =
-  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
-const label = "block text-sm font-medium text-slate-700";
+  "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
+const label = "block text-sm font-medium text-slate-700 dark:text-slate-200";
 
 type FormAction = (
   prev: unknown,
@@ -91,7 +91,7 @@ export function EntryForm({
       <div>
         <label className={label}>
           Rumah Sakit{" "}
-          <span className="text-xs font-normal text-slate-400">
+          <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
             (wajib saat diajukan)
           </span>
         </label>
@@ -113,7 +113,7 @@ export function EntryForm({
       <div>
         <label className={label}>
           DPJP penanggung jawab{" "}
-          <span className="text-xs font-normal text-slate-400">
+          <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
             (wajib saat diajukan)
           </span>
         </label>
@@ -273,7 +273,7 @@ export function EntryForm({
           name="aksi"
           value="draft"
           disabled={pending}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 disabled:opacity-50"
         >
           Simpan draft
         </button>

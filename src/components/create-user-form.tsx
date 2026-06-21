@@ -4,8 +4,8 @@ import { useActionState } from "react";
 import { createUser } from "@/app/(app)/admin/actions";
 
 const input =
-  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
-const label = "block text-sm font-medium text-slate-700";
+  "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
+const label = "block text-sm font-medium text-slate-700 dark:text-slate-200";
 
 export function CreateUserForm() {
   const [state, formAction, pending] = useActionState(createUser, null);
@@ -13,9 +13,9 @@ export function CreateUserForm() {
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
+      className="space-y-4 rounded-xl bg-white dark:bg-slate-900 p-5 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800"
     >
-      <h2 className="text-sm font-semibold text-slate-700">Buat User Baru</h2>
+      <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Buat User Baru</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={label}>Nama lengkap</label>

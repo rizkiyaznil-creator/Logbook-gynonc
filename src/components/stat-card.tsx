@@ -49,10 +49,10 @@ export function StatCard({
   const t = THEME[color];
   return (
     <div
-      className={`rounded-xl bg-white p-4 shadow-sm ring-1 transition-shadow hover:shadow-md ${t.ring}`}
+      className={`rounded-xl bg-white p-4 shadow-sm ring-1 transition-shadow hover:shadow-md dark:bg-slate-900 ${t.ring} dark:ring-slate-800`}
     >
       <div className="flex items-start justify-between">
-        <div className="text-sm text-slate-500">{label}</div>
+        <div className="text-sm text-slate-500 dark:text-slate-400">{label}</div>
         {icon && (
           <span
             className={`grid h-8 w-8 place-items-center rounded-lg ${t.icon}`}
@@ -65,13 +65,15 @@ export function StatCard({
         {achieved}
         <span className="text-base font-normal text-slate-400"> / {total}</span>
       </div>
-      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${t.bar}`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="mt-1 text-xs text-slate-400">{pct}% tercapai</div>
+      <div className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+        {pct}% tercapai
+      </div>
     </div>
   );
 }

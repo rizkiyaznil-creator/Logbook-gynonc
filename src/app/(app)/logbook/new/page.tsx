@@ -35,7 +35,7 @@ export default async function NewEntryPage() {
         <Link href="/dashboard" className="text-sm text-teal-700 hover:underline">
           ← Kembali ke Dashboard
         </Link>
-        <h1 className="mt-2 text-lg font-semibold text-slate-800">
+        <h1 className="mt-2 text-lg font-semibold text-slate-800 dark:text-slate-100">
           Entri Logbook Baru
         </h1>
       </div>

@@ -6,8 +6,8 @@ import { AvatarUpload } from "@/components/avatar-upload";
 import type { Profile } from "@/lib/types";
 
 const input =
-  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
-const label = "block text-sm font-medium text-slate-700";
+  "mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100";
+const label = "block text-sm font-medium text-slate-700 dark:text-slate-300";
 
 export type ResidentData = {
   no_peserta: string | null;
@@ -28,7 +28,7 @@ export function ProfileForm({
   return (
     <form
       action={formAction}
-      className="max-w-xl space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
+      className="max-w-xl space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800"
     >
       <div>
         <label className={label}>Foto profil</label>
@@ -56,7 +56,7 @@ export function ProfileForm({
         <input
           value={profile.email ?? ""}
           disabled
-          className={`${input} bg-slate-50 text-slate-400`}
+          className={`${input} bg-slate-50 text-slate-400 dark:bg-slate-800/60 dark:text-slate-500`}
         />
         <p className="mt-1 text-xs text-slate-400">
           Email tidak bisa diubah di sini.

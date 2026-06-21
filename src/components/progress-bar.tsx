@@ -12,7 +12,7 @@ export function ProgressBar({
       ? "from-amber-500 to-yellow-400"
       : "from-rose-500 to-rose-400";
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
       <div
         className={`h-full rounded-full bg-gradient-to-r transition-all ${color}`}
         style={{ width: `${pct}%` }}

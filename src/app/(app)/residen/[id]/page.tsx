@@ -19,7 +19,10 @@ export default async function ResidenDetailPage({
 
   return (
     <div className="space-y-6">
-      <Link href="/dashboard" className="text-sm text-teal-700 hover:underline">
+      <Link
+        href="/dashboard"
+        className="text-sm text-teal-700 hover:underline dark:text-teal-400"
+      >
         ← Daftar residen
       </Link>
       <Suspense fallback={<ProgressSkeleton />}>

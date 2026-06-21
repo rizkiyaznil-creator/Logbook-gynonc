@@ -57,7 +57,7 @@ export default async function EditEntryPage({
         ← Kembali ke Logbook
       </Link>
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-slate-800">Sunting Entri</h1>
+        <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Sunting Entri</h1>
         <form action={deleteEntry}>
           <input type="hidden" name="entry_id" value={e.id} />
           <button className="rounded-lg border border-rose-300 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50">
