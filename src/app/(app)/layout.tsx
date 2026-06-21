@@ -12,6 +12,7 @@ const NAV: { href: string; label: string; roles: UserRole[] }[] = [
   { href: "/penilaian", label: "Penilaian", roles: ["penguji", "kps", "admin"] },
   { href: "/rekap", label: "Rekap", roles: ["kps", "admin"] },
   { href: "/admin", label: "Manajemen User", roles: ["kps", "admin"] },
+  { href: "/profil", label: "Profil", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
 ];
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -68,6 +69,9 @@ export default async function AppLayout({
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <footer className="no-print border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        Didesain oleh Muhammad Rizki Yaznil
+      </footer>
     </div>
   );
 }

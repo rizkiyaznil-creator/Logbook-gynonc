@@ -31,6 +31,10 @@ export interface Profile {
   email: string | null;
   role: UserRole;
   institution_id: string | null;
+  no_telp: string | null;
+  nip: string | null;
+  jabatan: string | null;
+  institusi: string | null;
   aktif: boolean;
 }
 
