@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { login } from "./actions";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, null);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -32,12 +33,22 @@ export default function LoginPage() {
             <label className="block text-sm font-medium text-slate-700">
               Kata sandi
             </label>
-            <input
-              name="password"
-              type="password"
-              required
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-            />
+            <div className="relative mt-1">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 pr-16 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-slate-500 hover:text-teal-700"
+                aria-label={showPassword ? "Sembunyikan sandi" : "Lihat sandi"}
+              >
+                {showPassword ? "Sembunyi" : "Lihat"}
+              </button>
+            </div>
           </div>
 
           {state?.error && (
