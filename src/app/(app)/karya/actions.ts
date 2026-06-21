@@ -12,16 +12,35 @@ function readFields(formData: FormData) {
   const jenis = String(formData.get("jenis") ?? "");
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
+  const berpublikasi = jenis === "publikasi" || jenis === "presentasi";
   return {
     jenis,
     status,
     tahap: jenis === "tesis" ? val("tahap") : null,
+    tingkat: berpublikasi ? val("tingkat") : null,
+    penerbit: berpublikasi ? val("penerbit") : null,
+    bentuk: jenis === "presentasi" ? val("bentuk") : null,
     judul: val("judul"),
     tanggal: val("tanggal"),
     pembimbing_id: val("pembimbing_id"),
     evidence_url: val("evidence_url"),
     catatan: val("catatan"),
   };
+}
+
+function validate(f: ReturnType<typeof readFields>): string | null {
+  if (!f.judul) return "Judul wajib diisi.";
+  if (f.jenis === "tesis" && !f.tahap) return "Pilih tahap tesis.";
+  if (
+    (f.jenis === "publikasi" || f.jenis === "presentasi") &&
+    !f.tingkat
+  )
+    return "Pilih tingkat (nasional/internasional).";
+  if (f.jenis === "presentasi" && !f.bentuk)
+    return "Pilih bentuk presentasi (oral/poster).";
+  if (f.status === "diajukan" && !f.pembimbing_id)
+    return "Pilih pembimbing sebelum mengajukan.";
+  return null;
 }
 
 export async function createWork(_prev: unknown, formData: FormData) {
@@ -32,16 +51,16 @@ export async function createWork(_prev: unknown, formData: FormData) {
   if (!user) return { error: "Sesi berakhir, silakan masuk lagi." };
 
   const f = readFields(formData);
-  if (!f.judul) return { error: "Judul wajib diisi." };
-  if (f.jenis === "tesis" && !f.tahap)
-    return { error: "Pilih tahap tesis." };
-  if (f.status === "diajukan" && !f.pembimbing_id)
-    return { error: "Pilih pembimbing sebelum mengajukan." };
+  const err = validate(f);
+  if (err) return { error: err };
 
   const { error } = await supabase.from("academic_works").insert({
     resident_id: user.id,
     jenis: f.jenis,
     tahap: f.tahap,
+    tingkat: f.tingkat,
+    penerbit: f.penerbit,
+    bentuk: f.bentuk,
     judul: f.judul,
     tanggal: f.tanggal,
     pembimbing_id: f.pembimbing_id,
@@ -65,16 +84,17 @@ export async function updateWork(_prev: unknown, formData: FormData) {
 
   const id = String(formData.get("work_id") ?? "");
   const f = readFields(formData);
-  if (!f.judul) return { error: "Judul wajib diisi." };
-  if (f.jenis === "tesis" && !f.tahap) return { error: "Pilih tahap tesis." };
-  if (f.status === "diajukan" && !f.pembimbing_id)
-    return { error: "Pilih pembimbing sebelum mengajukan." };
+  const err = validate(f);
+  if (err) return { error: err };
 
   const { error } = await supabase
     .from("academic_works")
     .update({
       jenis: f.jenis,
       tahap: f.tahap,
+      tingkat: f.tingkat,
+      penerbit: f.penerbit,
+      bentuk: f.bentuk,
       judul: f.judul,
       tanggal: f.tanggal,
       pembimbing_id: f.pembimbing_id,

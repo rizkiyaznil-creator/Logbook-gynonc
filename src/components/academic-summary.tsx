@@ -1,13 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/status-badge";
-import { JENIS_LABEL, TAHAP_LABEL } from "@/components/academic-form";
+import { JENIS_LABEL, TAHAP_LABEL, TINGKAT_LABEL } from "@/components/academic-form";
 import type { AcademicWork } from "@/lib/types";
 
 export async function AcademicSummary({ residentId }: { residentId: string }) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("academic_works")
-    .select("id, jenis, tahap, judul, tanggal, status, verifier_note")
+    .select("id, jenis, tahap, judul, tanggal, status, verifier_note, tingkat")
     .eq("resident_id", residentId)
     .order("created_at", { ascending: false });
 
@@ -43,6 +43,7 @@ export async function AcademicSummary({ residentId }: { residentId: string }) {
               <tr key={w.id}>
                 <td className="whitespace-nowrap px-4 py-2 text-slate-600 dark:text-slate-300">
                   {JENIS_LABEL[w.jenis]}
+                  {w.tingkat ? ` · ${TINGKAT_LABEL[w.tingkat]}` : ""}
                 </td>
                 <td className="px-4 py-2 text-slate-700 dark:text-slate-200">
                   {w.judul}

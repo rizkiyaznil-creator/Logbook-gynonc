@@ -3,7 +3,8 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ResidentProgress } from "@/components/resident-progress";
-import { ProgressSkeleton } from "@/components/skeleton";
+import { AcademicStats, AcademicRekap } from "@/components/academic-stats";
+import { ProgressSkeleton, Skeleton } from "@/components/skeleton";
 import { Icons } from "@/components/icons";
 import { Avatar } from "@/components/avatar";
 
@@ -23,6 +24,9 @@ export default async function DashboardPage() {
             <span className="font-medium">Entri Baru</span>.
           </p>
         </div>
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <AcademicStats residentId={profile.id} />
+        </Suspense>
         <Suspense fallback={<ProgressSkeleton />}>
           <ResidentProgress residentId={profile.id} />
         </Suspense>
@@ -62,6 +66,10 @@ async function StaffDashboard() {
           </p>
         </div>
       </div>
+
+      <Suspense fallback={null}>
+        <AcademicRekap />
+      </Suspense>
 
       <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
         <table className="w-full text-sm">

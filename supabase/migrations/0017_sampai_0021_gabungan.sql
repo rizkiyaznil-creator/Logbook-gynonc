@@ -1,7 +1,8 @@
 -- =====================================================================
--- 0017_sampai_0020_gabungan.sql
--- Gabungan migrasi 0017–0020 untuk dijalankan sekali di Supabase SQL Editor.
--- Berisi: Audit log, Template entri, Notifikasi, Karya & Kegiatan Ilmiah.
+-- 0017_sampai_0021_gabungan.sql
+-- Gabungan migrasi 0017–0021 untuk dijalankan sekali di Supabase SQL Editor.
+-- Berisi: Audit log, Template entri, Notifikasi, Karya & Kegiatan Ilmiah,
+-- serta Publikasi & Presentasi (event nasional/internasional).
 -- Aman dijalankan pada database yang BELUM memiliki fitur-fitur ini.
 -- (Jika sebagian sudah pernah dijalankan, jalankan file aslinya satu per satu.)
 -- =====================================================================
@@ -354,4 +355,25 @@ end $$;
 create trigger trg_audit_academic
   after insert or update or delete on academic_works
   for each row execute function audit_academic();
+
+
+-- #####################################################################
+-- ## 0021_academic_publikasi.sql
+-- #####################################################################
+-- =====================================================================
+-- 0021_academic_publikasi.sql — Publikasi & presentasi karya ilmiah
+-- (event nasional/internasional). Memperluas academic_works.
+-- =====================================================================
+
+-- Jenis baru. (ADD VALUE aman: nilai baru tidak dipakai di DDL berikut.)
+alter type academic_jenis add value if not exists 'publikasi';
+alter type academic_jenis add value if not exists 'presentasi';
+
+create type academic_tingkat as enum ('nasional', 'internasional');
+create type presentasi_bentuk as enum ('oral', 'poster');
+
+alter table academic_works
+  add column if not exists tingkat  academic_tingkat,
+  add column if not exists penerbit text,              -- nama jurnal/prosiding atau nama event
+  add column if not exists bentuk   presentasi_bentuk; -- khusus presentasi: oral/poster
 

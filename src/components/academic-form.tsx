@@ -13,6 +13,8 @@ export const JENIS_LABEL: Record<AcademicJenis, string> = {
   telaah_jurnal: "Telaah/baca jurnal",
   laporan_kasus: "Laporan kasus",
   tesis: "Tesis / penelitian",
+  publikasi: "Publikasi",
+  presentasi: "Presentasi (event)",
 };
 export const TAHAP_LABEL: Record<string, string> = {
   proposal: "Proposal",
@@ -20,6 +22,14 @@ export const TAHAP_LABEL: Record<string, string> = {
   pengumpulan_data: "Pengumpulan data",
   seminar_hasil: "Seminar hasil",
   sidang: "Sidang/ujian",
+};
+export const TINGKAT_LABEL: Record<string, string> = {
+  nasional: "Nasional",
+  internasional: "Internasional",
+};
+export const BENTUK_LABEL: Record<string, string> = {
+  oral: "Oral / presentasi lisan",
+  poster: "Poster",
 };
 
 const input =
@@ -97,6 +107,58 @@ export function AcademicForm({
         />
       </div>
 
+      {(jenis === "publikasi" || jenis === "presentasi") && (
+        <div className="grid gap-4 rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200 sm:grid-cols-2 dark:bg-slate-800/40 dark:ring-slate-700">
+          <div className={jenis === "presentasi" ? "" : "sm:col-span-2"}>
+            <label className={label}>
+              {jenis === "publikasi"
+                ? "Nama jurnal / prosiding"
+                : "Nama event / konferensi"}
+            </label>
+            <input
+              name="penerbit"
+              defaultValue={initial?.penerbit ?? ""}
+              className={input}
+              placeholder={
+                jenis === "publikasi"
+                  ? "mis. Indonesian Journal of Obstetrics…"
+                  : "mis. PIT POGI 2026"
+              }
+            />
+          </div>
+          {jenis === "presentasi" && (
+            <div>
+              <label className={label}>Bentuk</label>
+              <select
+                name="bentuk"
+                defaultValue={initial?.bentuk ?? "oral"}
+                className={input}
+              >
+                {Object.entries(BENTUK_LABEL).map(([k, v]) => (
+                  <option key={k} value={k}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="sm:col-span-2">
+            <label className={label}>Tingkat</label>
+            <select
+              name="tingkat"
+              defaultValue={initial?.tingkat ?? "nasional"}
+              className={input}
+            >
+              {Object.entries(TINGKAT_LABEL).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={label}>Tanggal</label>
@@ -128,9 +190,9 @@ export function AcademicForm({
 
       <div>
         <label className={label}>
-          Tautan berkas{" "}
+          {jenis === "publikasi" ? "DOI / tautan publikasi" : "Tautan berkas"}{" "}
           <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
-            (opsional — URL Google Drive/cloud)
+            (opsional — URL Drive/DOI/sertifikat)
           </span>
         </label>
         <input

@@ -99,13 +99,17 @@ export type AcademicJenis =
   | "sari_pustaka"
   | "telaah_jurnal"
   | "laporan_kasus"
-  | "tesis";
+  | "tesis"
+  | "publikasi"
+  | "presentasi";
 export type ThesisTahap =
   | "proposal"
   | "kaji_etik"
   | "pengumpulan_data"
   | "seminar_hasil"
   | "sidang";
+export type AcademicTingkat = "nasional" | "internasional";
+export type PresentasiBentuk = "oral" | "poster";
 
 export interface AcademicWork {
   id: string;
@@ -119,6 +123,9 @@ export interface AcademicWork {
   catatan: string | null;
   status: EntryStatus;
   verifier_note: string | null;
+  tingkat: AcademicTingkat | null;
+  penerbit: string | null;
+  bentuk: PresentasiBentuk | null;
 }
 
 export interface EntryTemplate {
