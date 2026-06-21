@@ -2,14 +2,24 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { EntryForm } from "@/components/entry-form";
 import { createEntry } from "@/app/(app)/logbook/actions";
-import type { Disease, Procedure, ClinicalCompetency } from "@/lib/types";
+import type {
+  Disease,
+  Procedure,
+  ClinicalCompetency,
+  SupervisorOption,
+} from "@/lib/types";
 
 export default async function NewEntryPage() {
   const supabase = await createClient();
-  const [d, p, c] = await Promise.all([
+  const [d, p, c, s] = await Promise.all([
     supabase.from("diseases").select("*").order("no"),
     supabase.from("procedures").select("*").order("no"),
     supabase.from("clinical_competencies").select("*").order("no"),
+    supabase
+      .from("profiles")
+      .select("id, full_name")
+      .eq("role", "supervisor")
+      .order("full_name"),
   ]);
 
   return (
@@ -27,6 +37,7 @@ export default async function NewEntryPage() {
         diseases={(d.data ?? []) as Disease[]}
         procedures={(p.data ?? []) as Procedure[]}
         competencies={(c.data ?? []) as ClinicalCompetency[]}
+        supervisors={(s.data ?? []) as SupervisorOption[]}
       />
     </div>
   );

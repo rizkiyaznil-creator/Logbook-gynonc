@@ -82,9 +82,15 @@ export interface LogEntry {
   complications: string | null;
   dokumentasi_jenis: DokumentasiJenis | null;
   catatan: string | null;
+  supervisor_id: string | null;
   status: EntryStatus;
   verifier_note: string | null;
   created_at: string;
+}
+
+export interface SupervisorOption {
+  id: string;
+  full_name: string;
 }
 
 // --- View progress ---

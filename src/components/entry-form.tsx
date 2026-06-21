@@ -7,6 +7,7 @@ import type {
   ClinicalCompetency,
   EntryType,
   LogEntry,
+  SupervisorOption,
 } from "@/lib/types";
 
 const input =
@@ -22,12 +23,14 @@ export function EntryForm({
   diseases,
   procedures,
   competencies,
+  supervisors,
   action,
   initial,
 }: {
   diseases: Disease[];
   procedures: Procedure[];
   competencies: ClinicalCompetency[];
+  supervisors: SupervisorOption[];
   action: FormAction;
   initial?: LogEntry;
 }) {
@@ -80,6 +83,27 @@ export function EntryForm({
             <option>IGD</option>
           </select>
         </div>
+      </div>
+
+      <div>
+        <label className={label}>
+          DPJP penanggung jawab{" "}
+          <span className="text-xs font-normal text-slate-400">
+            (wajib saat diajukan)
+          </span>
+        </label>
+        <select
+          name="supervisor_id"
+          defaultValue={initial?.supervisor_id ?? ""}
+          className={input}
+        >
+          <option value="">Pilih DPJP…</option>
+          {supervisors.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.full_name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {type === "prosedur" && (

@@ -92,27 +92,3 @@ export async function deleteUser(formData: FormData) {
   await admin.auth.admin.deleteUser(userId);
   revalidatePath("/admin");
 }
-
-export async function assignSupervisor(formData: FormData) {
-  if (!(await requireStaff())) return;
-  const residentId = String(formData.get("resident_id"));
-  const supervisorId = String(formData.get("supervisor_id"));
-  if (!residentId || !supervisorId) return;
-
-  const supabase = await createClient();
-  await supabase
-    .from("supervisor_assignments")
-    .upsert(
-      { resident_id: residentId, supervisor_id: supervisorId, utama: true },
-      { onConflict: "resident_id,supervisor_id" },
-    );
-  revalidatePath("/admin");
-}
-
-export async function unassignSupervisor(formData: FormData) {
-  if (!(await requireStaff())) return;
-  const id = String(formData.get("assignment_id"));
-  const supabase = await createClient();
-  await supabase.from("supervisor_assignments").delete().eq("id", id);
-  revalidatePath("/admin");
-}

@@ -24,11 +24,17 @@ export async function createEntry(_prev: unknown, formData: FormData) {
   // "draft" atau "diajukan" tergantung tombol yang ditekan
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
+  const supervisorId = val("supervisor_id");
+
+  if (status === "diajukan" && !supervisorId) {
+    return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
+  }
 
   const { error } = await supabase.from("log_entries").insert({
     resident_id: user.id,
     entry_type: entryType,
     entry_date: val("entry_date"),
+    supervisor_id: supervisorId,
     procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
     clinical_competency_id:
       entryType === "penatalaksanaan" ? val("clinical_competency_id") : null,
@@ -73,11 +79,17 @@ export async function updateEntry(_prev: unknown, formData: FormData) {
 
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
+  const supervisorId = val("supervisor_id");
+
+  if (status === "diajukan" && !supervisorId) {
+    return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
+  }
 
   const { error } = await supabase
     .from("log_entries")
     .update({
       entry_date: val("entry_date"),
+      supervisor_id: supervisorId,
       procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
       clinical_competency_id:
         entryType === "penatalaksanaan" ? val("clinical_competency_id") : null,
