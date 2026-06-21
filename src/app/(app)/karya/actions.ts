@@ -13,6 +13,26 @@ function readFields(formData: FormData) {
   const aksi = String(formData.get("aksi") ?? "draft");
   const status = aksi === "ajukan" ? "diajukan" : "draft";
   const berpublikasi = jenis === "publikasi" || jenis === "presentasi";
+
+  // Co-author (publikasi/presentasi) — array {nama, korespondensi}.
+  let co_authors: { nama: string; korespondensi?: boolean }[] | null = null;
+  if (berpublikasi) {
+    try {
+      const raw = JSON.parse(String(formData.get("co_authors") ?? "[]"));
+      if (Array.isArray(raw)) {
+        const list = raw
+          .map((c) => ({
+            nama: String(c?.nama ?? "").trim(),
+            korespondensi: !!c?.korespondensi,
+          }))
+          .filter((c) => c.nama);
+        co_authors = list.length ? list : null;
+      }
+    } catch {
+      co_authors = null;
+    }
+  }
+
   return {
     jenis,
     status,
@@ -20,6 +40,9 @@ function readFields(formData: FormData) {
     tingkat: berpublikasi ? val("tingkat") : null,
     penerbit: berpublikasi ? val("penerbit") : null,
     bentuk: jenis === "presentasi" ? val("bentuk") : null,
+    pembimbing2: jenis === "tesis" ? val("pembimbing2") : null,
+    penguji: jenis === "tesis" ? val("penguji") : null,
+    co_authors,
     judul: val("judul"),
     tanggal: val("tanggal"),
     pembimbing_id: val("pembimbing_id"),
@@ -61,6 +84,9 @@ export async function createWork(_prev: unknown, formData: FormData) {
     tingkat: f.tingkat,
     penerbit: f.penerbit,
     bentuk: f.bentuk,
+    pembimbing2: f.pembimbing2,
+    penguji: f.penguji,
+    co_authors: f.co_authors,
     judul: f.judul,
     tanggal: f.tanggal,
     pembimbing_id: f.pembimbing_id,
@@ -95,6 +121,9 @@ export async function updateWork(_prev: unknown, formData: FormData) {
       tingkat: f.tingkat,
       penerbit: f.penerbit,
       bentuk: f.bentuk,
+      pembimbing2: f.pembimbing2,
+      penguji: f.penguji,
+      co_authors: f.co_authors,
       judul: f.judul,
       tanggal: f.tanggal,
       pembimbing_id: f.pembimbing_id,

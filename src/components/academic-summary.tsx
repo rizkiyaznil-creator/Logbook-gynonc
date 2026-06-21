@@ -2,13 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/status-badge";
 import { JENIS_LABEL, TAHAP_LABEL, TINGKAT_LABEL } from "@/components/academic-form";
 import { TableCard } from "@/components/table-card";
-import type { AcademicWork } from "@/lib/types";
+import type { AcademicWork, CoAuthor } from "@/lib/types";
+
+function coAuthorText(list: CoAuthor[]): string {
+  return list.map((c) => c.nama + (c.korespondensi ? "*" : "")).join(", ");
+}
 
 export async function AcademicSummary({ residentId }: { residentId: string }) {
   const supabase = await createClient();
   const { data } = await supabase
     .from("academic_works")
-    .select("id, jenis, tahap, judul, tanggal, status, verifier_note, tingkat")
+    .select(
+      "id, jenis, tahap, judul, tanggal, status, verifier_note, tingkat, pembimbing2, penguji, co_authors",
+    )
     .eq("resident_id", residentId)
     .order("created_at", { ascending: false });
 
@@ -48,6 +54,11 @@ export async function AcademicSummary({ residentId }: { residentId: string }) {
                 </td>
                 <td className="px-4 py-2 text-slate-700 dark:text-slate-200">
                   {w.judul}
+                  {w.co_authors && w.co_authors.length > 0 && (
+                    <div className="text-xs text-slate-400 dark:text-slate-500">
+                      Co-author: {coAuthorText(w.co_authors)}
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-2 text-slate-600 dark:text-slate-300">
                   {w.tanggal ?? "—"}
@@ -64,6 +75,16 @@ export async function AcademicSummary({ residentId }: { residentId: string }) {
                 </td>
                 <td className="px-4 py-2 text-slate-700 dark:text-slate-200">
                   {w.judul}
+                  {w.pembimbing2 && (
+                    <div className="text-xs text-slate-400 dark:text-slate-500">
+                      Pembimbing 2: {w.pembimbing2}
+                    </div>
+                  )}
+                  {w.penguji && (
+                    <div className="whitespace-pre-line text-xs text-slate-400 dark:text-slate-500">
+                      Penguji: {w.penguji}
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-2 text-slate-600 dark:text-slate-300">
                   {w.tanggal ?? "—"}

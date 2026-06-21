@@ -12,7 +12,14 @@ import {
 import { StatusBadge } from "@/components/status-badge";
 import { TableCard } from "@/components/table-card";
 import { createWork, updateWork, deleteWork } from "@/app/(app)/karya/actions";
-import type { AcademicWork, SupervisorOption } from "@/lib/types";
+import type { AcademicWork, CoAuthor, SupervisorOption } from "@/lib/types";
+
+/** "A, B*, C" — tanda * untuk penulis korespondensi. */
+function formatCoAuthors(list: CoAuthor[]): string {
+  return list
+    .map((c) => c.nama + (c.korespondensi ? "*" : ""))
+    .join(", ");
+}
 
 function WorkActions({ w }: { w: AcademicWork }) {
   const canEdit = w.status === "draft" || w.status === "revisi";
@@ -71,6 +78,11 @@ function Row({ w }: { w: AcademicWork }) {
               .join(" · ")}
           </div>
         )}
+        {w.co_authors && w.co_authors.length > 0 && (
+          <div className="text-xs text-slate-400 dark:text-slate-500">
+            Co-author: {formatCoAuthors(w.co_authors)}
+          </div>
+        )}
       </td>
       <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">
         {w.tanggal ?? "—"}
@@ -107,7 +119,7 @@ export default async function KaryaPage({
     supabase
       .from("academic_works")
       .select(
-        "id, jenis, tahap, judul, tanggal, pembimbing_id, evidence_url, catatan, status, verifier_note, tingkat, penerbit, bentuk",
+        "id, jenis, tahap, judul, tanggal, pembimbing_id, evidence_url, catatan, status, verifier_note, tingkat, penerbit, bentuk, pembimbing2, penguji, co_authors",
       )
       .order("created_at", { ascending: false }),
     supabase
@@ -246,6 +258,16 @@ export default async function KaryaPage({
                       >
                         berkas ↗
                       </a>
+                    )}
+                    {w.pembimbing2 && (
+                      <div className="text-xs text-slate-400 dark:text-slate-500">
+                        Pembimbing 2: {w.pembimbing2}
+                      </div>
+                    )}
+                    {w.penguji && (
+                      <div className="whitespace-pre-line text-xs text-slate-400 dark:text-slate-500">
+                        Penguji: {w.penguji}
+                      </div>
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">

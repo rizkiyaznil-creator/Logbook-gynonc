@@ -111,6 +111,11 @@ export type ThesisTahap =
 export type AcademicTingkat = "nasional" | "internasional";
 export type PresentasiBentuk = "oral" | "poster";
 
+export interface CoAuthor {
+  nama: string;
+  korespondensi?: boolean;
+}
+
 export interface AcademicWork {
   id: string;
   resident_id: string;
@@ -126,6 +131,9 @@ export interface AcademicWork {
   tingkat: AcademicTingkat | null;
   penerbit: string | null;
   bentuk: PresentasiBentuk | null;
+  pembimbing2: string | null;
+  penguji: string | null;
+  co_authors: CoAuthor[] | null;
 }
 
 export interface EntryTemplate {

@@ -1,10 +1,10 @@
 -- =====================================================================
--- 0017_sampai_0021_gabungan.sql
--- Gabungan migrasi 0017–0021 untuk dijalankan sekali di Supabase SQL Editor.
--- Berisi: Audit log, Template entri, Notifikasi, Karya & Kegiatan Ilmiah,
--- serta Publikasi & Presentasi (event nasional/internasional).
--- Aman dijalankan pada database yang BELUM memiliki fitur-fitur ini.
--- (Jika sebagian sudah pernah dijalankan, jalankan file aslinya satu per satu.)
+-- 0017_sampai_0022_gabungan.sql
+-- Gabungan migrasi 0017–0022 untuk dijalankan sekali di Supabase SQL Editor.
+-- Audit log, Template entri, Notifikasi, Karya & Kegiatan Ilmiah,
+-- Publikasi & Presentasi, serta Pembimbing-2/Penguji/Co-author.
+-- Aman pada database yang BELUM memiliki fitur-fitur ini.
+-- (Jika sebagian sudah dijalankan, jalankan file aslinya satu per satu.)
 -- =====================================================================
 
 
@@ -376,4 +376,19 @@ alter table academic_works
   add column if not exists tingkat  academic_tingkat,
   add column if not exists penerbit text,              -- nama jurnal/prosiding atau nama event
   add column if not exists bentuk   presentasi_bentuk; -- khusus presentasi: oral/poster
+
+
+-- #####################################################################
+-- ## 0022_academic_authors.sql
+-- #####################################################################
+-- =====================================================================
+-- 0022_academic_authors.sql — Pembimbing kedua & penguji tesis,
+-- serta daftar co-author publikasi/presentasi.
+-- Pembimbing utama (pembimbing_id) tetap menjadi verifikator.
+-- =====================================================================
+
+alter table academic_works
+  add column if not exists pembimbing2 text,  -- nama pembimbing kedua (tesis)
+  add column if not exists penguji     text,  -- daftar nama penguji 3-5 (tesis), satu per baris
+  add column if not exists co_authors  jsonb; -- [{nama, korespondensi}] untuk publikasi/presentasi
 
