@@ -130,7 +130,7 @@ export default async function KaryaPage({
     );
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8">
       <div>
         <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
           Karya &amp; Kegiatan Ilmiah

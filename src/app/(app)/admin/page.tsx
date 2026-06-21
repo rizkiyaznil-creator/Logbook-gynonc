@@ -33,7 +33,7 @@ export default async function AdminPage() {
   const profiles = (data ?? []) as ProfileRow[];
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
       <CreateUserForm />

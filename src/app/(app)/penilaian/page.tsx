@@ -57,7 +57,7 @@ export default async function PenilaianPage() {
   const recent = (recentRes.data ?? []) as unknown as RecentRow[];
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         Input Nilai Pengetahuan (OSCE / MCQ)
       </h1>
