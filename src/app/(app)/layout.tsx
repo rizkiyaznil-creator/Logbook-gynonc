@@ -1,18 +1,18 @@
-import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
-import { signOut } from "@/app/login/actions";
+import { Topbar, type NavItem } from "@/components/topbar";
+import type { IconName } from "@/components/icons";
 import type { UserRole } from "@/lib/types";
 
-const NAV: { href: string; label: string; roles: UserRole[] }[] = [
-  { href: "/dashboard", label: "Dashboard", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
-  { href: "/logbook", label: "Logbook Saya", roles: ["residen"] },
-  { href: "/logbook/new", label: "+ Entri Baru", roles: ["residen"] },
-  { href: "/pengetahuan", label: "Pengetahuan Saya", roles: ["residen"] },
-  { href: "/verifikasi", label: "Verifikasi", roles: ["supervisor", "kps", "admin"] },
-  { href: "/penilaian", label: "Penilaian", roles: ["penguji", "kps", "admin"] },
-  { href: "/rekap", label: "Rekap", roles: ["kps", "admin"] },
-  { href: "/admin", label: "Manajemen User", roles: ["kps", "admin"] },
-  { href: "/profil", label: "Profil", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
+const NAV: (NavItem & { roles: UserRole[] })[] = [
+  { href: "/dashboard", label: "Dashboard", icon: "dashboard", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
+  { href: "/logbook", label: "Logbook Saya", icon: "logbook", roles: ["residen"] },
+  { href: "/logbook/new", label: "Entri Baru", icon: "plus", roles: ["residen"] },
+  { href: "/pengetahuan", label: "Pengetahuan Saya", icon: "brain", roles: ["residen"] },
+  { href: "/verifikasi", label: "Verifikasi", icon: "verify", roles: ["supervisor", "kps", "admin"] },
+  { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["penguji", "kps", "admin"] },
+  { href: "/rekap", label: "Rekap", icon: "chart", roles: ["kps", "admin"] },
+  { href: "/admin", label: "Manajemen User", icon: "users", roles: ["kps", "admin"] },
+  { href: "/profil", label: "Profil", icon: "user", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
 ];
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -29,46 +29,20 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const profile = await requireProfile();
-  const items = NAV.filter((n) => n.roles.includes(profile.role));
+  const items: NavItem[] = NAV.filter((n) => n.roles.includes(profile.role)).map(
+    ({ href, label, icon }) => ({ href, label, icon: icon as IconName }),
+  );
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-6">
-            <span className="font-semibold text-teal-700">
-              Logbook Onko-Gin
-            </span>
-            <nav className="flex gap-4 text-sm">
-              {items.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="text-slate-600 hover:text-teal-700"
-                >
-                  {n.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-          <div className="flex items-center gap-3 text-sm">
-            <div className="text-right">
-              <div className="font-medium text-slate-800">
-                {profile.full_name}
-              </div>
-              <div className="text-xs text-slate-500">
-                {ROLE_LABEL[profile.role]}
-              </div>
-            </div>
-            <form action={signOut}>
-              <button className="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-600 hover:bg-slate-50">
-                Keluar
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+    <div className="flex min-h-screen flex-col">
+      <Topbar
+        items={items}
+        fullName={profile.full_name}
+        roleLabel={ROLE_LABEL[profile.role]}
+      />
+      <main className="animate-in mx-auto w-full max-w-6xl flex-1 px-4 py-6">
+        {children}
+      </main>
       <footer className="no-print border-t border-slate-200 py-4 text-center text-xs text-slate-400">
         Didesain oleh Muhammad Rizki Yaznil
       </footer>

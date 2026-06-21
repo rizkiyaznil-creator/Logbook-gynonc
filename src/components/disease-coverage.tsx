@@ -21,7 +21,8 @@ export async function DiseaseCoverage({ residentId }: { residentId: string }) {
 
   return (
     <section>
-      <h2 className="mb-3 text-sm font-semibold text-slate-700">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+        <span className="h-4 w-1.5 rounded-full bg-emerald-500" />
         Spektrum Penyakit (Tabel 10) — {tercakup}/{rows.length} tercakup
       </h2>
       <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">

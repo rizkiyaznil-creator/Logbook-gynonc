@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { ResidentProgress } from "@/components/resident-progress";
+import { ProgressSkeleton } from "@/components/skeleton";
 
 export default async function ResidenDetailPage({
   params,
@@ -20,7 +22,9 @@ export default async function ResidenDetailPage({
       <Link href="/dashboard" className="text-sm text-teal-700 hover:underline">
         ← Daftar residen
       </Link>
-      <ResidentProgress residentId={id} />
+      <Suspense fallback={<ProgressSkeleton />}>
+        <ResidentProgress residentId={id} />
+      </Suspense>
     </div>
   );
 }

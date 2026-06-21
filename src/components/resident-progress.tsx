@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/stat-card";
 import { ProgressBar } from "@/components/progress-bar";
 import { DiseaseCoverage } from "@/components/disease-coverage";
 import { ResidentIdentity } from "@/components/resident-identity";
 import { PrintButton } from "@/components/print-button";
+import { Skeleton } from "@/components/skeleton";
+import { Icons } from "@/components/icons";
 import type {
   ResidentSummary,
   ProcedureProgress,
@@ -21,32 +24,56 @@ type Row = {
   menunggu?: number;
 };
 
-function ProgressTable({ title, rows }: { title: string; rows: Row[] }) {
+const ACCENT: Record<string, string> = {
+  violet: "bg-violet-500",
+  blue: "bg-blue-500",
+  cyan: "bg-cyan-500",
+  emerald: "bg-emerald-500",
+};
+
+function ProgressTable({
+  title,
+  rows,
+  accent = "blue",
+}: {
+  title: string;
+  rows: Row[];
+  accent?: keyof typeof ACCENT;
+}) {
   return (
     <section>
-      <h2 className="mb-3 text-sm font-semibold text-slate-700">{title}</h2>
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+        <span className={`h-4 w-1.5 rounded-full ${ACCENT[accent]}`} />
+        {title}
+      </h2>
+      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-2">Kode</th>
-              <th className="px-4 py-2">Kompetensi</th>
-              <th className="px-4 py-2 w-48">Progress</th>
-              <th className="px-4 py-2 text-right">Capaian</th>
+              <th className="px-4 py-2.5">Kode</th>
+              <th className="px-4 py-2.5">Kompetensi</th>
+              <th className="px-4 py-2.5 w-48">Progress</th>
+              <th className="px-4 py-2.5 text-right">Capaian</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {rows.map((r) => (
-              <tr key={r.kode}>
-                <td className="px-4 py-2 font-mono text-xs text-slate-500">
+              <tr key={r.kode} className="transition-colors hover:bg-slate-50">
+                <td className="px-4 py-2.5 font-mono text-xs text-slate-500">
                   {r.kode}
                 </td>
-                <td className="px-4 py-2 text-slate-700">{r.nama}</td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2.5 text-slate-700">{r.nama}</td>
+                <td className="px-4 py-2.5">
                   <ProgressBar value={r.persen} achieved={r.tercapai} />
                 </td>
-                <td className="px-4 py-2 text-right">
-                  <span className={r.tercapai ? "text-teal-700" : "text-slate-600"}>
+                <td className="px-4 py-2.5 text-right">
+                  <span
+                    className={
+                      r.tercapai
+                        ? "font-semibold text-teal-700"
+                        : "text-slate-600"
+                    }
+                  >
                     {r.n}/{r.target}
                   </span>
                   {r.menunggu ? (
@@ -81,7 +108,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1">
           <ResidentIdentity residentId={residentId} />
         </div>
@@ -89,14 +116,39 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Prosedur" achieved={summary?.prosedur_tercapai ?? 0} total={summary?.prosedur_total ?? 0} />
-        <StatCard label="Penatalaksanaan" achieved={summary?.penatalaksanaan_tercapai ?? 0} total={summary?.penatalaksanaan_total ?? 0} />
-        <StatCard label="Pengetahuan (OSCE/MCQ)" achieved={summary?.pengetahuan_lulus ?? 0} total={summary?.pengetahuan_total ?? 0} />
-        <StatCard label="Spektrum Penyakit" achieved={summary?.penyakit_tercakup ?? 0} total={summary?.penyakit_total ?? 0} />
+        <StatCard
+          label="Prosedur"
+          color="blue"
+          icon={<Icons.activity className="h-4 w-4" />}
+          achieved={summary?.prosedur_tercapai ?? 0}
+          total={summary?.prosedur_total ?? 0}
+        />
+        <StatCard
+          label="Penatalaksanaan"
+          color="violet"
+          icon={<Icons.stethoscope className="h-4 w-4" />}
+          achieved={summary?.penatalaksanaan_tercapai ?? 0}
+          total={summary?.penatalaksanaan_total ?? 0}
+        />
+        <StatCard
+          label="Pengetahuan (OSCE/MCQ)"
+          color="amber"
+          icon={<Icons.brain className="h-4 w-4" />}
+          achieved={summary?.pengetahuan_lulus ?? 0}
+          total={summary?.pengetahuan_total ?? 0}
+        />
+        <StatCard
+          label="Spektrum Penyakit"
+          color="emerald"
+          icon={<Icons.dna className="h-4 w-4" />}
+          achieved={summary?.penyakit_tercakup ?? 0}
+          total={summary?.penyakit_total ?? 0}
+        />
       </div>
 
       <ProgressTable
         title="Kompetensi Penatalaksanaan (Tabel 18)"
+        accent="violet"
         rows={clinical.map((c) => ({
           kode: c.kode,
           nama: c.komponen,
@@ -110,6 +162,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       {subtargets.length > 0 && (
         <ProgressTable
           title="Sub-target Dokumentasi (PK-09)"
+          accent="cyan"
           rows={subtargets.map((s) => ({
             kode: s.competency_kode,
             nama: s.nama,
@@ -123,6 +176,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
 
       <ProgressTable
         title="Kompetensi Prosedur (Tabel 24)"
+        accent="blue"
         rows={procedures.map((p) => ({
           kode: p.kode,
           nama: p.nama,
@@ -134,7 +188,9 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
         }))}
       />
 
-      <DiseaseCoverage residentId={residentId} />
+      <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
+        <DiseaseCoverage residentId={residentId} />
+      </Suspense>
     </div>
   );
 }
