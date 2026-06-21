@@ -8,22 +8,35 @@ type Row = {
   entry_date: string;
   entry_type: EntryType;
   status: EntryStatus;
-  figo_stage: string | null;
+  rumah_sakit: string | null;
+  supervisor_id: string | null;
+  verified_by: string | null;
+  verified_at: string | null;
+  verifier_note: string | null;
   procedures: { kode: string; nama: string } | null;
   clinical_competencies: { kode: string; komponen: string } | null;
-  diseases: { nama_id: string } | null;
 };
 
 export default async function LogbookPage() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("log_entries")
-    .select(
-      "id, entry_date, entry_type, status, figo_stage, procedures(kode,nama), clinical_competencies(kode,komponen), diseases(nama_id)",
-    )
-    .order("entry_date", { ascending: false });
 
-  const rows = (data ?? []) as unknown as Row[];
+  const [entryRes, supRes] = await Promise.all([
+    supabase
+      .from("log_entries")
+      .select(
+        "id, entry_date, entry_type, status, rumah_sakit, supervisor_id, verified_by, verified_at, verifier_note, procedures(kode,nama), clinical_competencies(kode,komponen)",
+      )
+      .order("entry_date", { ascending: false }),
+    supabase.from("profiles").select("id, full_name").eq("role", "supervisor"),
+  ]);
+
+  const rows = (entryRes.data ?? []) as unknown as Row[];
+  const nameMap = new Map(
+    ((supRes.data ?? []) as { id: string; full_name: string }[]).map((p) => [
+      p.id,
+      p.full_name,
+    ]),
+  );
 
   return (
     <div className="space-y-6">
@@ -42,10 +55,10 @@ export default async function LogbookPage() {
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-2">Tanggal</th>
-              <th className="px-4 py-2">Jenis</th>
               <th className="px-4 py-2">Kompetensi</th>
-              <th className="px-4 py-2">Diagnosis</th>
-              <th className="px-4 py-2 text-right">Status</th>
+              <th className="px-4 py-2">Rumah Sakit</th>
+              <th className="px-4 py-2">DPJP</th>
+              <th className="px-4 py-2">Status &amp; Verifikasi</th>
               <th className="px-4 py-2 text-right">Aksi</th>
             </tr>
           </thead>
@@ -64,10 +77,15 @@ export default async function LogbookPage() {
                 r.procedures?.nama ??
                 r.clinical_competencies?.komponen ??
                 (r.entry_type === "kasus" ? "Kasus klinis" : "—");
+              const dpjp = r.supervisor_id
+                ? nameMap.get(r.supervisor_id) ?? "DPJP"
+                : "—";
+              const verifier = r.verified_by
+                ? nameMap.get(r.verified_by) ?? "—"
+                : null;
               return (
-                <tr key={r.id}>
+                <tr key={r.id} className="align-top">
                   <td className="px-4 py-2 text-slate-600">{r.entry_date}</td>
-                  <td className="px-4 py-2 text-slate-500">{r.entry_type}</td>
                   <td className="px-4 py-2 text-slate-700">
                     <span className="font-mono text-xs text-slate-500">
                       {komp}
@@ -75,10 +93,22 @@ export default async function LogbookPage() {
                     {nama}
                   </td>
                   <td className="px-4 py-2 text-slate-600">
-                    {r.diseases?.nama_id ?? "—"}
+                    {r.rumah_sakit ?? "—"}
                   </td>
-                  <td className="px-4 py-2 text-right">
+                  <td className="px-4 py-2 text-slate-600">{dpjp}</td>
+                  <td className="px-4 py-2">
                     <StatusBadge status={r.status} />
+                    {r.verified_at && (
+                      <div className="mt-1 text-xs text-slate-400">
+                        {new Date(r.verified_at).toLocaleDateString("id-ID")}
+                        {verifier ? ` · oleh ${verifier}` : ""}
+                      </div>
+                    )}
+                    {r.verifier_note && (
+                      <div className="mt-1 text-xs italic text-orange-600">
+                        “{r.verifier_note}”
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-2 text-right">
                     {(r.status === "draft" || r.status === "revisi") && (
