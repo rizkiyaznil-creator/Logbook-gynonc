@@ -98,7 +98,8 @@ export function AvatarUpload({
           )}
         </div>
         <p className="text-xs text-slate-400">
-          JPG/PNG, otomatis dikecilkan. Opsional.
+          Format gambar (JPG, PNG, WebP), maks 8 MB — otomatis dikecilkan.
+          Opsional.
         </p>
         {err && <p className="text-xs text-rose-600">{err}</p>}
       </div>
