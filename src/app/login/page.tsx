@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { login } from "./actions";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, null);
@@ -14,21 +15,41 @@ export default function LoginPage() {
       <div className="pointer-events-none absolute right-1/3 top-1/2 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl" />
 
       <div className="relative w-full max-w-sm rounded-2xl bg-white/90 p-8 shadow-xl ring-1 ring-slate-200 backdrop-blur">
-        <div className="mb-5 flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-lg font-bold text-white shadow-sm">
-            OG
-          </span>
-          <div>
-            <h1 className="text-lg font-semibold leading-tight text-slate-800">
-              Logbook Onkologi Ginekologi
-            </h1>
-            <p className="text-xs text-slate-500">
-              PPDS Subspesialis — masuk untuk melanjutkan.
-            </p>
+        <div className="flex flex-col items-center text-center">
+          <BrandLogo
+            src="/usu-logo.png"
+            alt="Logo Universitas Sumatera Utara"
+            className="h-16 w-16 object-contain"
+            fallback={
+              <span className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 text-base font-bold text-white shadow-sm">
+                USU
+              </span>
+            }
+          />
+          <div className="mt-3 text-sm font-semibold leading-tight text-slate-800">
+            Universitas Sumatera Utara
           </div>
+          <div className="text-xs text-slate-500">Fakultas Kedokteran</div>
+          <div className="text-xs text-slate-500">
+            Prodi Subspesialis Obstetri &amp; Ginekologi
+          </div>
+          <BrandLogo
+            src="/usu-excellence.png"
+            alt="The Era of Ultimate Excellence"
+            className="mt-3 h-5 object-contain"
+          />
         </div>
 
-        <form action={formAction} className="mt-2 space-y-4">
+        <div className="my-5 border-t border-slate-200" />
+
+        <h1 className="text-base font-semibold leading-tight text-slate-800">
+          Logbook Onkologi Ginekologi
+        </h1>
+        <p className="text-xs text-slate-500">
+          PPDS Subspesialis — masuk untuk melanjutkan.
+        </p>
+
+        <form action={formAction} className="mt-5 space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700">
               Email

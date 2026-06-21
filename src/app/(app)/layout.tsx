@@ -45,7 +45,11 @@ export default async function AppLayout({
         {children}
       </main>
       <footer className="no-print border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        Didesain oleh Muhammad Rizki Yaznil
+        <div className="text-slate-500">
+          Universitas Sumatera Utara · Fakultas Kedokteran · Prodi Subspesialis
+          Obstetri &amp; Ginekologi
+        </div>
+        <div className="mt-1">Didesain oleh Muhammad Rizki Yaznil</div>
       </footer>
     </div>
   );

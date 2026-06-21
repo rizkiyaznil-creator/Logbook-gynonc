@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/avatar";
+import { BrandLogo } from "@/components/brand-logo";
 
 function Field({ label, value }: { label: string; value: string | null }) {
   return (
@@ -39,6 +40,24 @@ export async function ResidentIdentity({ residentId }: { residentId: string }) {
 
   return (
     <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      {/* Kop institusi (letterhead) */}
+      <div className="mb-3 flex items-center gap-3 border-b-2 border-slate-200 pb-3">
+        <BrandLogo
+          src="/usu-logo.png"
+          alt="Logo Universitas Sumatera Utara"
+          className="h-14 w-14 shrink-0 object-contain"
+        />
+        <div className="leading-tight">
+          <div className="text-sm font-bold uppercase tracking-wide text-slate-800">
+            Universitas Sumatera Utara
+          </div>
+          <div className="text-xs text-slate-600">Fakultas Kedokteran</div>
+          <div className="text-xs text-slate-600">
+            Prodi Subspesialis Obstetri &amp; Ginekologi
+          </div>
+        </div>
+      </div>
+
       <div className="mb-3 flex items-center gap-4 border-b border-slate-100 pb-3">
         <Avatar name={p?.full_name ?? "Residen"} src={p?.avatar_url} size={56} />
         <div>
