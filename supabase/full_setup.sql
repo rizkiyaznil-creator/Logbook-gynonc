@@ -1,6 +1,5 @@
--- full_setup.sql (auto-generated)
-
--- >>>>>>>>>> 0001_init.sql <<<<<<<<<<
+-- full_setup.sql
+-- >> 0001_init.sql
 -- =====================================================================
 -- 0001_init.sql — Ekstensi, tipe enum, dan fungsi bantu
 -- Logbook Interaktif PPDS Subspesialis Onkologi Ginekologi
@@ -64,7 +63,7 @@ begin
 end;
 $$;
 
--- >>>>>>>>>> 0002_reference.sql <<<<<<<<<<
+-- >> 0002_reference.sql
 -- =====================================================================
 -- 0002_reference.sql — Tabel referensi (seed dari Kepkonsil 2026)
 -- Sumber data: data/*.json
@@ -133,7 +132,7 @@ create table knowledge_items (
 create index on knowledge_items (kategori);
 create index on diseases (kelompok);
 
--- >>>>>>>>>> 0003_people.sql <<<<<<<<<<
+-- >> 0003_people.sql
 -- =====================================================================
 -- 0003_people.sql — Institusi, profil pengguna, residen, pembimbingan
 -- =====================================================================
@@ -184,7 +183,7 @@ create table supervisor_assignments (
 create index on supervisor_assignments (supervisor_id);
 create index on supervisor_assignments (resident_id);
 
--- >>>>>>>>>> 0004_entries.sql <<<<<<<<<<
+-- >> 0004_entries.sql
 -- =====================================================================
 -- 0004_entries.sql — Entri logbook, pemetaan auto-agregasi, audit
 -- =====================================================================
@@ -264,7 +263,7 @@ create table entry_reviews (
 );
 create index on entry_reviews (entry_id);
 
--- >>>>>>>>>> 0005_assessments.sql <<<<<<<<<<
+-- >> 0005_assessments.sql
 -- =====================================================================
 -- 0005_assessments.sql — Nilai ujian pengetahuan (OSCE/MCQ)
 -- =====================================================================
@@ -287,7 +286,7 @@ create table assessments (
 create index on assessments (resident_id, exam_type);
 create index on assessments (knowledge_item_id);
 
--- >>>>>>>>>> 0006_views.sql <<<<<<<<<<
+-- >> 0006_views.sql
 -- =====================================================================
 -- 0006_views.sql — View progress (mesin auto-agregasi)
 -- Hanya entri berstatus 'diverifikasi' yang dihitung ke pencapaian.
@@ -402,7 +401,7 @@ select
   (select count(*) from diseases)                                                            as penyakit_total
 from residents r;
 
--- >>>>>>>>>> 0007_rls.sql <<<<<<<<<<
+-- >> 0007_rls.sql
 -- =====================================================================
 -- 0007_rls.sql — Row Level Security & kebijakan akses per peran
 -- =====================================================================
@@ -515,7 +514,7 @@ create policy "nilai_kelola_penguji" on assessments for all to authenticated
   using (current_role_name() in ('penguji','kps','admin'))
   with check (current_role_name() in ('penguji','kps','admin'));
 
--- >>>>>>>>>> 0008_aggregation_views.sql <<<<<<<<<<
+-- >> 0008_aggregation_views.sql
 -- =====================================================================
 -- 0008_aggregation_views.sql — Penyempurnaan view untuk aturan agregasi
 -- peran_dihitung kosong ('{}') = prosedur non-bedah, dihitung tanpa
@@ -554,7 +553,7 @@ group by resident_id, procedure_id, kode, nama, target_min;
 
 alter view v_procedure_progress set (security_invoker = on);
 
--- >>>>>>>>>> 0009_auth_trigger.sql <<<<<<<<<<
+-- >> 0009_auth_trigger.sql
 -- =====================================================================
 -- 0009_auth_trigger.sql — Buat profil otomatis saat pengguna mendaftar
 -- =====================================================================
@@ -582,7 +581,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- >>>>>>>>>> 0010_penguji_access.sql <<<<<<<<<<
+-- >> 0010_penguji_access.sql
 -- =====================================================================
 -- 0010_penguji_access.sql — Penguji boleh membaca daftar residen & profil
 -- (untuk memilih residen yang akan dinilai). Policy tambahan bersifat
@@ -595,7 +594,7 @@ create policy "residen_baca_penguji" on residents for select to authenticated
 create policy "profil_baca_penguji" on profiles for select to authenticated
   using (current_role_name() = 'penguji');
 
--- >>>>>>>>>> 0011_subtargets.sql <<<<<<<<<<
+-- >> 0011_subtargets.sql
 -- =====================================================================
 -- 0011_subtargets.sql — Penanda jenis dokumentasi & progress sub-target
 -- Untuk PK-09: Presentasi MDT (>=20) & Breaking bad news (>=10).
@@ -642,7 +641,7 @@ group by r.id, st.id, c.kode;
 
 alter view v_subtarget_progress set (security_invoker = on);
 
--- >>>>>>>>>> 0012_per_entry_supervisor.sql <<<<<<<<<<
+-- >> 0012_per_entry_supervisor.sql
 -- =====================================================================
 -- 0012_per_entry_supervisor.sql — DPJP penanggung jawab per ENTRI
 -- Tiap entri memilih DPJP-nya sendiri. Konsep penugasan resident<->DPJP
@@ -682,7 +681,7 @@ create policy "profil_baca_supervisor" on profiles for select to authenticated
 -- 5) Hapus konsep penugasan (tabel + kebijakannya).
 drop table if exists supervisor_assignments cascade;
 
--- >>>>>>>>>> 0013_rumah_sakit.sql <<<<<<<<<<
+-- >> 0013_rumah_sakit.sql
 -- =====================================================================
 -- 0013_rumah_sakit.sql — Kolom Rumah Sakit (teks bebas) pada entri
 -- Dua RS baku ditawarkan sebagai saran di UI; nama lain bebas diketik.
@@ -690,7 +689,7 @@ drop table if exists supervisor_assignments cascade;
 
 alter table log_entries add column rumah_sakit text;
 
--- >>>>>>>>>> 0014_baca_verifikator.sql <<<<<<<<<<
+-- >> 0014_baca_verifikator.sql
 -- =====================================================================
 -- 0014_baca_verifikator.sql — Nama verifikator (supervisor/KPS/admin)
 -- boleh dibaca semua pengguna login, agar tampil di riwayat verifikasi.
@@ -699,7 +698,7 @@ alter table log_entries add column rumah_sakit text;
 create policy "profil_baca_verifikator" on profiles for select to authenticated
   using (role in ('supervisor', 'kps', 'admin'));
 
--- >>>>>>>>>> 0015_profil.sql <<<<<<<<<<
+-- >> 0015_profil.sql
 -- =====================================================================
 -- 0015_profil.sql — Kolom data lengkap profil + izin & proteksi
 -- =====================================================================
@@ -731,7 +730,7 @@ drop trigger if exists trg_protect_role on profiles;
 create trigger trg_protect_role before update on profiles
   for each row execute function protect_profile_role();
 
--- >>>>>>>>>> 0016_avatar.sql <<<<<<<<<<
+-- >> 0016_avatar.sql
 -- =====================================================================
 -- 0016_avatar.sql — Foto profil (opsional)
 -- =====================================================================
@@ -771,7 +770,7 @@ create policy "avatar_hapus_sendiri" on storage.objects for delete to authentica
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
--- >>>>>>>>>> 0017_audit.sql <<<<<<<<<<
+-- >> 0017_audit.sql
 -- =====================================================================
 -- 0017_audit.sql — Audit log (siapa mengubah/memverifikasi/menghapus apa)
 -- =====================================================================
@@ -879,7 +878,41 @@ create trigger trg_audit_profiles
   after update on profiles
   for each row execute function audit_profiles();
 
--- >>>>>>>>>> seed.sql <<<<<<<<<<
+-- >> 0018_templates.sql
+-- =====================================================================
+-- 0018_templates.sql — Template entri cepat (milik tiap residen)
+-- =====================================================================
+
+create table entry_templates (
+  id           uuid primary key default gen_random_uuid(),
+  resident_id  uuid not null references profiles(id) on delete cascade,
+  nama         text not null,
+  entry_type   entry_type not null,
+
+  procedure_id           uuid references procedures(id) on delete set null,
+  clinical_competency_id uuid references clinical_competencies(id) on delete set null,
+  disease_id             uuid references diseases(id) on delete set null,
+  supervisor_id          uuid references profiles(id) on delete set null,
+
+  rumah_sakit       text,
+  setting           text,
+  surgical_role     surgical_role,
+  supervision_level supervision_level,
+  dokumentasi_jenis dokumentasi_jenis,
+  figo_stage        text,
+
+  created_at timestamptz not null default now()
+);
+create index entry_templates_owner_idx on entry_templates (resident_id);
+
+alter table entry_templates enable row level security;
+
+-- Residen hanya mengelola template miliknya sendiri.
+create policy "template_kelola_sendiri" on entry_templates for all to authenticated
+  using (resident_id = auth.uid())
+  with check (resident_id = auth.uid());
+
+-- seed
 -- AUTO-GENERATED oleh scripts/generate-seed.mjs — JANGAN edit manual.
 -- Sumber: data/*.json (Kepkonsil HK.01.02/KKI/1318/2026)
 -- Idempoten: aman dijalankan ulang.

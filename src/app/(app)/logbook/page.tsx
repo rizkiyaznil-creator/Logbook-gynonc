@@ -13,6 +13,7 @@ type Row = {
   verified_by: string | null;
   verified_at: string | null;
   verifier_note: string | null;
+  evidence_url: string | null;
   procedures: { kode: string; nama: string } | null;
   clinical_competencies: { kode: string; komponen: string } | null;
 };
@@ -24,7 +25,7 @@ export default async function LogbookPage() {
     supabase
       .from("log_entries")
       .select(
-        "id, entry_date, entry_type, status, rumah_sakit, supervisor_id, verified_by, verified_at, verifier_note, procedures(kode,nama), clinical_competencies(kode,komponen)",
+        "id, entry_date, entry_type, status, rumah_sakit, supervisor_id, verified_by, verified_at, verifier_note, evidence_url, procedures(kode,nama), clinical_competencies(kode,komponen)",
       )
       .order("entry_date", { ascending: false }),
     supabase
@@ -56,6 +57,7 @@ export default async function LogbookPage() {
     verified_at: r.verified_at,
     verifier: r.verified_by ? nameMap.get(r.verified_by) ?? "—" : null,
     verifier_note: r.verifier_note,
+    evidence_url: r.evidence_url,
   }));
 
   return (

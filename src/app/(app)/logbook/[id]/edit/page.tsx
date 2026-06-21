@@ -76,6 +76,7 @@ export default async function EditEntryPage({
       <EntryForm
         action={updateEntry}
         initial={e}
+        lockType
         diseases={(d.data ?? []) as Disease[]}
         procedures={(p.data ?? []) as Procedure[]}
         competencies={(c.data ?? []) as ClinicalCompetency[]}

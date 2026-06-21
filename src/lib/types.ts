@@ -88,10 +88,27 @@ export interface LogEntry {
   complications: string | null;
   dokumentasi_jenis: DokumentasiJenis | null;
   catatan: string | null;
+  evidence_url: string | null;
   supervisor_id: string | null;
   status: EntryStatus;
   verifier_note: string | null;
   created_at: string;
+}
+
+export interface EntryTemplate {
+  id: string;
+  nama: string;
+  entry_type: EntryType;
+  procedure_id: string | null;
+  clinical_competency_id: string | null;
+  disease_id: string | null;
+  supervisor_id: string | null;
+  rumah_sakit: string | null;
+  setting: string | null;
+  surgical_role: SurgicalRole | null;
+  supervision_level: SupervisionLevel | null;
+  dokumentasi_jenis: DokumentasiJenis | null;
+  figo_stage: string | null;
 }
 
 export interface SupervisorOption {

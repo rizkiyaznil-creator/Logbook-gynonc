@@ -17,6 +17,7 @@ export type FlatRow = {
   verified_at: string | null;
   verifier: string | null;
   verifier_note: string | null;
+  evidence_url: string | null;
 };
 
 const TYPE_LABEL: Record<EntryType, string> = {
@@ -170,6 +171,16 @@ export function LogbookTable({ rows }: { rows: FlatRow[] }) {
                     {r.komp}
                   </span>{" "}
                   {r.nama}
+                  {r.evidence_url && (
+                    <a
+                      href={r.evidence_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-2 text-xs font-medium text-teal-700 hover:underline dark:text-teal-400"
+                    >
+                      bukti ↗
+                    </a>
+                  )}
                 </td>
                 <td className="px-4 py-2 text-slate-600 dark:text-slate-300">
                   {r.rumah_sakit ?? "—"}

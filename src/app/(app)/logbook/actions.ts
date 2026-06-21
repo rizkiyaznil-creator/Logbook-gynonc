@@ -54,6 +54,7 @@ export async function createEntry(_prev: unknown, formData: FormData) {
     dokumentasi_jenis:
       entryType === "penatalaksanaan" ? val("dokumentasi_jenis") : null,
     catatan: val("catatan"),
+    evidence_url: val("evidence_url"),
     status,
     submitted_at: status === "diajukan" ? new Date().toISOString() : null,
   });
@@ -114,6 +115,7 @@ export async function updateEntry(_prev: unknown, formData: FormData) {
       dokumentasi_jenis:
         entryType === "penatalaksanaan" ? val("dokumentasi_jenis") : null,
       catatan: val("catatan"),
+      evidence_url: val("evidence_url"),
       status,
       submitted_at: status === "diajukan" ? new Date().toISOString() : null,
     })
@@ -131,6 +133,54 @@ export async function deleteEntry(formData: FormData) {
   await supabase.from("log_entries").delete().eq("id", entryId);
   revalidatePath("/logbook");
   redirect("/logbook");
+}
+
+/** Simpan field form saat ini sebagai template entri cepat (milik residen). */
+export async function saveTemplate(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const val = (k: string) => {
+    const v = formData.get(k);
+    return v === null || v === "" ? null : String(v);
+  };
+  const nama = val("template_nama");
+  if (!nama) return;
+
+  const entryType = String(formData.get("entry_type") ?? "prosedur");
+  const { error } = await supabase.from("entry_templates").insert({
+    resident_id: user.id,
+    nama,
+    entry_type: entryType,
+    procedure_id: entryType === "prosedur" ? val("procedure_id") : null,
+    clinical_competency_id:
+      entryType === "penatalaksanaan" ? val("clinical_competency_id") : null,
+    disease_id: val("disease_id"),
+    supervisor_id: val("supervisor_id"),
+    rumah_sakit: val("rumah_sakit"),
+    setting: val("setting"),
+    surgical_role: entryType === "prosedur" ? val("surgical_role") : null,
+    supervision_level: val("supervision_level"),
+    dokumentasi_jenis:
+      entryType === "penatalaksanaan" ? val("dokumentasi_jenis") : null,
+    figo_stage: val("figo_stage"),
+  });
+  if (error) return;
+
+  revalidatePath("/logbook/new");
+  redirect("/logbook/new");
+}
+
+/** Hapus template milik residen. */
+export async function deleteTemplate(formData: FormData) {
+  const supabase = await createClient();
+  const id = String(formData.get("template_id") ?? "");
+  await supabase.from("entry_templates").delete().eq("id", id);
+  revalidatePath("/logbook/new");
+  redirect("/logbook/new");
 }
 
 /** Supervisor/staf memverifikasi atau menolak entri. */
