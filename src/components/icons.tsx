@@ -89,6 +89,12 @@ export const Icons = {
       <path d="M8 6h8M8 18h8M9.5 9h5M9.5 15h5" />
     </svg>
   ),
+  shield: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
+      <path d="M12 8v5M12 16h.01" />
+    </svg>
+  ),
   menu: (p: P) => (
     <svg {...base} {...p}>
       <path d="M4 6h16M4 12h16M4 18h16" />

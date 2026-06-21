@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import Link from "next/link";
 import { login } from "./actions";
 import { BrandLogo } from "@/components/brand-logo";
 
@@ -98,6 +99,13 @@ export default function LoginPage() {
           >
             {pending ? "Memproses…" : "Masuk"}
           </button>
+
+          <Link
+            href="/auth/lupa-sandi"
+            className="block text-center text-sm text-slate-500 hover:text-teal-700 hover:underline dark:text-slate-400 dark:hover:text-teal-400"
+          >
+            Lupa kata sandi?
+          </Link>
         </form>
       </div>
     </main>

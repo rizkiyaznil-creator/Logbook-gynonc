@@ -4,6 +4,7 @@ import { StatCard } from "@/components/stat-card";
 import { ProgressBar } from "@/components/progress-bar";
 import { DiseaseCoverage } from "@/components/disease-coverage";
 import { ResidentIdentity } from "@/components/resident-identity";
+import { SignatureBlock } from "@/components/signature-block";
 import { PrintButton } from "@/components/print-button";
 import { Skeleton } from "@/components/skeleton";
 import { Icons } from "@/components/icons";
@@ -196,6 +197,8 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       <Suspense fallback={<Skeleton className="h-48 w-full rounded-xl" />}>
         <DiseaseCoverage residentId={residentId} />
       </Suspense>
+
+      <SignatureBlock residentId={residentId} />
     </div>
   );
 }
