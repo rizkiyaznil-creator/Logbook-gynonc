@@ -9,6 +9,7 @@ const NAV: (NavItem & { roles: UserRole[] })[] = [
   { href: "/logbook", label: "Logbook Saya", icon: "logbook", roles: ["residen"] },
   { href: "/logbook/new", label: "Entri Baru", icon: "plus", roles: ["residen"] },
   { href: "/pengetahuan", label: "Pengetahuan Saya", icon: "brain", roles: ["residen"] },
+  { href: "/karya", label: "Karya Ilmiah", icon: "research", roles: ["residen"] },
   { href: "/verifikasi", label: "Verifikasi", icon: "verify", roles: ["supervisor", "kps", "admin"] },
   { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["penguji", "kps", "admin"] },
   { href: "/rekap", label: "Rekap", icon: "chart", roles: ["kps", "admin"] },
@@ -37,37 +38,48 @@ export default async function AppLayout({
 
   // Badge & notifikasi belum dibaca.
   const supabase = await createClient();
-  const isStaff = ["supervisor", "kps", "admin"].includes(profile.role);
+  const canVerify = ["supervisor", "kps", "admin"].includes(profile.role);
   const cnt = (q: PromiseLike<{ count: number | null }>) =>
     q.then((r) => r.count ?? 0);
+  const zero = Promise.resolve(0);
 
-  const [unreadCount, pendingVerif, revisiCount] = await Promise.all([
-    cnt(
-      supabase
-        .from("notifications")
-        .select("id", { count: "exact", head: true })
-        .is("read_at", null),
-    ),
-    isStaff
-      ? cnt(
-          supabase
-            .from("log_entries")
-            .select("id", { count: "exact", head: true })
-            .eq("status", "diajukan"),
-        )
-      : Promise.resolve(0),
-    profile.role === "residen"
-      ? cnt(
-          supabase
-            .from("log_entries")
-            .select("id", { count: "exact", head: true })
-            .eq("status", "revisi"),
-        )
-      : Promise.resolve(0),
-  ]);
+  const [unreadCount, pendingEntries, pendingWorks, revisiCount] =
+    await Promise.all([
+      cnt(
+        supabase
+          .from("notifications")
+          .select("id", { count: "exact", head: true })
+          .is("read_at", null),
+      ),
+      canVerify
+        ? cnt(
+            supabase
+              .from("log_entries")
+              .select("id", { count: "exact", head: true })
+              .eq("status", "diajukan"),
+          )
+        : zero,
+      canVerify
+        ? cnt(
+            supabase
+              .from("academic_works")
+              .select("id", { count: "exact", head: true })
+              .eq("status", "diajukan"),
+          )
+        : zero,
+      profile.role === "residen"
+        ? cnt(
+            supabase
+              .from("log_entries")
+              .select("id", { count: "exact", head: true })
+              .eq("status", "revisi"),
+          )
+        : zero,
+    ]);
 
   const badges: Record<string, number> = {};
-  if (pendingVerif > 0) badges["/verifikasi"] = pendingVerif;
+  if (pendingEntries + pendingWorks > 0)
+    badges["/verifikasi"] = pendingEntries + pendingWorks;
   if (revisiCount > 0) badges["/logbook"] = revisiCount;
 
   return (

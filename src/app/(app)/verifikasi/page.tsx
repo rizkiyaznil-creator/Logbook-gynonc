@@ -1,7 +1,9 @@
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { reviewEntry } from "@/app/(app)/logbook/actions";
-import type { EntryType } from "@/lib/types";
+import { reviewWork } from "@/app/(app)/karya/actions";
+import { JENIS_LABEL, TAHAP_LABEL } from "@/components/academic-form";
+import type { AcademicWork, EntryType } from "@/lib/types";
 
 type Row = {
   id: string;
@@ -21,15 +23,27 @@ export default async function VerifikasiPage() {
   await requireProfile();
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("log_entries")
-    .select(
-      "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen)",
-    )
-    .eq("status", "diajukan")
-    .order("entry_date");
+  const [{ data }, { data: workData }] = await Promise.all([
+    supabase
+      .from("log_entries")
+      .select(
+        "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen)",
+      )
+      .eq("status", "diajukan")
+      .order("entry_date"),
+    supabase
+      .from("academic_works")
+      .select(
+        "id, jenis, tahap, judul, tanggal, evidence_url, catatan, resident_id, profiles!academic_works_resident_id_fkey(full_name)",
+      )
+      .eq("status", "diajukan")
+      .order("tanggal"),
+  ]);
 
   const rows = (data ?? []) as unknown as Row[];
+  const works = (workData ?? []) as unknown as (AcademicWork & {
+    profiles: { full_name: string } | null;
+  })[];
 
   return (
     <div className="space-y-6">
@@ -122,6 +136,86 @@ export default async function VerifikasiPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Karya ilmiah menunggu verifikasi */}
+      <div className="pt-2">
+        <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">
+          Karya Ilmiah Menunggu
+          <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-sm text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+            {works.length}
+          </span>
+        </h2>
+        {works.length === 0 ? (
+          <p className="mt-3 rounded-xl bg-white p-6 text-center text-sm text-slate-400 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:text-slate-500 dark:ring-slate-800">
+            Tidak ada karya ilmiah menunggu verifikasi.
+          </p>
+        ) : (
+          <div className="mt-3 space-y-4">
+            {works.map((w) => (
+              <div
+                key={w.id}
+                className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800"
+              >
+                <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                    {JENIS_LABEL[w.jenis]}
+                    {w.tahap ? ` · ${TAHAP_LABEL[w.tahap]}` : ""}
+                  </span>{" "}
+                  {w.judul}
+                </div>
+                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {w.profiles?.full_name ?? "Residen"}
+                  {w.tanggal ? ` · ${w.tanggal}` : ""}
+                </div>
+                {w.catatan && (
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                    {w.catatan}
+                  </p>
+                )}
+                {w.evidence_url && (
+                  <a
+                    href={w.evidence_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline dark:text-teal-400"
+                  >
+                    Lihat berkas ↗
+                  </a>
+                )}
+                <form action={reviewWork} className="mt-3 flex items-center gap-2">
+                  <input type="hidden" name="work_id" value={w.id} />
+                  <input
+                    name="verifier_note"
+                    placeholder="Catatan (opsional)"
+                    className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  />
+                  <button
+                    name="keputusan"
+                    value="diverifikasi"
+                    className="rounded-lg bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-700"
+                  >
+                    Verifikasi
+                  </button>
+                  <button
+                    name="keputusan"
+                    value="revisi"
+                    className="rounded-lg border border-orange-300 px-3 py-1.5 text-sm font-medium text-orange-700 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-500/10"
+                  >
+                    Minta revisi
+                  </button>
+                  <button
+                    name="keputusan"
+                    value="ditolak"
+                    className="rounded-lg border border-rose-300 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-700 dark:text-rose-300 dark:hover:bg-rose-500/10"
+                  >
+                    Tolak
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

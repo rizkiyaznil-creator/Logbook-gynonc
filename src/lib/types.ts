@@ -95,6 +95,32 @@ export interface LogEntry {
   created_at: string;
 }
 
+export type AcademicJenis =
+  | "sari_pustaka"
+  | "telaah_jurnal"
+  | "laporan_kasus"
+  | "tesis";
+export type ThesisTahap =
+  | "proposal"
+  | "kaji_etik"
+  | "pengumpulan_data"
+  | "seminar_hasil"
+  | "sidang";
+
+export interface AcademicWork {
+  id: string;
+  resident_id: string;
+  jenis: AcademicJenis;
+  tahap: ThesisTahap | null;
+  judul: string;
+  tanggal: string | null;
+  pembimbing_id: string | null;
+  evidence_url: string | null;
+  catatan: string | null;
+  status: EntryStatus;
+  verifier_note: string | null;
+}
+
 export interface EntryTemplate {
   id: string;
   nama: string;

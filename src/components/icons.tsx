@@ -95,6 +95,12 @@ export const Icons = {
       <path d="M12 8v5M12 16h.01" />
     </svg>
   ),
+  research: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3" />
+      <path d="M7.5 14h9" />
+    </svg>
+  ),
   bell: (p: P) => (
     <svg {...base} {...p}>
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
