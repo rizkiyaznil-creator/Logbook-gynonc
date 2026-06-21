@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { updateProfile } from "@/app/(app)/profil/actions";
+import { AvatarUpload } from "@/components/avatar-upload";
 import type { Profile } from "@/lib/types";
 
 const input =
@@ -29,6 +30,17 @@ export function ProfileForm({
       action={formAction}
       className="max-w-xl space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
     >
+      <div>
+        <label className={label}>Foto profil</label>
+        <div className="mt-2">
+          <AvatarUpload
+            userId={profile.id}
+            name={profile.full_name}
+            initialUrl={profile.avatar_url}
+          />
+        </div>
+      </div>
+
       <div>
         <label className={label}>Nama lengkap</label>
         <input

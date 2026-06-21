@@ -39,6 +39,7 @@ export default async function AppLayout({
         items={items}
         fullName={profile.full_name}
         roleLabel={ROLE_LABEL[profile.role]}
+        avatarUrl={profile.avatar_url}
       />
       <main className="animate-in mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         {children}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/login/actions";
 import { Icons, type IconName } from "@/components/icons";
+import { Avatar } from "@/components/avatar";
 
 export type NavItem = { href: string; label: string; icon: IconName };
 
@@ -12,10 +13,12 @@ export function Topbar({
   items,
   fullName,
   roleLabel,
+  avatarUrl,
 }: {
   items: NavItem[];
   fullName: string;
   roleLabel: string;
+  avatarUrl: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -63,9 +66,14 @@ export function Topbar({
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="hidden text-right sm:block">
-            <div className="text-sm font-medium text-slate-800">{fullName}</div>
-            <div className="text-xs text-slate-500">{roleLabel}</div>
+          <div className="hidden items-center gap-2 sm:flex">
+            <Avatar name={fullName} src={avatarUrl} size={36} />
+            <div className="text-right">
+              <div className="text-sm font-medium text-slate-800">
+                {fullName}
+              </div>
+              <div className="text-xs text-slate-500">{roleLabel}</div>
+            </div>
           </div>
           <form action={signOut} className="hidden sm:block">
             <button
@@ -95,11 +103,14 @@ export function Topbar({
       {open && (
         <div className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
           <div className="mb-2 flex items-center justify-between sm:hidden">
-            <div>
-              <div className="text-sm font-medium text-slate-800">
-                {fullName}
+            <div className="flex items-center gap-2">
+              <Avatar name={fullName} src={avatarUrl} size={36} />
+              <div>
+                <div className="text-sm font-medium text-slate-800">
+                  {fullName}
+                </div>
+                <div className="text-xs text-slate-500">{roleLabel}</div>
               </div>
-              <div className="text-xs text-slate-500">{roleLabel}</div>
             </div>
             <form action={signOut}>
               <button className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">

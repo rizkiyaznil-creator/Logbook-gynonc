@@ -32,6 +32,7 @@ export async function updateProfile(
     .from("profiles")
     .update({
       full_name: fullName,
+      avatar_url: val("avatar_url"),
       no_telp: val("no_telp"),
       nip: val("nip"),
       jabatan: val("jabatan"),

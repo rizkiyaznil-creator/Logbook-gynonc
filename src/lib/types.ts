@@ -35,6 +35,7 @@ export interface Profile {
   nip: string | null;
   jabatan: string | null;
   institusi: string | null;
+  avatar_url: string | null;
   aktif: boolean;
 }
 

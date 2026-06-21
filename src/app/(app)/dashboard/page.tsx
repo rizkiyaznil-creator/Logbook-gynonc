@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ResidentProgress } from "@/components/resident-progress";
 import { ProgressSkeleton } from "@/components/skeleton";
 import { Icons } from "@/components/icons";
+import { Avatar } from "@/components/avatar";
 
 export default async function DashboardPage() {
   const profile = await requireProfile();
@@ -35,14 +36,15 @@ async function StaffDashboard() {
   const supabase = await createClient();
   const { data: residents } = await supabase
     .from("residents")
-    .select("id, no_peserta, angkatan, profiles(full_name)")
+    .select("id, no_peserta, angkatan, profiles(full_name, avatar_url)")
     .order("angkatan");
 
+  type Prof = { full_name: string; avatar_url: string | null };
   const list = (residents ?? []) as {
     id: string;
     no_peserta: string | null;
     angkatan: string | null;
-    profiles: { full_name: string } | { full_name: string }[] | null;
+    profiles: Prof | Prof[] | null;
   }[];
 
   return (
@@ -73,16 +75,24 @@ async function StaffDashboard() {
           </thead>
           <tbody className="divide-y divide-slate-100">
             {list.map((r) => {
-              const nama = Array.isArray(r.profiles)
-                ? r.profiles[0]?.full_name
-                : r.profiles?.full_name;
+              const prof = Array.isArray(r.profiles)
+                ? r.profiles[0]
+                : r.profiles;
+              const nama = prof?.full_name;
               return (
                 <tr key={r.id} className="transition-colors hover:bg-slate-50">
                   <td className="px-4 py-3 font-mono text-xs text-slate-500">
                     {r.no_peserta ?? "—"}
                   </td>
                   <td className="px-4 py-3 font-medium text-slate-700">
-                    {nama ?? "—"}
+                    <span className="flex items-center gap-2.5">
+                      <Avatar
+                        name={nama ?? "?"}
+                        src={prof?.avatar_url}
+                        size={32}
+                      />
+                      {nama ?? "—"}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-slate-600">
                     {r.angkatan ?? "—"}
