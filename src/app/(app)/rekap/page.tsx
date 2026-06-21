@@ -5,7 +5,7 @@ import { BarList } from "@/components/bar-list";
 import { ExportCsvButton } from "@/components/export-csv-button";
 
 // Asumsi durasi pendidikan (bulan) untuk proyeksi kelulusan — dapat disesuaikan.
-const PROGRAM_BULAN = 48;
+const PROGRAM_BULAN = 24;
 
 type Summary = {
   resident_id: string;
