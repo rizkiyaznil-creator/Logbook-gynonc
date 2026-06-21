@@ -3,7 +3,7 @@
   "catatan": "Inti logbook. target_min = jumlah minimal kasus; peran = syarat peran residen (operator utama / ko-operator / dll). Item dgn perlu_verifikasi=true: angka hasil ekstraksi PDF mencurigakan, WAJIB cek PDF asli.",
   "items": [
     { "no": 1,  "kode": "PR-01", "nama": "Diagnosis dan manajemen kanker ginekologi", "target_min": 100, "satuan": "kasus baru", "peran": "penanggung jawab utama", "syarat_tambahan": "dengan verifikasi MDT", "perlu_verifikasi": false },
-    { "no": 2,  "kode": "PR-02", "nama": "Ultrasonografi ginekologi onkologi (TA/TV, IOTA/ADNEX, Doppler)", "target_min": 3, "satuan": "pemeriksaan + laporan", "peran": "mandiri", "syarat_tambahan": "Angka '≥3' kemungkinan salah ekstraksi (mungkin ≥30). Cek PDF.", "perlu_verifikasi": true },
+    { "no": 2,  "kode": "PR-02", "nama": "Ultrasonografi ginekologi onkologi (TA/TV, IOTA/ADNEX, Doppler)", "target_min": 30, "satuan": "pemeriksaan + laporan", "peran": "mandiri", "syarat_tambahan": "Diverifikasi terhadap PDF asli: target ≥30.", "perlu_verifikasi": false },
     { "no": 3,  "kode": "PR-03", "nama": "Seksio sesarea pada kecurigaan plasenta akreta (PAS) dengan penyulit", "target_min": 3, "satuan": "kasus PAS (SC ± histerektomi)", "peran": "operator utama / ko-operator senior", "perlu_verifikasi": false },
     { "no": 4,  "kode": "PR-04", "nama": "Ligasi arteri uterina asendens dengan penyulit", "target_min": 3, "satuan": "tindakan", "peran": "operator", "perlu_verifikasi": false },
     { "no": 5,  "kode": "PR-05", "nama": "Ligasi arteri hipogastrika (iliaka interna) dengan penyulit", "target_min": 3, "satuan": "tindakan", "peran": "operator", "perlu_verifikasi": false },
