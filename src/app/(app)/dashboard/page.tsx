@@ -25,11 +25,11 @@ export default async function DashboardPage() {
             <span className="font-medium">Entri Baru</span>.
           </p>
         </div>
-        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-          <AcademicStats residentId={profile.id} />
-        </Suspense>
         <Suspense fallback={<ProgressSkeleton />}>
           <ResidentProgress residentId={profile.id} />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+          <AcademicStats residentId={profile.id} />
         </Suspense>
       </div>
     );
