@@ -147,13 +147,39 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
 
 - **Fase 0 — Ops:** environment **staging** + disiplin **backup** sebelum tiap
   migrasi produksi. (Wajib untuk platform.)
-- **Fase 1 — Fondasi multi-tenant:**
+- **Fase 1 — Fondasi multi-tenant:** ✅ **SELESAI** (migrasi
+  `0023_platform_multitenant.sql`).
   1. Buat `programs`; isi 1 baris **Onkologi Ginekologi** (program #1).
   2. Tambah `profiles.program_id` + `program_id` ke semua tabel terkait;
      **backfill** seluruh data lama ke program #1.
   3. Tulis ulang RLS (KPS dipersempit ke programnya, helper baru, super-admin).
   4. Buat views agregasi **program-aware**.
   - *Tanpa perubahan tampilan bagi user lama.*
+
+  **Detail implementasi Fase 1:**
+  - Tabel `programs (id, kode, nama, config jsonb, aktif)` + RLS (baca: semua
+    login; tulis: super-admin). Tenant pertama `onkogin` dengan config FIGO.
+  - `program_id` ditambahkan ke kurikulum (`procedures`,
+    `clinical_competencies`, `clinical_competency_subtargets`, `diseases`,
+    `knowledge_items`) **NOT NULL**, dan transaksional (`residents`,
+    `log_entries`, `academic_works`, `entry_templates`, `assessments` NOT NULL;
+    `audit_log`, `notifications`, `profiles` nullable).
+  - Unik kurikulum `kode`/`no` diubah dari **global → per-program**
+    (`unique(program_id, kode)`), agar program lain boleh memakai kode sama.
+  - Helper: `current_program()`, `is_super_admin()`, `is_kps_of(p_program)`,
+    `program_of(user)`.
+  - `program_id` data transaksional **diturunkan dari residen** lewat trigger
+    `set_program_from_resident` (BEFORE INSERT) — bukan dari akun pengisi
+    (penting untuk assessment yang diisi penguji). RLS INSERT residen memakai
+    `with check (program_id = current_program())`.
+  - `handle_new_user` mengisi home program (default `onkogin` bila metadata
+    kosong). Trigger audit/notifikasi mengisi `program_id`.
+  - Views `v_procedure_progress`, `v_clinical_progress`, `v_knowledge_progress`,
+    `v_disease_coverage`, `v_subtarget_progress`, `v_resident_summary` kini
+    **join `program_id`** (residen dihitung hanya terhadap kurikulum programnya).
+  - **Uji isolasi & program-aware view: LULUS** (residen/KPS program A tidak
+    melihat data program B; DPJP lintas-program lewat `supervisor_id`;
+    super-admin lihat semua; insert program_id salah ditolak RLS).
 - **Fase 2 — Config & branding dinamis + verifikasi gabungan berlabel.**
 - **Fase 3 — Seed 3 program baru** (butuh konten kurikulum dari pemilik).
 - **Fase 4 — Laporan lintas-program untuk super-admin.**

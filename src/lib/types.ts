@@ -25,12 +25,31 @@ export type DokumentasiJenis =
   | "handover"
   | "lainnya";
 
+// --- Multi-program (platform) ---
+export interface ProgramConfig {
+  accent?: string;
+  label_tabel_prosedur?: string;
+  label_tabel_penatalaksanaan?: string;
+  figo_enabled?: boolean;
+  staging_options?: string[];
+}
+
+export interface Program {
+  id: string;
+  kode: string;
+  nama: string;
+  config: ProgramConfig;
+  aktif: boolean;
+}
+
 export interface Profile {
   id: string;
   full_name: string;
   email: string | null;
   role: UserRole;
   institution_id: string | null;
+  // Home program (residen & KPS); null untuk DPJP/penguji/admin.
+  program_id: string | null;
   no_telp: string | null;
   nip: string | null;
   jabatan: string | null;

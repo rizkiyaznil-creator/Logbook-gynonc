@@ -18,7 +18,7 @@ export const requireProfile = cache(async function (): Promise<Profile> {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, email, role, institution_id, no_telp, nip, jabatan, institusi, avatar_url, aktif",
+      "id, full_name, email, role, institution_id, program_id, no_telp, nip, jabatan, institusi, avatar_url, aktif",
     )
     .eq("id", user.id)
     .single();
