@@ -1,0 +1,15 @@
+{
+  "sumber": "Tabel 27 — Penguasaan Pengetahuan Penatalaksanaan (Sp.OG)",
+  "ambang": { "osce_min": 70, "mcq_min": 70, "satuan": "persen" },
+  "pengetahuan_penatalaksanaan": [
+    { "no": 1, "kode": "KP-01", "topik": "Anamnesis obstetri–ginekologi terstruktur" },
+    { "no": 2, "kode": "KP-02", "topik": "Pemeriksaan fisik obstetri–ginekologi" },
+    { "no": 3, "kode": "KP-03", "topik": "Pemilihan pemeriksaan penunjang" },
+    { "no": 4, "kode": "KP-04", "topik": "Interpretasi hasil pemeriksaan" },
+    { "no": 5, "kode": "KP-05", "topik": "Penetapan diagnosis kerja & banding" },
+    { "no": 6, "kode": "KP-06", "topik": "Perencanaan terapi (farmakologis/nonfarmakologis)" },
+    { "no": 7, "kode": "KP-07", "topik": "Evaluasi respon & penyesuaian terapi" },
+    { "no": 8, "kode": "KP-08", "topik": "Penetapan prognosis" },
+    { "no": 9, "kode": "KP-09", "topik": "Dokumentasi medis & komunikasi hasil" }
+  ]
+}

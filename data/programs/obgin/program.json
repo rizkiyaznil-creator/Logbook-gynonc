@@ -1,0 +1,13 @@
+{
+  "kode": "obgin",
+  "nama": "Dokter Spesialis Obstetri dan Ginekologi",
+  "urutan": 2,
+  "count_all_roles": true,
+  "config": {
+    "accent": "blue",
+    "label_tabel_prosedur": "Tabel 21",
+    "label_tabel_penatalaksanaan": "Tabel 15",
+    "figo_enabled": false,
+    "staging_options": []
+  }
+}

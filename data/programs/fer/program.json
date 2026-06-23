@@ -1,0 +1,13 @@
+{
+  "kode": "fer",
+  "nama": "Subspesialis Fertilitas & Endokrinologi Reproduksi",
+  "urutan": 3,
+  "count_all_roles": true,
+  "config": {
+    "accent": "violet",
+    "label_tabel_prosedur": "Tabel 23",
+    "label_tabel_penatalaksanaan": "Tabel 17",
+    "figo_enabled": false,
+    "staging_options": []
+  }
+}

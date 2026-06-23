@@ -203,6 +203,33 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
   - *Catatan:* pewarnaan aksen menyeluruh (utility Tailwind) tidak di-refactor
     total; aksen program disurfacing lewat indikator merek & badge program.
 - **Fase 3 — Seed 3 program baru** (butuh konten kurikulum dari pemilik).
+  ✅ **SELESAI.** Tiga program resmi (Kepkonsil 2026) di-seed dari data:
+  - **`obgin`** — Dokter Spesialis Obstetri & Ginekologi (73 penyakit,
+    9 penatalaksanaan, 53 prosedur).
+  - **`fer`** — Subspesialis Fertilitas & Endokrinologi Reproduksi
+    (28 penyakit, 8 penatalaksanaan, 27 prosedur).
+  - **`fetomaternal`** — Subspesialis Kedokteran Fetomaternal
+    (48 penyakit, 9 penatalaksanaan, 21 prosedur).
+
+  **Struktur & keputusan:**
+  - Data kurikulum pindah ke `data/programs/<kode>/` (tiap program = satu
+    folder berisi `program.json` + diseases/clinical-management/procedures/
+    knowledge). `scripts/generate-seed.mjs` mengiterasi semua program →
+    `supabase/seed.sql` (program insert + kurikulum, idempoten).
+  - Butir pengetahuan prosedur **auto-generate 1:1** dari daftar prosedur
+    (kode `K`+kode), konsisten dengan onkogin.
+  - Prosedur program baru: `target_min` = "Minimal N kasus / Volume minimal";
+    `peran_dihitung = '{}'` (hitung semua peran — banyak prosedur non-bedah).
+  - Penatalaksanaan FER & Fetomaternal memakai ambang **kualitas** (mis.
+    "Kelengkapan data ≥75%"), bukan jumlah kasus → `target_min = 1`
+    (checklist kualitatif). Penatalaksanaan Sp.OG memakai hitungan kasus asli.
+  - Config per program: `obgin` aksen biru, `fer` ungu, `fetomaternal` rose;
+    `figo_enabled=false` (hanya onkogin true); label tabel sesuai dokumen.
+  - **Catatan validitas:** angka ambang & kode ICD hasil ekstraksi PDF —
+    sumber resmi meminta verifikasi manual sebelum dipakai untuk keputusan.
+  - **Uji LULUS:** migrasi + seed 4 program bersih; isolasi multi-tenant
+    LULUS (tiap KPS/residen hanya lihat programnya; DPJP lintas-program;
+    view program-aware menghitung total kurikulum program masing-masing).
 - **Fase 4 — Laporan lintas-program untuk super-admin.**
 - **(Nanti) Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi →
   pemilik berubah dari operator menjadi penyedia platform).

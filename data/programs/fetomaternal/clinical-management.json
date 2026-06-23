@@ -1,0 +1,95 @@
+{
+  "sumber": "Tabel 16 — Kompetensi Penatalaksanaan Klinis (Fetomaternal)",
+  "items": [
+    {
+      "no": 1,
+      "kode": "PK-01",
+      "komponen": "Anamnesis",
+      "penjabaran": "Riwayat obstetri risiko tinggi: preeklamsia dini/HELLP, IUFD/PTB, PAS, GDM/PGDM, penyakit jantung, autoimun, kelainan darah/metabolik, komorbid kronik, paparan obat/teratogen, kehamilan ganda & chorionicity, paparan infeksi, riwayat imunisasi Rh.",
+      "kriteria_kinerja": "Form risiko MFM lengkap; stratifikasi risiko (mild/moderate/severe) terdokumentasi; chorionicity ditentukan sebelum 14 mg pada kembar; rencana pencegahan (aspirin dosis rendah, Ca) bila indikasi.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 2,
+      "kode": "PK-02",
+      "komponen": "Pemeriksaan Fisik",
+      "penjabaran": "Teknik pengukuran tekanan darah akurat (cegah white coat), pemeriksaan jantung/paru, evaluasi edema/refleks/gejala preeklamsia berat, palpasi presentasi/tinggi fundus dan Leopold.",
+      "kriteria_kinerja": "Audit teknik pengukuran BP; red flags preeklamsia/HELLP dipantau dan tercatat; dokumentasi presentasi/fundus pada trimester III.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 3,
+      "kode": "PK-03",
+      "komponen": "Penentuan Pemeriksaan Penunjang",
+      "penjabaran": "USG detail target organ, Doppler (UA/MCA/CPR), NST/CTG, BPP, panel lab preeklampsia sesuai penyakit medik penyerta, keputusan NIPT vs amnio/CVS, skrining GDM/PGDM, ekokardiografi maternal bila indikasi.",
+      "kriteria_kinerja": "Pemilihan modalitas sesuai pedoman & usia kehamilan; justifikasi NIPT vs diagnostik; skrining GDM pada jendela 24-28 mg.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 4,
+      "kode": "PK-04",
+      "komponen": "Interpretasi Hasil Pemeriksaan",
+      "penjabaran": "Interpretasi biometri (percentile), deteksi kelainan bawaan janin, kriteria FGR vs SGA, indeks Doppler, kategori CTG, dan pengambilan keputusan waktu persalinan.",
+      "kriteria_kinerja": "Klasifikasi FGR/SGA benar; identifikasi kelainan bawaan janin; interpretasi CTG akurat; rencana timing persalinan berbasis risiko terdokumentasi.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 5,
+      "kode": "PK-05",
+      "komponen": "Diagnosis Kerja & Banding",
+      "penjabaran": "Penetapan preeklamsia (dengan/tanpa severe features), HELLP, PAS, GDM/PGDM, kelainan janin mayor, diferensial IUGR vs infeksi.",
+      "kriteria_kinerja": "Penggunaan kriteria diagnostik sesuai panduan/standar; dokumentasi klasifikasi derajat/stadium bila relevan.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 6,
+      "kode": "PK-06",
+      "komponen": "Perencanaan Terapi",
+      "penjabaran": "Protokol preeklamsia (MgSO4, antihipertensi), steroid maturasi paru, tatalaksana komplikasi & penyakit medis komorbid, timing & rute persalinan, rencana prosedur fetal invasif (amnio/CVS, transfusi, laser TTTS) di pusat kompeten.",
+      "kriteria_kinerja": "Pemberian MgSO4 pada preeklampsia berat; antihipertensi target <160/110; tatalaksana multidisiplin; rencana rujukan/pelaksanaan prosedur invasif jelas.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 7,
+      "kode": "PK-07",
+      "komponen": "Evaluasi Respon & Penyesuaian",
+      "penjabaran": "Monitoring BP/urin, serial pertumbuhan & Doppler, NST/BPP, penyesuaian antihipertensi, eskalasi/induksi/persiapan operasi saat kriteria tercapai.",
+      "kriteria_kinerja": "Jadwal monitoring sesuai risiko; kriteria eskalasi jelas (mis. non-reassuring CTG, Doppler memburuk); kepatuhan monitoring sesuai jadwal.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 8,
+      "kode": "PK-08",
+      "komponen": "Penetapan Prognosis",
+      "penjabaran": "Risiko prematuritas, IUFD, morbiditas perinatal/maternal, konseling NICU/ICU, rencana contingency.",
+      "kriteria_kinerja": "Diskusi risiko jangka pendek/menengah; dokumentasi goals of care; dokumentasi prognosis & rencana kontinjensi pada kasus risiko menengah-tinggi.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    },
+    {
+      "no": 9,
+      "kode": "PK-09",
+      "komponen": "Dokumentasi & Komunikasi Hasil",
+      "penjabaran": "Template MFM, hasil USG/Doppler terstruktur, informed consent prosedur invasif, kebutuhan NICU & anestesi, registri kelainan janin bila ada.",
+      "kriteria_kinerja": "Catatan lengkap & handover SBAR; lampiran gambar/klip kunci USG; kelengkapan dokumentasi dan handover SBAR untuk pasien rawat/operatif.",
+      "target_min": 1,
+      "target_satuan": "komponen (ambang kualitas)",
+      "perlu_verifikasi": false
+    }
+  ]
+}
