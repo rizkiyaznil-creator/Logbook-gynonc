@@ -15,11 +15,11 @@ const NAV: (NavItem & { roles: UserRole[] })[] = [
   { href: "/verifikasi", label: "Verifikasi", icon: "verify", roles: ["supervisor", "kps", "admin"] },
   { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["penguji", "kps", "admin"] },
   { href: "/rekap", label: "Rekap", icon: "chart", roles: ["kps", "admin"] },
-  { href: "/laporan", label: "Laporan Platform", icon: "activity", roles: ["admin"] },
-  { href: "/kurikulum", label: "Kurikulum", icon: "stethoscope", roles: ["kps", "admin"] },
-  { href: "/audit", label: "Audit Log", icon: "shield", roles: ["kps", "admin"] },
-  { href: "/admin", label: "Manajemen User", icon: "users", roles: ["kps", "admin"] },
-  { href: "/profil", label: "Profil", icon: "user", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },
+  { href: "/laporan", label: "Laporan Platform", icon: "activity", roles: ["admin"], group: "kelola" },
+  { href: "/kurikulum", label: "Kurikulum", icon: "stethoscope", roles: ["kps", "admin"], group: "kelola" },
+  { href: "/audit", label: "Audit Log", icon: "shield", roles: ["kps", "admin"], group: "kelola" },
+  { href: "/admin", label: "Manajemen User", icon: "users", roles: ["kps", "admin"], group: "kelola" },
+  { href: "/profil", label: "Profil", icon: "user", roles: ["residen", "supervisor", "kps", "penguji", "admin"], group: "akun" },
 ];
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -37,7 +37,7 @@ export default async function AppLayout({
 }) {
   const profile = await requireProfile();
   const items: NavItem[] = NAV.filter((n) => n.roles.includes(profile.role)).map(
-    ({ href, label, icon }) => ({ href, label, icon: icon as IconName }),
+    ({ href, label, icon, group }) => ({ href, label, icon: icon as IconName, group }),
   );
 
   // Badge & notifikasi belum dibaca.
