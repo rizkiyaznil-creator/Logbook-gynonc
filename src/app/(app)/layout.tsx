@@ -15,6 +15,7 @@ const NAV: (NavItem & { roles: UserRole[] })[] = [
   { href: "/verifikasi", label: "Verifikasi", icon: "verify", roles: ["supervisor", "kps", "admin"] },
   { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["penguji", "kps", "admin"] },
   { href: "/rekap", label: "Rekap", icon: "chart", roles: ["kps", "admin"] },
+  { href: "/laporan", label: "Laporan Platform", icon: "activity", roles: ["admin"] },
   { href: "/audit", label: "Audit Log", icon: "shield", roles: ["kps", "admin"] },
   { href: "/admin", label: "Manajemen User", icon: "users", roles: ["kps", "admin"] },
   { href: "/profil", label: "Profil", icon: "user", roles: ["residen", "supervisor", "kps", "penguji", "admin"] },

@@ -230,7 +230,17 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
   - **Uji LULUS:** migrasi + seed 4 program bersih; isolasi multi-tenant
     LULUS (tiap KPS/residen hanya lihat programnya; DPJP lintas-program;
     view program-aware menghitung total kurikulum program masing-masing).
-- **Fase 4 — Laporan lintas-program untuk super-admin.**
+- **Fase 4 — Laporan lintas-program untuk super-admin.** ✅ **SELESAI.**
+  - View rollup tingkat-program `v_program_overview` (migrasi `0024`): per
+    program → jumlah residen, ukuran kurikulum, capaian agregat per domain,
+    dan beban entri (total/menunggu/terverifikasi). `security_invoker` →
+    super-admin lihat semua program; KPS hanya angka programnya (program lain
+    ter-nol-kan otomatis lewat RLS, tanpa kebijakan tambahan).
+  - Halaman `/laporan` (**khusus role `admin`**): ringkasan platform +
+    tabel per program (indikator warna aksen, bar capaian agregat) + ekspor
+    CSV. KPS tetap memakai `/rekap` (per program).
+  - **Uji LULUS:** rollup 4 program benar; isolasi RLS LULUS (KPS obgin
+    hanya lihat residen/entri obgin, program lain nol); build hijau.
 - **(Nanti) Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi →
   pemilik berubah dari operator menjadi penyedia platform).
 
