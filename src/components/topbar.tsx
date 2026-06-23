@@ -103,7 +103,7 @@ export function Topbar({
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-2">
           <BrandLogo
-            src="/usu-logo.png"
+            src="/logo-mark.png"
             alt="Logo USU"
             className="h-8 w-8 object-contain"
             fallback={
