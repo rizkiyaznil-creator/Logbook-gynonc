@@ -19,6 +19,8 @@ export function Topbar({
   avatarUrl,
   badges = {},
   unreadCount = 0,
+  brandName = "Logbook PPDS USU",
+  brandAccent = "#0f766e",
 }: {
   items: NavItem[];
   fullName: string;
@@ -26,6 +28,10 @@ export function Topbar({
   avatarUrl: string | null;
   badges?: Record<string, number>;
   unreadCount?: number;
+  /** Nama program (residen/KPS) atau nama platform (lintas program). */
+  brandName?: string;
+  /** Warna aksen program (hex) untuk indikator merek. */
+  brandAccent?: string;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -70,13 +76,24 @@ export function Topbar({
             alt="Logo USU"
             className="h-8 w-8 object-contain"
             fallback={
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-teal-500 to-emerald-500 text-sm font-bold text-white shadow-sm">
-                OG
+              <span
+                className="grid h-8 w-8 place-items-center rounded-lg text-sm font-bold text-white shadow-sm"
+                style={{ backgroundColor: brandAccent }}
+              >
+                {brandName.slice(0, 2).toUpperCase()}
               </span>
             }
           />
-          <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text font-semibold text-transparent dark:from-teal-400 dark:to-emerald-400">
-            Logbook Onko-Gin
+          <span
+            className="flex items-center gap-2 font-semibold text-slate-800 dark:text-slate-100"
+            title={brandName}
+          >
+            <span
+              className="hidden h-2.5 w-2.5 shrink-0 rounded-full sm:inline-block"
+              style={{ backgroundColor: brandAccent }}
+              aria-hidden
+            />
+            {brandName}
           </span>
         </div>
 

@@ -181,6 +181,27 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
     melihat data program B; DPJP lintas-program lewat `supervisor_id`;
     super-admin lihat semua; insert program_id salah ditolak RLS).
 - **Fase 2 — Config & branding dinamis + verifikasi gabungan berlabel.**
+  ✅ **SELESAI.**
+  - `src/lib/program.ts`: helper konteks program — `getProgram`,
+    `getProgramsByIds`, `withDefaults`, `accentHex`, `PLATFORM_NAME`.
+  - **Branding kontekstual di header** (`layout.tsx` + `topbar.tsx`):
+    residen/KPS melihat **nama + warna aksen program** rumahnya;
+    DPJP/penguji/admin (lintas program) memakai nama platform netral
+    "Logbook PPDS USU".
+  - **Form entri** (`entry-form.tsx`): label tabel ("Tabel 24/18"), tampil/
+    sembunyi **FIGO**, dan **opsi stadium** (dropdown) mengikuti
+    `programs.config` program residen (mode entri baru = program residen;
+    mode sunting = program entri).
+  - **Progress residen** (`resident-progress.tsx`): judul tabel kompetensi
+    memakai label tabel dari config program residen.
+  - **Verifikasi gabungan berlabel** (`verifikasi/page.tsx`): tiap entri &
+    karya ilmiah diberi **badge nama program** (warna aksen program), dan
+    baris **FIGO hanya tampil bila program entri mengaktifkannya** — header
+    tetap netral USU.
+  - **PWA/manifest = level platform** ("Logbook PPDS USU"); branding pra-login
+    & pop-up pasang aplikasi dinetralkan ke platform.
+  - *Catatan:* pewarnaan aksen menyeluruh (utility Tailwind) tidak di-refactor
+    total; aksen program disurfacing lewat indikator merek & badge program.
 - **Fase 3 — Seed 3 program baru** (butuh konten kurikulum dari pemilik).
 - **Fase 4 — Laporan lintas-program untuk super-admin.**
 - **(Nanti) Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi →

@@ -3,9 +3,9 @@ import "./globals.css";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 export const metadata: Metadata = {
-  title: "Logbook Onkologi Ginekologi",
+  title: "Logbook PPDS USU",
   description:
-    "Logbook interaktif PPDS Subspesialis Onkologi Ginekologi — pencatatan & pemantauan pencapaian kompetensi.",
+    "Logbook PPDS Universitas Sumatera Utara — platform multi-program untuk pencatatan & pemantauan pencapaian kompetensi.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: "/icons/icon-192.png",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Logbook Onko-Gin",
+    title: "Logbook USU",
   },
 };
 

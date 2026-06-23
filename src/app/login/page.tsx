@@ -46,10 +46,10 @@ export default function LoginPage() {
         <div className="my-5 border-t border-slate-200 dark:border-slate-800" />
 
         <h1 className="text-base font-semibold leading-tight text-slate-800 dark:text-slate-100">
-          Logbook Onkologi Ginekologi
+          Logbook PPDS USU
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          PPDS Subspesialis — masuk untuk melanjutkan.
+          Universitas Sumatera Utara — masuk untuk melanjutkan.
         </p>
 
         <form action={formAction} className="mt-5 space-y-4">

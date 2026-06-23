@@ -2,6 +2,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Topbar, type NavItem } from "@/components/topbar";
 import { InstallPopup } from "@/components/pwa-install";
+import { getProgram, PLATFORM_NAME, accentHex } from "@/lib/program";
 import type { IconName } from "@/components/icons";
 import type { UserRole } from "@/lib/types";
 
@@ -39,6 +40,16 @@ export default async function AppLayout({
 
   // Badge & notifikasi belum dibaca.
   const supabase = await createClient();
+
+  // Branding kontekstual: residen/KPS pakai nama+aksen program rumahnya;
+  // DPJP/penguji/admin (lintas program) memakai nama platform netral.
+  const homeProgram =
+    profile.program_id && ["residen", "kps"].includes(profile.role)
+      ? await getProgram(supabase, profile.program_id)
+      : null;
+  const brandName = homeProgram?.nama ?? PLATFORM_NAME;
+  const brandAccent = accentHex(homeProgram?.config?.accent);
+
   const canVerify = ["supervisor", "kps", "admin"].includes(profile.role);
   const cnt = (q: PromiseLike<{ count: number | null }>) =>
     q.then((r) => r.count ?? 0);
@@ -92,6 +103,8 @@ export default async function AppLayout({
         avatarUrl={profile.avatar_url}
         badges={badges}
         unreadCount={unreadCount}
+        brandName={brandName}
+        brandAccent={brandAccent}
       />
       <main className="animate-in mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         {children}

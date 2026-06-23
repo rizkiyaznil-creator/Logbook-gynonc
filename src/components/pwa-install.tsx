@@ -136,7 +136,7 @@ export function InstallPopup() {
             Pasang aplikasi?
           </div>
           <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-            Tambahkan Logbook Onko-Gin ke layar utama untuk akses cepat.
+            Tambahkan Logbook PPDS USU ke layar utama untuk akses cepat.
           </div>
           <div className="mt-2 flex gap-2">
             <button

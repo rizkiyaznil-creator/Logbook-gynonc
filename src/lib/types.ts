@@ -92,6 +92,7 @@ export interface ClinicalCompetency {
 export interface LogEntry {
   id: string;
   resident_id: string;
+  program_id: string;
   entry_type: EntryType;
   entry_date: string;
   procedure_id: string | null;

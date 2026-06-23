@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getProgram } from "@/lib/program";
 import { EntryForm } from "@/components/entry-form";
 import { updateEntry, deleteEntry } from "@/app/(app)/logbook/actions";
 import { RS_BAKU } from "@/lib/constants";
@@ -51,6 +52,9 @@ export default async function EditEntryPage({
     .filter((x): x is string => !!x);
   const hospitals = Array.from(new Set([...RS_BAKU, ...used]));
 
+  // Label/FIGO mengikuti config program ENTRI ini.
+  const program = await getProgram(supabase, e.program_id);
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <Link href="/logbook" className="text-sm text-teal-700 hover:underline">
@@ -82,6 +86,7 @@ export default async function EditEntryPage({
         competencies={(c.data ?? []) as ClinicalCompetency[]}
         supervisors={(s.data ?? []) as SupervisorOption[]}
         hospitals={hospitals}
+        config={program?.config}
       />
     </div>
   );

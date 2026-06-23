@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { requireProfile } from "@/lib/auth";
+import { getProgram } from "@/lib/program";
 import { EntryForm } from "@/components/entry-form";
 import { TemplatePicker } from "@/components/template-picker";
 import { createEntry } from "@/app/(app)/logbook/actions";
@@ -19,7 +21,9 @@ export default async function NewEntryPage({
   searchParams: Promise<{ template?: string }>;
 }) {
   const { template } = await searchParams;
+  const profile = await requireProfile();
   const supabase = await createClient();
+  const program = await getProgram(supabase, profile.program_id);
   const [d, p, c, s, rs, t] = await Promise.all([
     supabase.from("diseases").select("*").order("no"),
     supabase.from("procedures").select("*").order("no"),
@@ -86,6 +90,7 @@ export default async function NewEntryPage({
         competencies={(c.data ?? []) as ClinicalCompetency[]}
         supervisors={(s.data ?? []) as SupervisorOption[]}
         hospitals={hospitals}
+        config={program?.config}
       />
     </div>
   );
