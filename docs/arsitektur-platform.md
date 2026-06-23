@@ -241,8 +241,26 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
     CSV. KPS tetap memakai `/rekap` (per program).
   - **Uji LULUS:** rollup 4 program benar; isolasi RLS LULUS (KPS obgin
     hanya lihat residen/entri obgin, program lain nol); build hijau.
-- **(Nanti) Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi →
-  pemilik berubah dari operator menjadi penyedia platform).
+- **Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi → pemilik
+  berubah dari operator menjadi penyedia platform). ✅ **SELESAI.**
+  - **Tanpa migrasi** — RLS Fase 1 sudah mengizinkan tulis kurikulum
+    (super-admin / KPS programnya) & tulis `programs` (super-admin). Fase 5
+    murni UI + server actions (RLS = pertahanan berlapis di balik guard peran).
+  - **Onboarding program** (`/kurikulum`, super-admin): buat program baru,
+    edit nama/aktif, dan **editor config** (aksen, label tabel, FIGO on/off,
+    opsi stadium). KPS diarahkan langsung ke kurikulum programnya.
+  - **CRUD prosedur & penatalaksanaan** (`/kurikulum/[id]`): tabel + tambah/
+    edit/hapus. Akses: super-admin (semua program) atau KPS programnya.
+    Menyimpan/menghapus prosedur **otomatis menyelaraskan butir pengetahuan
+    prosedur 1:1** (kode `K`+kode). Item yang sudah dirujuk entri logbook
+    tidak dapat dihapus (dijaga FK, pesan ramah).
+  - **Cakupan (keputusan pemilik):** penyakit & pengetahuan penatalaksanaan
+    tetap dikelola lewat `data/programs` + seed; prosedur & penatalaksanaan
+    (entitas yang dihitung kompetensi) dikelola lewat UI.
+  - **Uji LULUS:** KPS hanya bisa tulis kurikulum programnya (tulis program
+    lain & buat `programs` ditolak RLS); super-admin buat program & tulis
+    semua; sinkron pengetahuan 1:1 idempoten; hapus terhalang FK bila dirujuk
+    entri. Build hijau.
 
 ---
 
