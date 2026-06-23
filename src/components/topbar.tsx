@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/app/login/actions";
 import { Icons, type IconName } from "@/components/icons";
 import { Avatar } from "@/components/avatar";
@@ -43,6 +43,14 @@ export function Topbar({
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState<"kelola" | "akun" | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Tampilkan tombol "Kembali" di halaman detail (yang bukan tujuan menu utama).
+  const showBack = !items.some((n) => n.href === pathname);
+  const goBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) router.back();
+    else router.push("/dashboard");
+  };
 
   // Tutup dropdown saat klik di luar atau pindah halaman.
   useEffect(() => setMenu(null), [pathname]);
@@ -102,6 +110,16 @@ export function Topbar({
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:border-slate-800 dark:bg-slate-900/80 dark:supports-[backdrop-filter]:bg-slate-900/70">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-2">
+          {showBack && (
+            <button
+              onClick={goBack}
+              aria-label="Kembali"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+            >
+              <Icons.back className="h-4 w-4 shrink-0" />
+              <span className="hidden sm:inline">Kembali</span>
+            </button>
+          )}
           <BrandLogo
             src="/logo-mark.png"
             alt="Logo USU"

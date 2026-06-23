@@ -58,6 +58,7 @@ export function InstallButton() {
   const prompt = useInstallable();
   const [standalone, setStandalone] = useState(false);
   const [ios, setIos] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     setStandalone(isStandalone());
@@ -73,6 +74,17 @@ export function InstallButton() {
     );
   }
 
+  // Selalu beri respons: kalau prompt siap → pasang; kalau tidak → tampilkan
+  // panduan manual (mis. iOS, atau browser belum memunculkan prompt).
+  const onClick = async () => {
+    if (prompt) {
+      const ok = await install();
+      if (!ok) setShowHelp(true);
+    } else {
+      setShowHelp(true);
+    }
+  };
+
   return (
     <div className="max-w-xl rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
       <div className="flex items-center gap-3">
@@ -87,20 +99,18 @@ export function InstallButton() {
             Akses lebih cepat langsung dari layar utama, seperti aplikasi biasa.
           </div>
         </div>
-        {prompt && (
-          <button
-            onClick={() => install()}
-            className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700"
-          >
-            Pasang
-          </button>
-        )}
+        <button
+          onClick={onClick}
+          className="shrink-0 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700"
+        >
+          Pasang
+        </button>
       </div>
-      {!prompt && (
-        <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
+      {(showHelp || ios) && (
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
           {ios
-            ? "Di iPhone/iPad: buka menu Bagikan (kotak dengan panah ke atas) lalu pilih “Tambahkan ke Layar Utama”."
-            : "Jika tombol Pasang belum muncul, gunakan menu browser (⋮) → “Pasang aplikasi”/“Install app”. Mungkin aplikasi sudah terpasang."}
+            ? "Di iPhone/iPad (Safari): buka menu Bagikan (kotak dengan panah ke atas) lalu pilih “Tambahkan ke Layar Utama”."
+            : "Dialog pemasangan belum tersedia. Buka menu browser (⋮ di kanan atas) → “Pasang aplikasi / Install app”. Jika menu itu tidak ada, kemungkinan aplikasi sudah terpasang, atau coba muat ulang halaman (Ctrl/Cmd+R) lalu coba lagi."}
         </p>
       )}
     </div>

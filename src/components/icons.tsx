@@ -147,6 +147,11 @@ export const Icons = {
       <path d="M6 9l6 6 6-6" />
     </svg>
   ),
+  back: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M19 12H5M5 12l6-6M5 12l6 6" />
+    </svg>
+  ),
   cog: (p: P) => (
     <svg {...base} {...p}>
       <circle cx="12" cy="12" r="3" />
