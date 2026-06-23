@@ -34,7 +34,7 @@ export default function LoginPage() {
             Fakultas Kedokteran
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
-            Prodi Subspesialis Obstetri &amp; Ginekologi
+            Prodi Spesialis - Subspesialis Obstetri dan Ginekologi
           </div>
         </div>
 
