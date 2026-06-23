@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Topbar, type NavItem } from "@/components/topbar";
 import { InstallPopup } from "@/components/pwa-install";
 import { getProgram, PLATFORM_NAME, accentHex } from "@/lib/program";
+import { getKpsProgramIds } from "@/lib/kps";
 import type { IconName } from "@/components/icons";
 import type { UserRole } from "@/lib/types";
 
@@ -43,12 +44,16 @@ export default async function AppLayout({
   // Badge & notifikasi belum dibaca.
   const supabase = await createClient();
 
-  // Branding kontekstual: residen/KPS pakai nama+aksen program rumahnya;
-  // DPJP/penguji/admin (lintas program) memakai nama platform netral.
-  const homeProgram =
-    profile.program_id && ["residen", "kps"].includes(profile.role)
-      ? await getProgram(supabase, profile.program_id)
-      : null;
+  // Branding kontekstual: residen pakai nama+aksen program rumahnya; KPS yang
+  // membawahi 1 prodi memakai prodi itu, KPS lintas-beberapa-prodi memakai
+  // nama platform netral; DPJP/penguji/admin (lintas program) juga netral.
+  let homeProgram = null;
+  if (profile.role === "residen" && profile.program_id) {
+    homeProgram = await getProgram(supabase, profile.program_id);
+  } else if (profile.role === "kps") {
+    const ids = await getKpsProgramIds(supabase, profile.id);
+    if (ids.length === 1) homeProgram = await getProgram(supabase, ids[0]);
+  }
   const brandName = homeProgram?.nama ?? PLATFORM_NAME;
   const brandAccent = accentHex(homeProgram?.config?.accent);
 

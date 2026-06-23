@@ -1,10 +1,15 @@
 import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { getKpsProgramIds } from "@/lib/kps";
 import {
   CreateUserForm,
   type ProgramOption,
 } from "@/components/create-user-form";
+import {
+  KpsProgramsManager,
+  type KpsUser,
+} from "@/components/kps-programs-manager";
 import { UserRowActions } from "@/components/user-row-actions";
 import { TableCard } from "@/components/table-card";
 import type { UserRole } from "@/lib/types";
@@ -34,24 +39,59 @@ export default async function AdminPage() {
     supabase.from("programs").select("id, kode, nama").eq("aktif", true).order("kode"),
   ]);
   const profiles = (data ?? []) as ProfileRow[];
-  const programs = (progData ?? []) as ProgramOption[];
-  // KPS hanya boleh menempatkan user di programnya sendiri (terkunci) —
-  // ambil langsung (tak bergantung filter aktif pada dropdown super-admin).
-  let lockedProgram: ProgramOption | null = null;
-  if (me.role === "kps" && me.program_id) {
-    const { data: lp } = await supabase
-      .from("programs")
-      .select("id, kode, nama")
-      .eq("id", me.program_id)
-      .maybeSingle();
-    lockedProgram = (lp as ProgramOption | null) ?? null;
+  const allPrograms = (progData ?? []) as ProgramOption[];
+
+  // Prodi yang boleh ditugaskan pemanggil: super-admin → semua aktif;
+  // KPS → hanya prodi yang dikelolanya.
+  let allowedPrograms = allPrograms;
+  if (me.role === "kps") {
+    const myIds = new Set(await getKpsProgramIds(supabase, me.id));
+    allowedPrograms = allPrograms.filter((p) => myIds.has(p.id));
+  }
+
+  // Pengelola prodi-KPS (super-admin): daftar user KPS + prodi yang dibawahinya.
+  let kpsUsers: KpsUser[] = [];
+  if (me.role === "admin") {
+    const kpsRows = profiles.filter((p) => p.role === "kps");
+    if (kpsRows.length > 0) {
+      const { data: links } = await supabase
+        .from("kps_programs")
+        .select("kps_id, program_id")
+        .in(
+          "kps_id",
+          kpsRows.map((k) => k.id),
+        );
+      const byUser = new Map<string, string[]>();
+      for (const l of (links ?? []) as { kps_id: string; program_id: string }[]) {
+        byUser.set(l.kps_id, [...(byUser.get(l.kps_id) ?? []), l.program_id]);
+      }
+      kpsUsers = kpsRows.map((k) => ({
+        id: k.id,
+        full_name: k.full_name,
+        email: k.email,
+        program_ids: byUser.get(k.id) ?? [],
+      }));
+    }
   }
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
-      <CreateUserForm programs={programs} lockedProgram={lockedProgram} />
+      <CreateUserForm programs={allowedPrograms} />
+
+      {me.role === "admin" && (
+        <section>
+          <h2 className="mb-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
+            Prodi yang Dikelola KPS
+          </h2>
+          <p className="mb-3 text-xs text-slate-400 dark:text-slate-500">
+            Satu KPS dapat membawahi beberapa prodi (mis. KPS subspesialis untuk
+            Fetomaternal, FER, dan Onkogin).
+          </p>
+          <KpsProgramsManager kpsUsers={kpsUsers} programs={allPrograms} />
+        </section>
+      )}
 
       <section>
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">

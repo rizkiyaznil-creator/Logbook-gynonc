@@ -262,6 +262,25 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
     semua; sinkron pengetahuan 1:1 idempoten; hapus terhalang FK bila dirujuk
     entri. Build hijau.
 
+- **Fase 6 — KPS lintas-beberapa-prodi.** ✅ **SELESAI.** (migrasi `0025`)
+  - **Konteks:** 1 KPS subspesialis membawahi 3 prodi (Fetomaternal, FER,
+    Onkogin); prodi Spesialis Obgin punya KPS sendiri. Model lama (1 KPS = 1
+    prodi via `profiles.program_id`) tidak cukup.
+  - **Skema:** tabel relasi **`kps_programs(kps_id, program_id)`** (banyak-ke-
+    banyak). `profiles.program_id` tetap dipakai sebagai **prodi utama** KPS
+    (branding/turunan). Backfill: KPS lama → 1 baris = `program_id`-nya.
+  - **RLS:** `is_kps_of(p_program)` ditulis ulang → cek keanggotaan di
+    `kps_programs` (bukan satu kolom). Semua policy yang sudah memakai
+    `is_kps_of(program_id)` otomatis mendukung multi-prodi. Policy baca
+    kurikulum ditambah `or is_kps_of(program_id)` agar KPS lihat semua prodinya.
+  - **UI:** Manajemen User — buat KPS dengan **centang beberapa prodi**;
+    super-admin punya panel **"Prodi yang Dikelola KPS"** untuk mengubah
+    penugasan KPS yang sudah ada. `/kurikulum` untuk KPS >1 prodi menampilkan
+    **daftar prodinya**. Branding: KPS >1 prodi → nama platform netral.
+  - **Uji isolasi wajib:** KPS subspesialis melihat rekap/verifikasi/audit/
+    kurikulum ketiga prodinya, **tetapi TIDAK** data prodi obgin (dan
+    sebaliknya). Build hijau.
+
 ---
 
 ## 8. Risiko & mitigasi

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getKpsProgramIds } from "@/lib/kps";
 import type { ProgramConfig } from "@/lib/types";
 
 type Result = { ok?: boolean; error?: string; id?: string };
@@ -17,18 +18,24 @@ async function caller() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { supabase, user: null, role: null, programId: null };
+  if (!user) return { supabase, user: null, role: null, programIds: [] as string[] };
   const { data } = await supabase
     .from("profiles")
-    .select("role, program_id")
+    .select("role")
     .eq("id", user.id)
     .single();
-  return {
-    supabase,
-    user,
-    role: (data?.role ?? null) as string | null,
-    programId: (data?.program_id ?? null) as string | null,
-  };
+  const role = (data?.role ?? null) as string | null;
+  // KPS bisa membawahi beberapa prodi (relasi kps_programs).
+  const programIds = role === "kps" ? await getKpsProgramIds(supabase, user.id) : [];
+  return { supabase, user, role, programIds };
+}
+
+/** Boleh kelola kurikulum program ini? super-admin (semua) atau KPS-nya. */
+function canManage(
+  c: { role: string | null; programIds: string[] },
+  programId: string,
+): boolean {
+  return c.role === "admin" || (c.role === "kps" && c.programIds.includes(programId));
 }
 
 function cleanConfig(input: Partial<ProgramConfig>): ProgramConfig {
@@ -113,7 +120,7 @@ export async function saveProcedure(
   input: ProcedureInput,
 ): Promise<Result> {
   const c = await caller();
-  if (!(c.role === "admin" || (c.role === "kps" && c.programId === programId)))
+  if (!canManage(c, programId))
     return { error: "Tidak berwenang mengelola kurikulum program ini." };
 
   const kode = input.kode.trim().toUpperCase();
@@ -183,7 +190,7 @@ export async function deleteProcedure(
   id: string,
 ): Promise<Result> {
   const c = await caller();
-  if (!(c.role === "admin" || (c.role === "kps" && c.programId === programId)))
+  if (!canManage(c, programId))
     return { error: "Tidak berwenang." };
   // Hapus prosedur DULU; bila terhalang (mis. dirujuk entri), butir pengetahuan
   // tidak ikut terhapus → konsistensi 1:1 terjaga.
@@ -224,7 +231,7 @@ export async function saveClinical(
   input: ClinicalInput,
 ): Promise<Result> {
   const c = await caller();
-  if (!(c.role === "admin" || (c.role === "kps" && c.programId === programId)))
+  if (!canManage(c, programId))
     return { error: "Tidak berwenang mengelola kurikulum program ini." };
 
   const kode = input.kode.trim().toUpperCase();
@@ -266,7 +273,7 @@ export async function deleteClinical(
   id: string,
 ): Promise<Result> {
   const c = await caller();
-  if (!(c.role === "admin" || (c.role === "kps" && c.programId === programId)))
+  if (!canManage(c, programId))
     return { error: "Tidak berwenang." };
   const { error } = await c.supabase
     .from("clinical_competencies")

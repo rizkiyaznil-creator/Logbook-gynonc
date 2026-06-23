@@ -14,11 +14,10 @@ const PROGRAM_ROLES = ["residen", "kps"];
 
 export function CreateUserForm({
   programs,
-  lockedProgram,
 }: {
+  /** Prodi yang boleh ditugaskan oleh pemanggil (super-admin: semua aktif;
+   *  KPS: hanya prodi-prodi yang dikelolanya). */
   programs: ProgramOption[];
-  /** Bila pemanggil KPS: program terkunci ke programnya (tak bisa pilih lain). */
-  lockedProgram?: ProgramOption | null;
 }) {
   const [state, formAction, pending] = useActionState(createUser, null);
   const [role, setRole] = useState("residen");
@@ -59,27 +58,42 @@ export function CreateUserForm({
           <input name="password" type="text" required className={input} />
         </div>
 
-        {/* Program rumah — hanya untuk residen/KPS. */}
+        {/* Prodi — hanya untuk residen/KPS. */}
         {needsProgram && (
           <div className="sm:col-span-2">
-            <label className={label}>Program</label>
-            {lockedProgram ? (
-              <>
-                <input
-                  className={`${input} bg-slate-50 dark:bg-slate-800/50`}
-                  value={lockedProgram.nama}
-                  disabled
-                  readOnly
-                />
-                <input type="hidden" name="program_id" value={lockedProgram.id} />
-                <p className="mt-1 text-xs text-slate-400">
-                  Terkunci ke program Anda.
+            <label className={label}>
+              {role === "kps" ? "Prodi yang dikelola" : "Prodi"}
+            </label>
+
+            {role === "kps" ? (
+              // KPS: bisa membawahi beberapa prodi sekaligus.
+              <div className="mt-1 space-y-1.5 rounded-lg border border-slate-300 p-3 dark:border-slate-700">
+                {programs.length === 0 && (
+                  <p className="text-xs text-slate-400">Tidak ada prodi tersedia.</p>
+                )}
+                {programs.map((p) => (
+                  <label
+                    key={p.id}
+                    className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200"
+                  >
+                    <input
+                      type="checkbox"
+                      name="program_ids"
+                      value={p.id}
+                      className="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                    />
+                    {p.nama} <span className="text-xs text-slate-400">({p.kode})</span>
+                  </label>
+                ))}
+                <p className="pt-1 text-xs text-slate-400">
+                  Centang semua prodi yang dibawahi KPS ini (boleh lebih dari satu).
                 </p>
-              </>
+              </div>
             ) : (
+              // Residen: tepat satu prodi.
               <select name="program_id" required className={input} defaultValue="">
                 <option value="" disabled>
-                  — pilih program —
+                  — pilih prodi —
                 </option>
                 {programs.map((p) => (
                   <option key={p.id} value={p.id}>

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getKpsProgramIds } from "@/lib/kps";
 import type { UserRole } from "@/lib/types";
 
 const ROLES: UserRole[] = ["residen", "supervisor", "kps", "penguji", "admin"];
@@ -23,11 +24,11 @@ async function requireStaff(): Promise<string | null> {
   return user.id;
 }
 
-/** Konteks pemanggil (id, peran, program rumah) untuk staf kps/admin. */
+/** Konteks pemanggil (id, peran, prodi yang dikelola) untuk staf kps/admin. */
 async function requireStaffCtx(): Promise<{
   id: string;
   role: UserRole;
-  program_id: string | null;
+  programIds: string[];
 } | null> {
   const supabase = await createClient();
   const {
@@ -36,11 +37,14 @@ async function requireStaffCtx(): Promise<{
   if (!user) return null;
   const { data } = await supabase
     .from("profiles")
-    .select("role, program_id")
+    .select("role")
     .eq("id", user.id)
     .single();
   if (!data || !["kps", "admin"].includes(data.role)) return null;
-  return { id: user.id, role: data.role as UserRole, program_id: data.program_id };
+  const role = data.role as UserRole;
+  // KPS bisa membawahi beberapa prodi (relasi kps_programs).
+  const programIds = role === "kps" ? await getKpsProgramIds(supabase, user.id) : [];
+  return { id: user.id, role, programIds };
 }
 
 // Peran yang memiliki "program rumah" (residen & KPS). DPJP/penguji/admin
@@ -75,23 +79,47 @@ export async function createUser(
     return { error: "Password minimal 6 karakter." };
   if (!ROLES.includes(role)) return { error: "Peran tidak valid." };
 
-  // Program rumah hanya untuk residen/KPS. KPS dikunci ke programnya sendiri;
-  // super-admin memilih program. DPJP/penguji/admin selalu null (lintas-program).
-  let programId: string | null = null;
+  // Program rumah hanya untuk residen/KPS. DPJP/penguji/admin → null.
+  //   - Residen: tepat 1 prodi.
+  //   - KPS: bisa beberapa prodi (kps_programs); program_id = prodi utama.
+  // KPS pemanggil dibatasi ke prodi-prodi yang dikelolanya; super-admin bebas.
+  const supabase = await createClient();
+  let programId: string | null = null; // prodi utama (untuk profiles.program_id)
+  let kpsProgramIds: string[] = [];
+
   if (PROGRAM_ROLES.includes(role)) {
-    if (ctx.role === "kps") {
-      programId = ctx.program_id;
+    const allowed = ctx.role === "kps" ? ctx.programIds : null; // null = semua
+
+    if (role === "kps") {
+      let ids = formData
+        .getAll("program_ids")
+        .map((v) => String(v).trim())
+        .filter(Boolean);
+      if (allowed) ids = ids.filter((id) => allowed.includes(id));
+      ids = Array.from(new Set(ids));
+      if (ids.length === 0)
+        return { error: "Pilih minimal satu prodi untuk KPS." };
+      const { data: progs } = await supabase
+        .from("programs")
+        .select("id")
+        .in("id", ids);
+      const valid = new Set((progs ?? []).map((p) => p.id as string));
+      kpsProgramIds = ids.filter((id) => valid.has(id));
+      if (kpsProgramIds.length === 0) return { error: "Prodi tidak valid." };
+      programId = kpsProgramIds[0];
     } else {
+      // residen: satu prodi
       programId = String(formData.get("program_id") ?? "").trim() || null;
-      if (!programId) return { error: "Pilih program untuk residen/KPS." };
+      if (!programId) return { error: "Pilih prodi untuk residen." };
+      if (allowed && !allowed.includes(programId))
+        return { error: "Prodi di luar wewenang Anda." };
+      const { data: prog } = await supabase
+        .from("programs")
+        .select("id")
+        .eq("id", programId)
+        .maybeSingle();
+      if (!prog) return { error: "Prodi tidak valid." };
     }
-    const supabase = await createClient();
-    const { data: prog } = await supabase
-      .from("programs")
-      .select("id")
-      .eq("id", programId)
-      .maybeSingle();
-    if (!prog) return { error: "Program tidak valid." };
   }
 
   const admin = createAdminClient();
@@ -108,15 +136,58 @@ export async function createUser(
   if (error) return { error: error.message };
 
   // Pastikan profil & residents konsisten (defensif terhadap trigger).
-  const supabase = await createClient();
   await supabase
     .from("profiles")
     .update({ full_name: fullName, role, program_id: programId })
     .eq("id", data.user.id);
   await syncResidentRow(data.user.id, role);
 
+  // KPS: catat seluruh prodi yang dikelolanya (trigger sudah isi prodi utama).
+  if (role === "kps" && kpsProgramIds.length > 0) {
+    await admin
+      .from("kps_programs")
+      .upsert(
+        kpsProgramIds.map((pid) => ({ kps_id: data.user.id, program_id: pid })),
+        { onConflict: "kps_id,program_id" },
+      );
+  }
+
   revalidatePath("/admin");
   return { ok: true };
+}
+
+/** Atur prodi yang dikelola seorang KPS (super-admin). */
+export async function setKpsPrograms(
+  formData: FormData,
+): Promise<void> {
+  const ctx = await requireStaffCtx();
+  if (!ctx || ctx.role !== "admin") return;
+
+  const userId = String(formData.get("user_id") ?? "").trim();
+  if (!userId) return;
+  const ids = Array.from(
+    new Set(
+      formData
+        .getAll("program_ids")
+        .map((v) => String(v).trim())
+        .filter(Boolean),
+    ),
+  );
+
+  const admin = createAdminClient();
+  // Ganti total penugasan, lalu samakan prodi utama (profiles.program_id).
+  await admin.from("kps_programs").delete().eq("kps_id", userId);
+  if (ids.length > 0) {
+    await admin
+      .from("kps_programs")
+      .insert(ids.map((pid) => ({ kps_id: userId, program_id: pid })));
+  }
+  await admin
+    .from("profiles")
+    .update({ program_id: ids[0] ?? null })
+    .eq("id", userId);
+
+  revalidatePath("/admin");
 }
 
 export async function changeRole(formData: FormData) {

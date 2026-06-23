@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { accentHex, withDefaults } from "@/lib/program";
+import { getKpsProgramIds } from "@/lib/kps";
 import {
   CurriculumManager,
   type ProcedureRow,
@@ -17,12 +18,12 @@ export default async function KurikulumProgramPage({
 }) {
   const { id } = await params;
   const me = await requireProfile();
-  // Akses: super-admin (semua) atau KPS program ini.
-  const allowed =
-    me.role === "admin" || (me.role === "kps" && me.program_id === id);
-  if (!allowed) redirect("/dashboard");
-
   const supabase = await createClient();
+  // Akses: super-admin (semua) atau KPS yang membawahi program ini.
+  const allowed =
+    me.role === "admin" ||
+    (me.role === "kps" && (await getKpsProgramIds(supabase, me.id)).includes(id));
+  if (!allowed) redirect("/dashboard");
   const { data: prog } = await supabase
     .from("programs")
     .select("id, kode, nama, config, aktif")
