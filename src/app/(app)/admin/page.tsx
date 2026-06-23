@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { CreateUserForm } from "@/components/create-user-form";
+import {
+  CreateUserForm,
+  type ProgramOption,
+} from "@/components/create-user-form";
 import { UserRowActions } from "@/components/user-row-actions";
 import { TableCard } from "@/components/table-card";
 import type { UserRole } from "@/lib/types";
@@ -26,17 +29,29 @@ export default async function AdminPage() {
   if (!["kps", "admin"].includes(me.role)) redirect("/dashboard");
 
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, role")
-    .order("role");
+  const [{ data }, { data: progData }] = await Promise.all([
+    supabase.from("profiles").select("id, full_name, email, role").order("role"),
+    supabase.from("programs").select("id, kode, nama").eq("aktif", true).order("kode"),
+  ]);
   const profiles = (data ?? []) as ProfileRow[];
+  const programs = (progData ?? []) as ProgramOption[];
+  // KPS hanya boleh menempatkan user di programnya sendiri (terkunci) —
+  // ambil langsung (tak bergantung filter aktif pada dropdown super-admin).
+  let lockedProgram: ProgramOption | null = null;
+  if (me.role === "kps" && me.program_id) {
+    const { data: lp } = await supabase
+      .from("programs")
+      .select("id, kode, nama")
+      .eq("id", me.program_id)
+      .maybeSingle();
+    lockedProgram = (lp as ProgramOption | null) ?? null;
+  }
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
-      <CreateUserForm />
+      <CreateUserForm programs={programs} lockedProgram={lockedProgram} />
 
       <section>
         <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">

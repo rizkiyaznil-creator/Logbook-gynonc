@@ -23,6 +23,30 @@ async function requireStaff(): Promise<string | null> {
   return user.id;
 }
 
+/** Konteks pemanggil (id, peran, program rumah) untuk staf kps/admin. */
+async function requireStaffCtx(): Promise<{
+  id: string;
+  role: UserRole;
+  program_id: string | null;
+} | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data } = await supabase
+    .from("profiles")
+    .select("role, program_id")
+    .eq("id", user.id)
+    .single();
+  if (!data || !["kps", "admin"].includes(data.role)) return null;
+  return { id: user.id, role: data.role as UserRole, program_id: data.program_id };
+}
+
+// Peran yang memiliki "program rumah" (residen & KPS). DPJP/penguji/admin
+// bersifat lintas-program → program_id null.
+const PROGRAM_ROLES: UserRole[] = ["residen", "kps"];
+
 /** Sinkronkan baris residents sesuai peran. */
 async function syncResidentRow(userId: string, role: UserRole) {
   const supabase = await createClient();
@@ -37,8 +61,8 @@ export async function createUser(
   _prev: unknown,
   formData: FormData,
 ): Promise<{ error?: string; ok?: boolean }> {
-  if (!(await requireStaff()))
-    return { error: "Hanya KPS/Admin yang boleh membuat user." };
+  const ctx = await requireStaffCtx();
+  if (!ctx) return { error: "Hanya KPS/Admin yang boleh membuat user." };
 
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -51,12 +75,35 @@ export async function createUser(
     return { error: "Password minimal 6 karakter." };
   if (!ROLES.includes(role)) return { error: "Peran tidak valid." };
 
+  // Program rumah hanya untuk residen/KPS. KPS dikunci ke programnya sendiri;
+  // super-admin memilih program. DPJP/penguji/admin selalu null (lintas-program).
+  let programId: string | null = null;
+  if (PROGRAM_ROLES.includes(role)) {
+    if (ctx.role === "kps") {
+      programId = ctx.program_id;
+    } else {
+      programId = String(formData.get("program_id") ?? "").trim() || null;
+      if (!programId) return { error: "Pilih program untuk residen/KPS." };
+    }
+    const supabase = await createClient();
+    const { data: prog } = await supabase
+      .from("programs")
+      .select("id")
+      .eq("id", programId)
+      .maybeSingle();
+    if (!prog) return { error: "Program tidak valid." };
+  }
+
   const admin = createAdminClient();
   const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { full_name: fullName, role },
+    user_metadata: {
+      full_name: fullName,
+      role,
+      ...(programId ? { program_id: programId } : {}),
+    },
   });
   if (error) return { error: error.message };
 
@@ -64,7 +111,7 @@ export async function createUser(
   const supabase = await createClient();
   await supabase
     .from("profiles")
-    .update({ full_name: fullName, role })
+    .update({ full_name: fullName, role, program_id: programId })
     .eq("id", data.user.id);
   await syncResidentRow(data.user.id, role);
 
