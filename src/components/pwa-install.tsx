@@ -26,6 +26,19 @@ function isIOS(): boolean {
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 
+function isAndroid(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /android/i.test(navigator.userAgent);
+}
+
+/** Browser di dalam aplikasi lain (WhatsApp, Instagram, FB, dsb). */
+function isInAppBrowser(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  return /\bwv\b|FBAN|FBAV|Instagram|Line\/|FB_IAB|GSA\/|; ?wv\)/i.test(ua) ||
+    /WhatsApp/i.test(ua);
+}
+
 /** Re-render saat ketersediaan prompt berubah. */
 function useInstallable() {
   const [ready, setReady] = useState(0);
@@ -58,11 +71,15 @@ export function InstallButton() {
   const prompt = useInstallable();
   const [standalone, setStandalone] = useState(false);
   const [ios, setIos] = useState(false);
+  const [android, setAndroid] = useState(false);
+  const [inApp, setInApp] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     setStandalone(isStandalone());
     setIos(isIOS());
+    setAndroid(isAndroid());
+    setInApp(isInAppBrowser());
   }, []);
 
   if (standalone) {
@@ -106,12 +123,39 @@ export function InstallButton() {
           Pasang
         </button>
       </div>
-      {(showHelp || ios) && (
-        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-          {ios
-            ? "Di iPhone/iPad (Safari): buka menu Bagikan (kotak dengan panah ke atas) lalu pilih “Tambahkan ke Layar Utama”."
-            : "Dialog pemasangan belum tersedia. Buka menu browser (⋮ di kanan atas) → “Pasang aplikasi / Install app”. Jika menu itu tidak ada, kemungkinan aplikasi sudah terpasang, atau coba muat ulang halaman (Ctrl/Cmd+R) lalu coba lagi."}
-        </p>
+      {(showHelp || ios || inApp) && (
+        <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
+          {inApp ? (
+            <>
+              <p className="font-semibold text-amber-600 dark:text-amber-400">
+                Halaman ini dibuka di browser dalam aplikasi (mis. WhatsApp).
+              </p>
+              <p className="mt-1">
+                Pemasangan tidak bisa dari sini. Ketuk menu{" "}
+                <b>⋮</b> di pojok → <b>“Buka di Chrome”</b> (atau buka sendiri{" "}
+                alamatnya di Chrome), lalu coba <b>Pasang</b> lagi.
+              </p>
+            </>
+          ) : ios ? (
+            <p>
+              Di iPhone/iPad pakai <b>Safari</b>: ketuk menu <b>Bagikan</b>{" "}
+              (kotak dengan panah ke atas) → <b>“Tambahkan ke Layar Utama”</b>.
+            </p>
+          ) : android ? (
+            <p>
+              Dialog otomatis belum muncul. Di <b>Chrome</b>: ketuk menu{" "}
+              <b>⋮</b> (pojok kanan atas) → <b>“Tambahkan ke layar Utama”</b>{" "}
+              atau <b>“Pasang aplikasi”</b>. Jika belum ada, muat ulang halaman
+              lalu coba lagi.
+            </p>
+          ) : (
+            <p>
+              Dialog otomatis belum muncul. Di komputer pakai <b>Chrome/Edge</b>
+              : klik ikon <b>pasang</b> (monitor dengan panah) di ujung kanan
+              kolom alamat, atau menu <b>⋮</b> → <b>“Install app”</b>.
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
