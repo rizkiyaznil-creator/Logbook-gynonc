@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ResidentProgress } from "@/components/resident-progress";
+import { ResidentTimeline } from "@/components/resident-timeline";
 import { AcademicStats, AcademicRekap } from "@/components/academic-stats";
 import { TableCard } from "@/components/table-card";
 import { ProgressSkeleton, Skeleton } from "@/components/skeleton";
@@ -25,6 +26,9 @@ export default async function DashboardPage() {
             <span className="font-medium">Entri Baru</span>.
           </p>
         </div>
+        <Suspense fallback={<Skeleton className="h-44 w-full rounded-2xl" />}>
+          <ResidentTimeline residentId={profile.id} />
+        </Suspense>
         <Suspense fallback={<ProgressSkeleton />}>
           <ResidentProgress residentId={profile.id} />
         </Suspense>
