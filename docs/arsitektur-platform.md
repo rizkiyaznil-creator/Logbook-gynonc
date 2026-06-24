@@ -281,6 +281,20 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
     kurikulum ketiga prodinya, **tetapi TIDAK** data prodi obgin (dan
     sebaliknya). Build hijau.
 
+- **Fase 7 — Pengingat email & WhatsApp.** ✅ **SELESAI.** (lihat
+  `docs/notifikasi-setup.md`)
+  - **Kanal:** Email (Resend) + WhatsApp (Fonnte), provider-agnostik &
+    tahan-gagal (mati diam-diam bila env kosong). Modul `src/lib/notify`.
+  - **Real-time** lewat **Supabase DB Webhook** pada INSERT `notifications` →
+    `/api/notify/dispatch` (DPJP: entri menunggu verifikasi; residen: entri
+    diverifikasi/revisi). Satu titik integrasi: tiap notifikasi in-app ikut
+    keluar ke email/WA.
+  - **Mingguan** lewat **Vercel Cron** → `/api/notify/cron` (KPS: residen
+    berisiko terlambat; residen: capaian kurang & masa didik menipis). Durasi
+    proyeksi per-prodi (Fase durasi).
+  - **Konfigurasi pemilik:** env (RESEND_*, FONNTE_TOKEN, NOTIFY_WEBHOOK_SECRET,
+    CRON_SECRET, NEXT_PUBLIC_SITE_URL) + daftarkan webhook & cron. Build hijau.
+
 ---
 
 ## 8. Risiko & mitigasi
