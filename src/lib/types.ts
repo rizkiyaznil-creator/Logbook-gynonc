@@ -32,6 +32,8 @@ export interface ProgramConfig {
   label_tabel_penatalaksanaan?: string;
   figo_enabled?: boolean;
   staging_options?: string[];
+  /** Durasi pendidikan (bulan) — proyeksi kelulusan. Subspesialis 24, spesialis 48. */
+  durasi_bulan?: number;
 }
 
 export interface Program {

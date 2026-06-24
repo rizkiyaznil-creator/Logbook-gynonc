@@ -47,6 +47,8 @@ function cleanConfig(input: Partial<ProgramConfig>): ProgramConfig {
     cfg.label_tabel_penatalaksanaan = input.label_tabel_penatalaksanaan;
   cfg.figo_enabled = !!input.figo_enabled;
   cfg.staging_options = (input.staging_options ?? []).filter(Boolean);
+  if (input.durasi_bulan && input.durasi_bulan > 0)
+    cfg.durasi_bulan = Math.min(120, Math.round(input.durasi_bulan));
   return cfg;
 }
 

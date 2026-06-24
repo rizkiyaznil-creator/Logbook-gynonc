@@ -45,6 +45,7 @@ export function ProgramForm({
   );
   const [figo, setFigo] = useState(c.figo_enabled ?? false);
   const [staging, setStaging] = useState((c.staging_options ?? []).join(", "));
+  const [durasi, setDurasi] = useState(String(c.durasi_bulan ?? 24));
 
   const isEdit = !!program;
 
@@ -59,6 +60,7 @@ export function ProgramForm({
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
+      durasi_bulan: Math.max(1, parseInt(durasi, 10) || 24),
     };
     start(async () => {
       const res = isEdit
@@ -135,6 +137,23 @@ export function ProgramForm({
             onChange={(e) => setLabelPenata(e.target.value)}
           />
         </div>
+      </div>
+
+      <div className="sm:max-w-xs">
+        <label className={labelCls}>Durasi pendidikan (bulan)</label>
+        <input
+          className={inputCls}
+          type="number"
+          min={1}
+          max={120}
+          value={durasi}
+          placeholder="24"
+          onChange={(e) => setDurasi(e.target.value)}
+        />
+        <p className="mt-1 text-[11px] text-slate-400">
+          Subspesialis 24 · spesialis (obgin) 48. Dipakai untuk proyeksi
+          kelulusan di Rekap.
+        </p>
       </div>
 
       <div>

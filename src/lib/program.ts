@@ -20,6 +20,8 @@ export const DEFAULT_CONFIG: Required<ProgramConfig> = {
   label_tabel_penatalaksanaan: "",
   figo_enabled: true,
   staging_options: [],
+  // Default 24 bulan (subspesialis). Prodi spesialis (obgin) = 48.
+  durasi_bulan: 24,
 };
 
 /** Gabungkan config program dengan default (nilai kosong → default). */
@@ -33,6 +35,10 @@ export function withDefaults(config?: ProgramConfig | null): Required<ProgramCon
       c.label_tabel_penatalaksanaan ?? DEFAULT_CONFIG.label_tabel_penatalaksanaan,
     figo_enabled: c.figo_enabled ?? DEFAULT_CONFIG.figo_enabled,
     staging_options: c.staging_options ?? DEFAULT_CONFIG.staging_options,
+    durasi_bulan:
+      c.durasi_bulan && c.durasi_bulan > 0
+        ? c.durasi_bulan
+        : DEFAULT_CONFIG.durasi_bulan,
   };
 }
 
