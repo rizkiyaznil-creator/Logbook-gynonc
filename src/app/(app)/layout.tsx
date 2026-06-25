@@ -2,6 +2,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { Topbar, type NavItem } from "@/components/topbar";
 import { InstallPopup } from "@/components/pwa-install";
+import { AntiBullyingModal } from "@/components/anti-bullying-modal";
 import { getProgram, PLATFORM_NAME, accentHex } from "@/lib/program";
 import { getKpsProgramIds } from "@/lib/kps";
 import type { IconName } from "@/components/icons";
@@ -124,6 +125,7 @@ export default async function AppLayout({
         <div className="mt-1">Didesain oleh Muhammad Rizki Yaznil</div>
       </footer>
       <InstallPopup />
+      <AntiBullyingModal userId={profile.id} />
     </div>
   );
 }
