@@ -27,6 +27,7 @@ type ProfileRow = {
   full_name: string;
   email: string | null;
   role: UserRole;
+  program_id: string | null;
 };
 
 export default async function AdminPage() {
@@ -35,18 +36,26 @@ export default async function AdminPage() {
 
   const supabase = await createClient();
   const [{ data }, { data: progData }] = await Promise.all([
-    supabase.from("profiles").select("id, full_name, email, role").order("role"),
+    supabase
+      .from("profiles")
+      .select("id, full_name, email, role, program_id")
+      .order("role"),
     supabase.from("programs").select("id, kode, nama").eq("aktif", true).order("kode"),
   ]);
-  const profiles = (data ?? []) as ProfileRow[];
+  let profiles = (data ?? []) as ProfileRow[];
   const allPrograms = (progData ?? []) as ProgramOption[];
 
   // Prodi yang boleh ditugaskan pemanggil: super-admin → semua aktif;
   // KPS → hanya prodi yang dikelolanya.
   let allowedPrograms = allPrograms;
-  if (me.role === "kps") {
+  const isKps = me.role === "kps";
+  if (isKps) {
     const myIds = new Set(await getKpsProgramIds(supabase, me.id));
     allowedPrograms = allPrograms.filter((p) => myIds.has(p.id));
+    // KPS hanya boleh melihat & mengelola residen di prodi yang dikelolanya.
+    profiles = profiles.filter(
+      (p) => p.role === "residen" && p.program_id && myIds.has(p.program_id),
+    );
   }
 
   // Pengelola prodi-KPS (super-admin): daftar user KPS + prodi yang dibawahinya.
@@ -78,7 +87,7 @@ export default async function AdminPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
-      <CreateUserForm programs={allowedPrograms} />
+      <CreateUserForm programs={allowedPrograms} residenOnly={isKps} />
 
       {me.role === "admin" && (
         <section>
@@ -120,6 +129,7 @@ export default async function AdminPage() {
                       userId={p.id}
                       currentRole={p.role}
                       currentName={p.full_name}
+                      residenOnly={isKps}
                     />
                   </td>
                 </tr>

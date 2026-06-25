@@ -7,10 +7,13 @@ export function UserRowActions({
   userId,
   currentRole,
   currentName,
+  residenOnly = false,
 }: {
   userId: string;
   currentRole: UserRole;
   currentName: string;
+  /** KPS hanya boleh mengelola residen → peran dikunci ke "Residen". */
+  residenOnly?: boolean;
 }) {
   return (
     <div className="flex items-center justify-end gap-2">
@@ -19,17 +22,24 @@ export function UserRowActions({
         <select
           name="role"
           defaultValue={currentRole}
-          className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs"
+          disabled={residenOnly}
+          className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs disabled:cursor-not-allowed disabled:bg-slate-100 dark:disabled:bg-slate-800"
         >
           <option value="residen">Residen</option>
-          <option value="supervisor">Supervisor</option>
-          <option value="penguji">Penguji</option>
-          <option value="kps">KPS</option>
-          <option value="admin">Admin</option>
+          {!residenOnly && (
+            <>
+              <option value="supervisor">Supervisor</option>
+              <option value="penguji">Penguji</option>
+              <option value="kps">KPS</option>
+              <option value="admin">Admin</option>
+            </>
+          )}
         </select>
-        <button className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-          Simpan
-        </button>
+        {!residenOnly && (
+          <button className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+            Simpan
+          </button>
+        )}
       </form>
       <form
         action={deleteUser}

@@ -14,10 +14,13 @@ const PROGRAM_ROLES = ["residen", "kps"];
 
 export function CreateUserForm({
   programs,
+  residenOnly = false,
 }: {
   /** Prodi yang boleh ditugaskan oleh pemanggil (super-admin: semua aktif;
    *  KPS: hanya prodi-prodi yang dikelolanya). */
   programs: ProgramOption[];
+  /** KPS hanya boleh membuat residen → kunci peran ke "Residen". */
+  residenOnly?: boolean;
 }) {
   const [state, formAction, pending] = useActionState(createUser, null);
   const [role, setRole] = useState("residen");
@@ -40,13 +43,18 @@ export function CreateUserForm({
             name="role"
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className={input}
+            disabled={residenOnly}
+            className={`${input} disabled:cursor-not-allowed disabled:bg-slate-100 dark:disabled:bg-slate-800`}
           >
             <option value="residen">Residen</option>
-            <option value="supervisor">Supervisor (DPJP)</option>
-            <option value="penguji">Penguji</option>
-            <option value="kps">KPS / Admin Prodi</option>
-            <option value="admin">Administrator</option>
+            {!residenOnly && (
+              <>
+                <option value="supervisor">Supervisor (DPJP)</option>
+                <option value="penguji">Penguji</option>
+                <option value="kps">KPS / Admin Prodi</option>
+                <option value="admin">Administrator</option>
+              </>
+            )}
           </select>
         </div>
         <div>
