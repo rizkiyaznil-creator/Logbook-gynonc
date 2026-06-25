@@ -12,18 +12,31 @@ export type ProgramOption = { id: string; kode: string; nama: string };
 // Peran yang memiliki "program rumah". DPJP/penguji/admin lintas-program.
 const PROGRAM_ROLES = ["residen", "kps"];
 
+// Semua opsi peran (urutan tampil). Dipangkas oleh `allowedRoles`.
+const ROLE_OPTIONS: { value: string; label: string }[] = [
+  { value: "residen", label: "Residen" },
+  { value: "supervisor", label: "Supervisor (DPJP)" },
+  { value: "penguji", label: "Penguji" },
+  { value: "kps", label: "KPS / Admin Prodi" },
+  { value: "admin", label: "Administrator" },
+];
+
 export function CreateUserForm({
   programs,
-  residenOnly = false,
+  allowedRoles,
 }: {
   /** Prodi yang boleh ditugaskan oleh pemanggil (super-admin: semua aktif;
    *  KPS: hanya prodi-prodi yang dikelolanya). */
   programs: ProgramOption[];
-  /** KPS hanya boleh membuat residen → kunci peran ke "Residen". */
-  residenOnly?: boolean;
+  /** Peran yang boleh dibuat pemanggil. KPS: residen/penguji/DPJP saja
+   *  (tanpa Admin & KPS). Default: semua peran (super-admin). */
+  allowedRoles?: string[];
 }) {
+  const options = allowedRoles
+    ? ROLE_OPTIONS.filter((o) => allowedRoles.includes(o.value))
+    : ROLE_OPTIONS;
   const [state, formAction, pending] = useActionState(createUser, null);
-  const [role, setRole] = useState("residen");
+  const [role, setRole] = useState(options[0]?.value ?? "residen");
   const needsProgram = PROGRAM_ROLES.includes(role);
 
   return (
@@ -43,18 +56,13 @@ export function CreateUserForm({
             name="role"
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            disabled={residenOnly}
-            className={`${input} disabled:cursor-not-allowed disabled:bg-slate-100 dark:disabled:bg-slate-800`}
+            className={input}
           >
-            <option value="residen">Residen</option>
-            {!residenOnly && (
-              <>
-                <option value="supervisor">Supervisor (DPJP)</option>
-                <option value="penguji">Penguji</option>
-                <option value="kps">KPS / Admin Prodi</option>
-                <option value="admin">Administrator</option>
-              </>
-            )}
+            {options.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
           </select>
         </div>
         <div>

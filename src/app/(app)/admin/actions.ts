@@ -36,6 +36,11 @@ async function requireStaffCtx(): Promise<{
 // bersifat lintas-program → program_id null.
 const PROGRAM_ROLES: UserRole[] = ["residen", "kps"];
 
+// Peran yang boleh DIBUAT oleh seorang KPS. Boleh menambah residen (prodinya),
+// penguji, dan DPJP/supervisor — tetapi tidak Admin maupun KPS lain. Edit/hapus
+// tetap dibatasi ke residen prodinya (lihat staffCanManage).
+const KPS_CREATABLE: UserRole[] = ["residen", "supervisor", "penguji"];
+
 /**
  * Cek apakah staf (kps/admin) berwenang mengelola user `userId`.
  *  - admin (super-admin): boleh atas siapa pun.
@@ -89,10 +94,10 @@ export async function createUser(
     return { error: "Password minimal 6 karakter." };
   if (!ROLES.includes(role)) return { error: "Peran tidak valid." };
 
-  // KPS hanya boleh menambah residen (di prodi yang dikelolanya). Hanya
-  // super-admin yang boleh membuat supervisor/penguji/KPS/admin.
-  if (ctx.role === "kps" && role !== "residen")
-    return { error: "KPS hanya boleh menambah residen." };
+  // KPS boleh menambah residen (di prodinya), penguji, dan DPJP/supervisor.
+  // Admin & KPS lain tetap terlarang — hanya super-admin yang membuatnya.
+  if (ctx.role === "kps" && !KPS_CREATABLE.includes(role))
+    return { error: "KPS hanya boleh menambah residen, penguji, atau DPJP." };
 
   // Program rumah hanya untuk residen/KPS. DPJP/penguji/admin → null.
   //   - Residen: tepat 1 prodi.

@@ -49,14 +49,33 @@ export default async function AdminPage() {
   // KPS → hanya prodi yang dikelolanya.
   let allowedPrograms = allPrograms;
   const isKps = me.role === "kps";
+  let myProgramIds = new Set<string>();
   if (isKps) {
-    const myIds = new Set(await getKpsProgramIds(supabase, me.id));
-    allowedPrograms = allPrograms.filter((p) => myIds.has(p.id));
-    // KPS hanya boleh melihat & mengelola residen di prodi yang dikelolanya.
+    myProgramIds = new Set(await getKpsProgramIds(supabase, me.id));
+    allowedPrograms = allPrograms.filter((p) => myProgramIds.has(p.id));
+    // KPS melihat: residen prodinya (dapat dikelola) + penguji & DPJP
+    // (baca-saja). Admin & KPS lain disembunyikan.
     profiles = profiles.filter(
-      (p) => p.role === "residen" && p.program_id && myIds.has(p.program_id),
+      (p) =>
+        (p.role === "residen" && p.program_id && myProgramIds.has(p.program_id)) ||
+        p.role === "supervisor" ||
+        p.role === "penguji",
     );
   }
+
+  // Peran yang boleh dibuat: super-admin → semua; KPS → residen/penguji/DPJP.
+  const creatableRoles = isKps
+    ? ["residen", "supervisor", "penguji"]
+    : undefined;
+
+  // Wewenang aksi per-baris untuk KPS: hapus hanya residen prodinya; tak boleh
+  // ubah peran siapa pun. Super-admin: penuh.
+  const rowCaps = (p: ProfileRow) => {
+    if (!isKps) return { canEditRole: true, canDelete: true };
+    const ownResiden =
+      p.role === "residen" && !!p.program_id && myProgramIds.has(p.program_id);
+    return { canEditRole: false, canDelete: ownResiden };
+  };
 
   // Pengelola prodi-KPS (super-admin): daftar user KPS + prodi yang dibawahinya.
   let kpsUsers: KpsUser[] = [];
@@ -87,7 +106,7 @@ export default async function AdminPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
-      <CreateUserForm programs={allowedPrograms} residenOnly={isKps} />
+      <CreateUserForm programs={allowedPrograms} allowedRoles={creatableRoles} />
 
       {me.role === "admin" && (
         <section>
@@ -129,7 +148,7 @@ export default async function AdminPage() {
                       userId={p.id}
                       currentRole={p.role}
                       currentName={p.full_name}
-                      residenOnly={isKps}
+                      {...rowCaps(p)}
                     />
                   </td>
                 </tr>
