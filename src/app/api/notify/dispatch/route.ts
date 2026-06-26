@@ -9,6 +9,7 @@
 // Keamanan: header `x-notify-secret` harus cocok dengan NOTIFY_WEBHOOK_SECRET.
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyRecipient } from "@/lib/notify/channels";
+import { timingSafeEqual } from "node:crypto";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,9 +22,18 @@ type NotifRecord = {
   type?: string;
 };
 
+/** Perbandingan rahasia tahan-waktu (timing-safe) agar tak bocor lewat timing. */
+function secretMatches(provided: string | null, expected: string): boolean {
+  if (!provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
+
 export async function POST(req: Request): Promise<Response> {
   const secret = process.env.NOTIFY_WEBHOOK_SECRET;
-  if (!secret || req.headers.get("x-notify-secret") !== secret)
+  if (!secret || !secretMatches(req.headers.get("x-notify-secret"), secret))
     return new Response("unauthorized", { status: 401 });
 
   const payload = (await req.json().catch(() => null)) as
