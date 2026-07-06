@@ -21,9 +21,11 @@ type RecentRow = {
 
 export default async function PenilaianPage() {
   const profile = await requireProfile();
-  if (!["penguji", "kps", "admin"].includes(profile.role)) {
+  if (!["penguji", "kps", "sps", "admin", "admin_prodi"].includes(profile.role)) {
     redirect("/dashboard");
   }
+  // Admin Prodi: hanya membaca daftar nilai, tanpa form input.
+  const canAssess = profile.role !== "admin_prodi";
 
   const supabase = await createClient();
   const [resRes, itemRes, recentRes] = await Promise.all([
@@ -63,7 +65,14 @@ export default async function PenilaianPage() {
       </h1>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <AssessmentForm residents={residents} items={items} />
+        {canAssess ? (
+          <AssessmentForm residents={residents} items={items} />
+        ) : (
+          <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500 ring-1 ring-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:ring-slate-800">
+            Anda masuk sebagai Admin Prodi (read-only). Daftar nilai dapat
+            dilihat, tetapi input nilai tidak tersedia.
+          </p>
+        )}
 
         <section>
           <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">

@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { setKpsPrograms } from "@/app/(app)/admin/actions";
 import type { ProgramOption } from "@/components/create-user-form";
+import { ROLE_LABEL } from "@/lib/roles";
+import type { UserRole } from "@/lib/types";
 
 export type KpsUser = {
   id: string;
   full_name: string;
   email: string | null;
+  role: UserRole;
   program_ids: string[];
 };
 
@@ -26,7 +29,7 @@ export function KpsProgramsManager({
   if (kpsUsers.length === 0) {
     return (
       <p className="text-sm text-slate-400 dark:text-slate-500">
-        Belum ada pengguna berperan KPS.
+        Belum ada Ketua Prodi / SPS / Admin Prodi.
       </p>
     );
   }
@@ -63,6 +66,9 @@ function KpsRow({
         <div>
           <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
             {user.full_name}
+            <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-normal text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+              {ROLE_LABEL[user.role]}
+            </span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
             {user.email ?? "—"}

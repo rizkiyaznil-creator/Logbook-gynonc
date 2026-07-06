@@ -9,15 +9,19 @@ const label = "block text-sm font-medium text-slate-700 dark:text-slate-200";
 
 export type ProgramOption = { id: string; kode: string; nama: string };
 
-// Peran yang memiliki "program rumah". DPJP/penguji/admin lintas-program.
-const PROGRAM_ROLES = ["residen", "kps"];
+// Peran yang butuh pilihan prodi. DPJP/penguji/admin lintas-program.
+const PROGRAM_ROLES = ["residen", "kps", "sps", "admin_prodi"];
+// Peran ber-lingkup-prodi dengan pilihan BANYAK prodi (checkbox).
+const MULTI_PROGRAM_ROLES = ["kps", "sps", "admin_prodi"];
 
 // Semua opsi peran (urutan tampil). Dipangkas oleh `allowedRoles`.
 const ROLE_OPTIONS: { value: string; label: string }[] = [
   { value: "residen", label: "Residen" },
   { value: "supervisor", label: "Supervisor (DPJP)" },
   { value: "penguji", label: "Penguji" },
-  { value: "kps", label: "KPS / Admin Prodi" },
+  { value: "kps", label: "Ketua Prodi" },
+  { value: "sps", label: "SPS / Sekretaris Prodi" },
+  { value: "admin_prodi", label: "Admin Prodi (read-only)" },
   { value: "admin", label: "Administrator" },
 ];
 
@@ -74,15 +78,15 @@ export function CreateUserForm({
           <input name="password" type="text" required className={input} />
         </div>
 
-        {/* Prodi — hanya untuk residen/KPS. */}
+        {/* Prodi — untuk residen & staf prodi (KPS/SPS/Admin Prodi). */}
         {needsProgram && (
           <div className="sm:col-span-2">
             <label className={label}>
-              {role === "kps" ? "Prodi yang dikelola" : "Prodi"}
+              {MULTI_PROGRAM_ROLES.includes(role) ? "Prodi yang dikelola" : "Prodi"}
             </label>
 
-            {role === "kps" ? (
-              // KPS: bisa membawahi beberapa prodi sekaligus.
+            {MULTI_PROGRAM_ROLES.includes(role) ? (
+              // KPS/SPS/Admin Prodi: bisa membawahi beberapa prodi sekaligus.
               <div className="mt-1 space-y-1.5 rounded-lg border border-slate-300 p-3 dark:border-slate-700">
                 {programs.length === 0 && (
                   <p className="text-xs text-slate-400">Tidak ada prodi tersedia.</p>
@@ -102,7 +106,7 @@ export function CreateUserForm({
                   </label>
                 ))}
                 <p className="pt-1 text-xs text-slate-400">
-                  Centang semua prodi yang dibawahi KPS ini (boleh lebih dari satu).
+                  Centang semua prodi yang dibawahi (boleh lebih dari satu).
                 </p>
               </div>
             ) : (

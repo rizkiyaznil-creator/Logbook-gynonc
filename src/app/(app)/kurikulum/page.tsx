@@ -4,6 +4,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PLATFORM_NAME, accentHex, withDefaults } from "@/lib/program";
 import { getKpsProgramIds } from "@/lib/kps";
+import { isProdiScoped } from "@/lib/roles";
 import {
   ProgramsAdmin,
   type ProgramWithCounts,
@@ -18,7 +19,8 @@ export default async function KurikulumPage() {
   const me = await requireProfile();
   const supabase = await createClient();
 
-  if (me.role === "kps") {
+  // KPS/SPS (kelola) & Admin Prodi (read-only) → daftar/kurikulum prodinya.
+  if (isProdiScoped(me.role)) {
     const ids = await getKpsProgramIds(supabase, me.id);
     if (ids.length === 0) redirect("/dashboard");
     if (ids.length === 1) redirect(`/kurikulum/${ids[0]}`);

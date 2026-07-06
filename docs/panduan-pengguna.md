@@ -18,7 +18,9 @@ pendaftaran**, **alur pengisian**, dan **alur verifikasi** laporan di aplikasi.
 | **Residen** | Mengisi logbook, karya ilmiah, melihat capaian & mencetak rekap dirinya. Terikat satu program studi. |
 | **Supervisor (DPJP)** | Memverifikasi entri & karya ilmiah residen yang ditujukan kepadanya. Lintas-prodi. |
 | **Penguji** | Memberi penilaian pengetahuan (mis. WBA/OSCE/MCQ). Lintas-prodi. |
-| **KPS / Admin Prodi** | Verifikasi, penilaian, rekap, kurikulum, audit, dan manajemen pengguna — **terbatas pada prodi yang dikelolanya** (boleh lebih dari satu prodi). |
+| **Ketua Prodi** | Verifikasi, penilaian, rekap, kurikulum, audit, dan manajemen pengguna — **terbatas pada prodi yang dikelolanya** (boleh lebih dari satu prodi). |
+| **SPS / Sekretaris Prodi** | Wewenang **identik dengan Ketua Prodi** (terbatas pada prodinya). |
+| **Admin Prodi** | **READ-ONLY** — memantau seluruh data prodinya (dashboard, verifikasi, penilaian, rekap, kurikulum, audit, daftar pengguna) tanpa dapat mengubah apa pun. |
 | **Administrator** | Akses penuh lintas seluruh program studi, termasuk pengaturan program & manajemen semua pengguna. |
 
 Menu yang tampil di sisi kiri menyesuaikan peran masing-masing.
@@ -47,17 +49,18 @@ Aplikasi ini **tidak menyediakan pendaftaran mandiri**. Akun dibuat oleh
 
 **Batas wewenang pembuatan & pengelolaan akun:**
 
-| | KPS / Admin Prodi | Administrator |
+| | Ketua Prodi / SPS | Administrator |
 |---|---|---|
-| Membuat akun | Residen (prodinya), Penguji, DPJP | Semua peran (termasuk KPS & Administrator) |
+| Membuat akun | Residen (prodinya), Penguji, DPJP | Semua peran (termasuk staf prodi & Administrator) |
 | Mengubah peran | — (tidak bisa) | Semua pengguna |
 | Menghapus akun | Hanya residen di prodinya | Semua pengguna |
 | Daftar yang terlihat | Residen prodinya + penguji & DPJP (baca-saja) | Semua pengguna |
-| Atur prodi yang dikelola KPS | — | Ya (1 KPS boleh >1 prodi) |
+| Atur prodi staf prodi | — | Ya (1 staf boleh >1 prodi) |
 
-KPS **tidak** dapat membuat/mengubah/menghapus akun Administrator atau KPS lain,
-maupun residen prodi lain. Penguji & DPJP yang sudah ada bersifat baca-saja bagi
-KPS.
+Ketua Prodi & SPS **tidak** dapat membuat/mengubah/menghapus akun Administrator
+atau staf prodi lain, maupun residen prodi lain. **Admin Prodi** bersifat
+read-only — tidak dapat membuat/mengubah/menghapus pengguna sama sekali.
+Administrator mengatur peran & prodi tiap Ketua Prodi / SPS / Admin Prodi.
 
 ### 2.2 Masuk (login)
 1. Buka halaman aplikasi → layar **Masuk**.

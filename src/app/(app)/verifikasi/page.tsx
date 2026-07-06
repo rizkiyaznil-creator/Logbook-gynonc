@@ -44,7 +44,9 @@ function ProgramBadge({ program }: { program: ProgramRef | null }) {
 }
 
 export default async function VerifikasiPage() {
-  await requireProfile();
+  const profile = await requireProfile();
+  // Admin Prodi: memantau antrean secara read-only (tanpa tombol keputusan).
+  const canDecide = profile.role !== "admin_prodi";
   const supabase = await createClient();
 
   const [{ data }, { data: workData }] = await Promise.all([
@@ -78,6 +80,13 @@ export default async function VerifikasiPage() {
           {rows.length}
         </span>
       </h1>
+
+      {!canDecide && (
+        <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-500 ring-1 ring-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:ring-slate-800">
+          Mode Admin Prodi (read-only): Anda dapat memantau antrean, tetapi tidak
+          dapat memberi keputusan verifikasi.
+        </p>
+      )}
 
       {rows.length === 0 && (
         <p className="rounded-xl bg-white dark:bg-slate-900 p-8 text-center text-slate-400 dark:text-slate-500 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
@@ -135,6 +144,7 @@ export default async function VerifikasiPage() {
                 </div>
               </div>
 
+              {canDecide && (
               <form action={reviewEntry} className="mt-3 flex items-center gap-2">
                 <input type="hidden" name="entry_id" value={r.id} />
                 <input
@@ -164,6 +174,7 @@ export default async function VerifikasiPage() {
                   Tolak
                 </button>
               </form>
+              )}
             </div>
           );
         })}
@@ -217,6 +228,7 @@ export default async function VerifikasiPage() {
                     Lihat berkas ↗
                   </a>
                 )}
+                {canDecide && (
                 <form action={reviewWork} className="mt-3 flex items-center gap-2">
                   <input type="hidden" name="work_id" value={w.id} />
                   <input
@@ -246,6 +258,7 @@ export default async function VerifikasiPage() {
                     Tolak
                   </button>
                 </form>
+                )}
               </div>
             ))}
           </div>

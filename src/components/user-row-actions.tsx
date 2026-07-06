@@ -36,7 +36,9 @@ export function UserRowActions({
             <option value="residen">Residen</option>
             <option value="supervisor">Supervisor</option>
             <option value="penguji">Penguji</option>
-            <option value="kps">KPS</option>
+            <option value="kps">Ketua Prodi</option>
+            <option value="sps">SPS / Sekretaris Prodi</option>
+            <option value="admin_prodi">Admin Prodi</option>
             <option value="admin">Admin</option>
           </select>
           <button className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50">

@@ -4,6 +4,7 @@ import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { accentHex, withDefaults } from "@/lib/program";
 import { getKpsProgramIds } from "@/lib/kps";
+import { isProdiScoped, isProdiStaff } from "@/lib/roles";
 import {
   CurriculumManager,
   type ProcedureRow,
@@ -19,11 +20,15 @@ export default async function KurikulumProgramPage({
   const { id } = await params;
   const me = await requireProfile();
   const supabase = await createClient();
-  // Akses: super-admin (semua) atau KPS yang membawahi program ini.
-  const allowed =
-    me.role === "admin" ||
-    (me.role === "kps" && (await getKpsProgramIds(supabase, me.id)).includes(id));
+  // Akses: super-admin (semua) atau staf prodi (KPS/SPS kelola, Admin Prodi
+  // read-only) yang membawahi program ini.
+  const memberOfProgram =
+    isProdiScoped(me.role) &&
+    (await getKpsProgramIds(supabase, me.id)).includes(id);
+  const allowed = me.role === "admin" || memberOfProgram;
   if (!allowed) redirect("/dashboard");
+  // Hanya super-admin & KPS/SPS boleh menyunting; Admin Prodi read-only.
+  const canEdit = me.role === "admin" || isProdiStaff(me.role);
   const { data: prog } = await supabase
     .from("programs")
     .select("id, kode, nama, config, aktif")
@@ -85,7 +90,7 @@ export default async function KurikulumProgramPage({
         programId={id}
         procedures={procedures}
         clinical={clinical}
-        canEdit
+        canEdit={canEdit}
       />
 
       <p className="text-xs text-slate-400 dark:text-slate-500">

@@ -76,7 +76,8 @@ const td = "px-4 py-2.5 text-slate-700 dark:text-slate-200";
 
 export default async function RekapPage() {
   const me = await requireProfile();
-  if (!["kps", "admin"].includes(me.role)) redirect("/dashboard");
+  if (!["kps", "sps", "admin_prodi", "admin"].includes(me.role))
+    redirect("/dashboard");
 
   const supabase = await createClient();
   const [resRes, sumRes, procRes, clinRes, entryRes, supRes, progRes] =

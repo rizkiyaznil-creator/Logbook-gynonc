@@ -12,15 +12,8 @@ import {
 } from "@/components/kps-programs-manager";
 import { UserRowActions } from "@/components/user-row-actions";
 import { TableCard } from "@/components/table-card";
+import { ROLE_LABEL, isProdiStaff, isProdiScoped } from "@/lib/roles";
 import type { UserRole } from "@/lib/types";
-
-const ROLE_LABEL: Record<UserRole, string> = {
-  residen: "Residen",
-  supervisor: "Supervisor",
-  kps: "KPS / Admin Prodi",
-  penguji: "Penguji",
-  admin: "Administrator",
-};
 
 type ProfileRow = {
   id: string;
@@ -32,7 +25,7 @@ type ProfileRow = {
 
 export default async function AdminPage() {
   const me = await requireProfile();
-  if (!["kps", "admin"].includes(me.role)) redirect("/dashboard");
+  if (me.role !== "admin" && !isProdiScoped(me.role)) redirect("/dashboard");
 
   const supabase = await createClient();
   const [{ data }, { data: progData }] = await Promise.all([
@@ -45,16 +38,21 @@ export default async function AdminPage() {
   let profiles = (data ?? []) as ProfileRow[];
   const allPrograms = (progData ?? []) as ProgramOption[];
 
-  // Prodi yang boleh ditugaskan pemanggil: super-admin → semua aktif;
-  // KPS → hanya prodi yang dikelolanya.
+  // Klasifikasi pemanggil:
+  //  - super-admin: kelola semua.
+  //  - KPS/SPS (staf prodi): kelola residen prodinya.
+  //  - Admin Prodi: READ-ONLY (lihat daftar, tanpa aksi & tanpa form buat).
+  const isSuper = me.role === "admin";
+  const isStaff = isProdiStaff(me.role); // kps/sps
+  const isReadOnly = me.role === "admin_prodi";
+
   let allowedPrograms = allPrograms;
-  const isKps = me.role === "kps";
   let myProgramIds = new Set<string>();
-  if (isKps) {
+  if (isProdiScoped(me.role)) {
     myProgramIds = new Set(await getKpsProgramIds(supabase, me.id));
     allowedPrograms = allPrograms.filter((p) => myProgramIds.has(p.id));
-    // KPS melihat: residen prodinya (dapat dikelola) + penguji & DPJP
-    // (baca-saja). Admin & KPS lain disembunyikan.
+    // Lihat: residen prodinya + penguji & DPJP. Admin & staf prodi lain
+    // (KPS/SPS/Admin Prodi lain) disembunyikan.
     profiles = profiles.filter(
       (p) =>
         (p.role === "residen" && p.program_id && myProgramIds.has(p.program_id)) ||
@@ -63,24 +61,26 @@ export default async function AdminPage() {
     );
   }
 
-  // Peran yang boleh dibuat: super-admin → semua; KPS → residen/penguji/DPJP.
-  const creatableRoles = isKps
+  // Peran yang boleh dibuat: super-admin → semua; KPS/SPS → residen/penguji/DPJP;
+  // Admin Prodi → tak boleh membuat (form disembunyikan).
+  const creatableRoles = isStaff
     ? ["residen", "supervisor", "penguji"]
     : undefined;
 
-  // Wewenang aksi per-baris untuk KPS: hapus hanya residen prodinya; tak boleh
-  // ubah peran siapa pun. Super-admin: penuh.
+  // Wewenang aksi per-baris: super-admin penuh; KPS/SPS hapus residen prodinya;
+  // Admin Prodi tanpa aksi apa pun.
   const rowCaps = (p: ProfileRow) => {
-    if (!isKps) return { canEditRole: true, canDelete: true };
+    if (isSuper) return { canEditRole: true, canDelete: true };
+    if (isReadOnly) return { canEditRole: false, canDelete: false };
     const ownResiden =
       p.role === "residen" && !!p.program_id && myProgramIds.has(p.program_id);
     return { canEditRole: false, canDelete: ownResiden };
   };
 
-  // Pengelola prodi-KPS (super-admin): daftar user KPS + prodi yang dibawahinya.
+  // Pengelola prodi staf (super-admin): daftar KPS/SPS/Admin Prodi + prodinya.
   let kpsUsers: KpsUser[] = [];
-  if (me.role === "admin") {
-    const kpsRows = profiles.filter((p) => p.role === "kps");
+  if (isSuper) {
+    const kpsRows = profiles.filter((p) => isProdiScoped(p.role));
     if (kpsRows.length > 0) {
       const { data: links } = await supabase
         .from("kps_programs")
@@ -97,6 +97,7 @@ export default async function AdminPage() {
         id: k.id,
         full_name: k.full_name,
         email: k.email,
+        role: k.role,
         program_ids: byUser.get(k.id) ?? [],
       }));
     }
@@ -106,16 +107,18 @@ export default async function AdminPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Manajemen User</h1>
 
-      <CreateUserForm programs={allowedPrograms} allowedRoles={creatableRoles} />
+      {!isReadOnly && (
+        <CreateUserForm programs={allowedPrograms} allowedRoles={creatableRoles} />
+      )}
 
-      {me.role === "admin" && (
+      {isSuper && (
         <section>
           <h2 className="mb-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
-            Prodi yang Dikelola KPS
+            Prodi yang Dikelola Staf Prodi
           </h2>
           <p className="mb-3 text-xs text-slate-400 dark:text-slate-500">
-            Satu KPS dapat membawahi beberapa prodi (mis. KPS subspesialis untuk
-            Fetomaternal, FER, dan Onkogin).
+            Ketua Prodi, SPS, dan Admin Prodi dapat membawahi satu atau beberapa
+            prodi sekaligus.
           </p>
           <KpsProgramsManager kpsUsers={kpsUsers} programs={allPrograms} />
         </section>

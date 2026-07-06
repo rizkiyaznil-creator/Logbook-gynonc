@@ -5,11 +5,24 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getKpsProgramIds } from "@/lib/kps";
+import { isProdiStaff } from "@/lib/roles";
 import type { UserRole } from "@/lib/types";
 
-const ROLES: UserRole[] = ["residen", "supervisor", "kps", "penguji", "admin"];
+const ROLES: UserRole[] = [
+  "residen",
+  "supervisor",
+  "kps",
+  "sps",
+  "admin_prodi",
+  "penguji",
+  "admin",
+];
 
-/** Konteks pemanggil (id, peran, prodi yang dikelola) untuk staf kps/admin. */
+/**
+ * Konteks pemanggil untuk aksi manajemen user. Hanya staf dengan wewenang
+ * TULIS: super-admin, KPS, dan SPS. Admin Prodi (read-only) ditolak di sini
+ * sehingga tak bisa membuat/mengubah/menghapus apa pun.
+ */
 async function requireStaffCtx(): Promise<{
   id: string;
   role: UserRole;
@@ -25,27 +38,32 @@ async function requireStaffCtx(): Promise<{
     .select("role")
     .eq("id", user.id)
     .single();
-  if (!data || !["kps", "admin"].includes(data.role)) return null;
+  if (!data || !["kps", "sps", "admin"].includes(data.role)) return null;
   const role = data.role as UserRole;
-  // KPS bisa membawahi beberapa prodi (relasi kps_programs).
-  const programIds = role === "kps" ? await getKpsProgramIds(supabase, user.id) : [];
+  // KPS/SPS bisa membawahi beberapa prodi (relasi kps_programs).
+  const programIds = isProdiStaff(role)
+    ? await getKpsProgramIds(supabase, user.id)
+    : [];
   return { id: user.id, role, programIds };
 }
 
-// Peran yang memiliki "program rumah" (residen & KPS). DPJP/penguji/admin
+// Peran yang memiliki "program rumah" / keanggotaan prodi. DPJP/penguji/admin
 // bersifat lintas-program → program_id null.
-const PROGRAM_ROLES: UserRole[] = ["residen", "kps"];
+const PROGRAM_ROLES: UserRole[] = ["residen", "kps", "sps", "admin_prodi"];
 
-// Peran yang boleh DIBUAT oleh seorang KPS. Boleh menambah residen (prodinya),
-// penguji, dan DPJP/supervisor — tetapi tidak Admin maupun KPS lain. Edit/hapus
-// tetap dibatasi ke residen prodinya (lihat staffCanManage).
+// Peran ber-lingkup-prodi yang dibuat dengan pilihan BANYAK prodi (kps_programs).
+const MULTI_PROGRAM_ROLES: UserRole[] = ["kps", "sps", "admin_prodi"];
+
+// Peran yang boleh DIBUAT oleh KPS/SPS: residen (prodinya), penguji, DPJP —
+// tetapi tidak Admin, KPS, SPS, atau Admin Prodi. Edit/hapus tetap dibatasi ke
+// residen prodinya (lihat staffCanManage).
 const KPS_CREATABLE: UserRole[] = ["residen", "supervisor", "penguji"];
 
 /**
- * Cek apakah staf (kps/admin) berwenang mengelola user `userId`.
+ * Cek apakah staf berwenang mengelola user `userId`.
  *  - admin (super-admin): boleh atas siapa pun.
- *  - kps: hanya residen yang prodinya termasuk prodi yang dikelolanya.
- *    Tidak boleh menyentuh admin, KPS lain, atau residen prodi lain.
+ *  - kps/sps: hanya residen yang prodinya termasuk prodi yang dikelolanya.
+ *    Tidak boleh menyentuh admin, staf prodi lain, atau residen prodi lain.
  */
 async function staffCanManage(
   supabase: SupabaseClient,
@@ -81,7 +99,7 @@ export async function createUser(
   formData: FormData,
 ): Promise<{ error?: string; ok?: boolean }> {
   const ctx = await requireStaffCtx();
-  if (!ctx) return { error: "Hanya KPS/Admin yang boleh membuat user." };
+  if (!ctx) return { error: "Anda tidak berwenang membuat user." };
 
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -94,23 +112,23 @@ export async function createUser(
     return { error: "Password minimal 6 karakter." };
   if (!ROLES.includes(role)) return { error: "Peran tidak valid." };
 
-  // KPS boleh menambah residen (di prodinya), penguji, dan DPJP/supervisor.
-  // Admin & KPS lain tetap terlarang — hanya super-admin yang membuatnya.
-  if (ctx.role === "kps" && !KPS_CREATABLE.includes(role))
-    return { error: "KPS hanya boleh menambah residen, penguji, atau DPJP." };
+  // KPS/SPS boleh menambah residen (di prodinya), penguji, dan DPJP/supervisor.
+  // Admin & staf prodi lain terlarang — hanya super-admin yang membuatnya.
+  if (isProdiStaff(ctx.role) && !KPS_CREATABLE.includes(role))
+    return { error: "Anda hanya boleh menambah residen, penguji, atau DPJP." };
 
-  // Program rumah hanya untuk residen/KPS. DPJP/penguji/admin → null.
+  // Keanggotaan prodi hanya untuk residen & staf prodi (kps/sps/admin_prodi).
   //   - Residen: tepat 1 prodi.
-  //   - KPS: bisa beberapa prodi (kps_programs); program_id = prodi utama.
-  // KPS pemanggil dibatasi ke prodi-prodi yang dikelolanya; super-admin bebas.
+  //   - Staf prodi: bisa beberapa prodi (kps_programs); program_id = prodi utama.
+  // KPS/SPS pemanggil dibatasi ke prodi-prodi yang dikelolanya; super-admin bebas.
   const supabase = await createClient();
   let programId: string | null = null; // prodi utama (untuk profiles.program_id)
   let kpsProgramIds: string[] = [];
 
   if (PROGRAM_ROLES.includes(role)) {
-    const allowed = ctx.role === "kps" ? ctx.programIds : null; // null = semua
+    const allowed = isProdiStaff(ctx.role) ? ctx.programIds : null; // null = semua
 
-    if (role === "kps") {
+    if (MULTI_PROGRAM_ROLES.includes(role)) {
       let ids = formData
         .getAll("program_ids")
         .map((v) => String(v).trim())
@@ -118,7 +136,7 @@ export async function createUser(
       if (allowed) ids = ids.filter((id) => allowed.includes(id));
       ids = Array.from(new Set(ids));
       if (ids.length === 0)
-        return { error: "Pilih minimal satu prodi untuk KPS." };
+        return { error: "Pilih minimal satu prodi." };
       const { data: progs } = await supabase
         .from("programs")
         .select("id")
@@ -162,8 +180,8 @@ export async function createUser(
     .eq("id", data.user.id);
   await syncResidentRow(data.user.id, role);
 
-  // KPS: catat seluruh prodi yang dikelolanya (trigger sudah isi prodi utama).
-  if (role === "kps" && kpsProgramIds.length > 0) {
+  // Staf prodi: catat seluruh prodi yang dikelolanya (trigger isi prodi utama).
+  if (MULTI_PROGRAM_ROLES.includes(role) && kpsProgramIds.length > 0) {
     await admin
       .from("kps_programs")
       .upsert(
@@ -218,10 +236,10 @@ export async function changeRole(formData: FormData) {
   if (!ROLES.includes(role)) return;
 
   const supabase = await createClient();
-  // KPS dibatasi: hanya boleh menyentuh residen di prodinya, dan tidak boleh
+  // KPS/SPS dibatasi: hanya boleh menyentuh residen di prodinya, dan tidak boleh
   // menaikkan peran residen menjadi peran lain.
   if (!(await staffCanManage(supabase, ctx, userId))) return;
-  if (ctx.role === "kps" && role !== "residen") return;
+  if (ctx.role !== "admin" && role !== "residen") return;
 
   await supabase.from("profiles").update({ role }).eq("id", userId);
   await syncResidentRow(userId, role);

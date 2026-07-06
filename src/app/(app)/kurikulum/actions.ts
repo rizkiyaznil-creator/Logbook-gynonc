@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getKpsProgramIds } from "@/lib/kps";
-import type { ProgramConfig } from "@/lib/types";
+import { isProdiStaff } from "@/lib/roles";
+import type { ProgramConfig, UserRole } from "@/lib/types";
 
 type Result = { ok?: boolean; error?: string; id?: string };
 
@@ -25,17 +26,24 @@ async function caller() {
     .eq("id", user.id)
     .single();
   const role = (data?.role ?? null) as string | null;
-  // KPS bisa membawahi beberapa prodi (relasi kps_programs).
-  const programIds = role === "kps" ? await getKpsProgramIds(supabase, user.id) : [];
+  // KPS/SPS bisa membawahi beberapa prodi (relasi kps_programs).
+  const programIds =
+    role && isProdiStaff(role as UserRole)
+      ? await getKpsProgramIds(supabase, user.id)
+      : [];
   return { supabase, user, role, programIds };
 }
 
-/** Boleh kelola kurikulum program ini? super-admin (semua) atau KPS-nya. */
+/** Boleh kelola kurikulum program ini? super-admin (semua) atau KPS/SPS-nya.
+ *  Admin Prodi (read-only) TIDAK boleh. */
 function canManage(
   c: { role: string | null; programIds: string[] },
   programId: string,
 ): boolean {
-  return c.role === "admin" || (c.role === "kps" && c.programIds.includes(programId));
+  return (
+    c.role === "admin" ||
+    (!!c.role && isProdiStaff(c.role as UserRole) && c.programIds.includes(programId))
+  );
 }
 
 function cleanConfig(input: Partial<ProgramConfig>): ProgramConfig {

@@ -1,7 +1,14 @@
 // Tipe ringkas untuk tabel & view yang dipakai aplikasi.
 // (Bisa diganti hasil `supabase gen types typescript` saat proyek live.)
 
-export type UserRole = "residen" | "supervisor" | "kps" | "penguji" | "admin";
+export type UserRole =
+  | "residen"
+  | "supervisor"
+  | "kps"
+  | "sps"
+  | "admin_prodi"
+  | "penguji"
+  | "admin";
 export type EntryType = "prosedur" | "penatalaksanaan" | "kasus";
 export type SurgicalRole =
   | "operator_utama"

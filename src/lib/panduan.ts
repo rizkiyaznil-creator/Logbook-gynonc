@@ -27,6 +27,45 @@ const ANTIBULLY_SECTION: GuideSection = {
     "Sekali setiap hari saat pertama membuka aplikasi, tampil pernyataan Komitmen Anti-Perundungan. Bacalah, lalu tekan “Saya Berkomitmen” untuk melanjutkan. Pengingat ini berlaku untuk semua pengguna sebagai bagian dari budaya pendidikan yang aman dan saling menghormati.",
 };
 
+// Bagian panduan bersama untuk staf prodi berwewenang penuh (Ketua Prodi & SPS
+// — wewenang identik). Disalin per-peran agar penambahan ANTIBULLY_SECTION tidak
+// menggandakan pada array yang sama.
+const PRODI_STAFF_SECTIONS: GuideSection[] = [
+  { heading: "1. Masuk", steps: [LOGIN_STEP] },
+  {
+    heading: "2. Manajemen pengguna",
+    steps: [
+      "Buka menu Manajemen User.",
+      "Tambah pengguna: Anda dapat membuat akun Residen (otomatis masuk prodi Anda), Penguji, dan DPJP/Supervisor. Isi nama, peran, email, dan password awal (min. 6 karakter), lalu beritahukan kredensial ke pengguna.",
+      "Daftar pengguna menampilkan residen di prodi Anda (dapat dihapus) serta penguji & DPJP (baca-saja).",
+    ],
+    note: "Batas wewenang: Anda tidak dapat membuat akun Administrator atau staf prodi lain, tidak dapat mengubah peran siapa pun, dan hanya dapat menghapus residen di prodinya. Penguji/DPJP yang sudah ada tidak dapat diubah/dihapus. Semua akun dibuat di sini — tidak ada pendaftaran mandiri.",
+  },
+  {
+    heading: "3. Verifikasi",
+    body: "Buka menu Verifikasi untuk memutuskan entri & karya yang menunggu dari residen di prodi yang Anda kelola (Verifikasi / Minta revisi / Tolak).",
+  },
+  {
+    heading: "4. Penilaian",
+    body: "Melalui menu Penilaian, Anda juga dapat mencatat/mengelola penilaian pengetahuan residen di prodi Anda (mis. WBA/OSCE/MCQ).",
+  },
+  {
+    heading: "5. Rekap & ekspor",
+    steps: [
+      "Buka menu Rekap untuk ringkasan capaian residen, beban verifikasi per DPJP, proyeksi kelulusan, dan rekap karya ilmiah — terbatas pada prodi Anda.",
+      "Gunakan tombol Ekspor CSV untuk mengunduh data.",
+    ],
+  },
+  {
+    heading: "6. Kurikulum",
+    body: "Menu Kurikulum menampilkan dan memungkinkan Anda mengelola data kompetensi (prosedur, penatalaksanaan, pengetahuan, spektrum penyakit) untuk prodi yang Anda kelola.",
+  },
+  {
+    heading: "7. Audit Log",
+    body: "Menu Audit Log menampilkan jejak aktivitas penting (pembuatan, pengajuan, dan keputusan verifikasi) di prodi Anda — siapa melakukan apa dan kapan.",
+  },
+];
+
 const GUIDES: Record<UserRole, Guide> = {
   residen: {
     title: "Panduan Residen",
@@ -140,43 +179,41 @@ const GUIDES: Record<UserRole, Guide> = {
   },
 
   kps: {
-    title: "Panduan KPS / Admin Prodi",
+    title: "Panduan Ketua Prodi",
     intro:
-      "Sebagai KPS/Admin Prodi, Anda mengelola pengguna, memantau capaian residen, memverifikasi, menilai, mengelola kurikulum, dan menelusuri jejak aktivitas. Seluruh wewenang Anda terbatas pada program studi yang Anda kelola; seorang KPS dapat membawahi lebih dari satu prodi.",
+      "Sebagai Ketua Prodi, Anda mengelola pengguna, memantau capaian residen, memverifikasi, menilai, mengelola kurikulum, dan menelusuri jejak aktivitas. Seluruh wewenang Anda terbatas pada program studi yang Anda kelola; seorang Ketua Prodi dapat membawahi lebih dari satu prodi.",
+    showStatus: true,
+    sections: [...PRODI_STAFF_SECTIONS],
+  },
+
+  sps: {
+    title: "Panduan SPS / Sekretaris Prodi",
+    intro:
+      "Sebagai SPS/Sekretaris Prodi, wewenang Anda identik dengan Ketua Prodi: mengelola pengguna, memverifikasi, menilai, mengelola kurikulum, rekap, dan audit — semuanya terbatas pada program studi yang Anda kelola (boleh lebih dari satu).",
+    showStatus: true,
+    sections: [...PRODI_STAFF_SECTIONS],
+  },
+
+  admin_prodi: {
+    title: "Panduan Admin Prodi",
+    intro:
+      "Sebagai Admin Prodi, akses Anda bersifat READ-ONLY. Anda dapat memantau seluruh data di program studi yang ditugaskan, tetapi tidak dapat mengubah apa pun.",
     showStatus: true,
     sections: [
       { heading: "1. Masuk", steps: [LOGIN_STEP] },
       {
-        heading: "2. Manajemen pengguna",
+        heading: "2. Lingkup akses",
+        body: "Semua akses Anda baca-saja dan terbatas pada program studi yang ditugaskan. Tombol/formulir untuk mengubah data tidak ditampilkan; percobaan mengubah data juga ditolak sistem.",
+      },
+      {
+        heading: "3. Yang dapat Anda lihat",
         steps: [
-          "Buka menu Manajemen User.",
-          "Tambah pengguna: Anda dapat membuat akun Residen (otomatis masuk prodi Anda), Penguji, dan DPJP/Supervisor. Isi nama, peran, email, dan password awal (min. 6 karakter), lalu beritahukan kredensial ke pengguna.",
-          "Daftar pengguna menampilkan residen di prodi Anda (dapat dihapus) serta penguji & DPJP (baca-saja).",
+          "Dashboard & Rekap capaian residen prodi Anda (termasuk Ekspor CSV).",
+          "Antrean Verifikasi & daftar Penilaian — untuk memantau, tanpa memberi keputusan.",
+          "Kurikulum prodi — melihat, tanpa menyunting.",
+          "Audit Log aktivitas prodi Anda.",
+          "Daftar Pengguna prodi Anda — tanpa membuat/mengubah/menghapus.",
         ],
-        note: "Batas wewenang: KPS tidak dapat membuat akun Administrator atau KPS lain, tidak dapat mengubah peran siapa pun, dan hanya dapat menghapus residen di prodinya. Penguji/DPJP yang sudah ada tidak dapat diubah/dihapus. Semua akun dibuat di sini — tidak ada pendaftaran mandiri.",
-      },
-      {
-        heading: "3. Verifikasi",
-        body: "Buka menu Verifikasi untuk memutuskan entri & karya yang menunggu dari residen di prodi yang Anda kelola (Verifikasi / Minta revisi / Tolak).",
-      },
-      {
-        heading: "4. Penilaian",
-        body: "Melalui menu Penilaian, Anda juga dapat mencatat/mengelola penilaian pengetahuan residen di prodi Anda (mis. WBA/OSCE/MCQ).",
-      },
-      {
-        heading: "5. Rekap & ekspor",
-        steps: [
-          "Buka menu Rekap untuk ringkasan capaian residen, beban verifikasi per DPJP, proyeksi kelulusan, dan rekap karya ilmiah — terbatas pada prodi Anda.",
-          "Gunakan tombol Ekspor CSV untuk mengunduh data.",
-        ],
-      },
-      {
-        heading: "6. Kurikulum",
-        body: "Menu Kurikulum menampilkan dan memungkinkan Anda mengelola data kompetensi (prosedur, penatalaksanaan, pengetahuan, spektrum penyakit) untuk prodi yang Anda kelola.",
-      },
-      {
-        heading: "7. Audit Log",
-        body: "Menu Audit Log menampilkan jejak aktivitas penting (pembuatan, pengajuan, dan keputusan verifikasi) di prodi Anda — siapa melakukan apa dan kapan.",
       },
     ],
   },
