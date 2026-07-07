@@ -15,6 +15,7 @@ import type {
   ProcedureProgress,
   ClinicalProgress,
   SubtargetProgress,
+  ProgramConfig,
 } from "@/lib/types";
 
 type Row = {
@@ -102,17 +103,25 @@ function ProgressTable({
 export async function ResidentProgress({ residentId }: { residentId: string }) {
   const supabase = await createClient();
 
-  const [summaryRes, procRes, clinRes, subRes] = await Promise.all([
+  const [summaryRes, procRes, clinRes, subRes, progRes] = await Promise.all([
     supabase.from("v_resident_summary").select("*").eq("resident_id", residentId).maybeSingle(),
     supabase.from("v_procedure_progress").select("*").eq("resident_id", residentId).order("kode"),
     supabase.from("v_clinical_progress").select("*").eq("resident_id", residentId).order("kode"),
     supabase.from("v_subtarget_progress").select("*").eq("resident_id", residentId).order("subtarget_kode"),
+    supabase.from("residents").select("programs(config)").eq("id", residentId).maybeSingle(),
   ]);
 
   const summary = summaryRes.data as ResidentSummary | null;
   const procedures = (procRes.data ?? []) as ProcedureProgress[];
   const clinical = (clinRes.data ?? []) as ClinicalProgress[];
   const subtargets = (subRes.data ?? []) as SubtargetProgress[];
+
+  // Label tabel mengikuti config program residen.
+  const cfg = (progRes.data as { programs: { config: ProgramConfig | null } | null } | null)
+    ?.programs?.config;
+  const lblProsedur = cfg?.label_tabel_prosedur?.trim();
+  const lblPenata = cfg?.label_tabel_penatalaksanaan?.trim();
+  const sfx = (s?: string) => (s ? ` (${s})` : "");
 
   return (
     <div className="space-y-8">
@@ -150,7 +159,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       </div>
 
       <ProgressTable
-        title="Kompetensi Penatalaksanaan (Tabel 18)"
+        title={`Kompetensi Penatalaksanaan${sfx(lblPenata)}`}
         accent="violet"
         rows={clinical.map((c) => ({
           kode: c.kode,
@@ -178,7 +187,7 @@ export async function ResidentProgress({ residentId }: { residentId: string }) {
       )}
 
       <ProgressTable
-        title="Kompetensi Prosedur (Tabel 24)"
+        title={`Kompetensi Prosedur${sfx(lblProsedur)}`}
         accent="blue"
         rows={procedures.map((p) => ({
           kode: p.kode,

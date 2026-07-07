@@ -2,14 +2,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/auth";
 import { getGuide, STATUS_LEGEND } from "@/lib/panduan";
 import { PrintButton } from "@/components/print-button";
-
-const ROLE_LABEL: Record<string, string> = {
-  residen: "Residen",
-  supervisor: "Supervisor / DPJP",
-  penguji: "Penguji",
-  kps: "KPS / Admin Prodi",
-  admin: "Administrator",
-};
+import { ROLE_LABEL } from "@/lib/roles";
 
 export default async function PanduanPage() {
   const me = await requireProfile();

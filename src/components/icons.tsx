@@ -142,6 +142,22 @@ export const Icons = {
       <path d="M10 12H3M3 12l3-3M3 12l3 3" />
     </svg>
   ),
+  chevron: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  ),
+  back: (p: P) => (
+    <svg {...base} {...p}>
+      <path d="M19 12H5M5 12l6-6M5 12l6 6" />
+    </svg>
+  ),
+  cog: (p: P) => (
+    <svg {...base} {...p}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 2v2.5M12 19.5V22M22 12h-2.5M4.5 12H2M19 5l-1.8 1.8M6.8 17.2 5 19M19 19l-1.8-1.8M6.8 6.8 5 5" />
+    </svg>
+  ),
 };
 
 export type IconName = keyof typeof Icons;

@@ -4,9 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 import { BarList } from "@/components/bar-list";
 import { ExportCsvButton } from "@/components/export-csv-button";
 import { TableCard } from "@/components/table-card";
+import { withDefaults } from "@/lib/program";
+import type { ProgramConfig } from "@/lib/types";
 
-// Asumsi durasi pendidikan (bulan) untuk proyeksi kelulusan — dapat disesuaikan.
-const PROGRAM_BULAN = 24;
+// Durasi default bila prodi belum menetapkan (subspesialis 24 bln).
+const PROGRAM_BULAN_DEFAULT = 24;
 
 type Summary = {
   resident_id: string;
@@ -30,6 +32,7 @@ type Resident = {
   no_peserta: string | null;
   angkatan: string | null;
   tanggal_mulai: string | null;
+  program_id: string | null;
   profiles: { full_name: string } | { full_name: string }[] | null;
 };
 
@@ -73,14 +76,15 @@ const td = "px-4 py-2.5 text-slate-700 dark:text-slate-200";
 
 export default async function RekapPage() {
   const me = await requireProfile();
-  if (!["kps", "admin"].includes(me.role)) redirect("/dashboard");
+  if (!["kps", "sps", "admin_prodi", "admin"].includes(me.role))
+    redirect("/dashboard");
 
   const supabase = await createClient();
-  const [resRes, sumRes, procRes, clinRes, entryRes, supRes] =
+  const [resRes, sumRes, procRes, clinRes, entryRes, supRes, progRes] =
     await Promise.all([
       supabase
         .from("residents")
-        .select("id, no_peserta, angkatan, tanggal_mulai, profiles(full_name)")
+        .select("id, no_peserta, angkatan, tanggal_mulai, program_id, profiles(full_name)")
         .order("angkatan"),
       supabase.from("v_resident_summary").select("*"),
       supabase.from("v_procedure_progress").select("resident_id, kode, nama, tercapai"),
@@ -89,7 +93,19 @@ export default async function RekapPage() {
         .select("resident_id, kode, komponen, tercapai"),
       supabase.from("log_entries").select("status, supervisor_id"),
       supabase.from("profiles").select("id, full_name").eq("role", "supervisor"),
+      supabase.from("programs").select("id, config"),
     ]);
+
+  // Durasi pendidikan per prodi (bulan) → proyeksi kelulusan per residen.
+  const durasiByProgram = new Map<string, number>();
+  for (const p of (progRes.data ?? []) as { id: string; config: ProgramConfig | null }[])
+    durasiByProgram.set(p.id, withDefaults(p.config).durasi_bulan);
+  const durasiOf = (programId: string | null) =>
+    (programId && durasiByProgram.get(programId)) || PROGRAM_BULAN_DEFAULT;
+  // Kumpulan durasi yang muncul (untuk teks catatan).
+  const durasiSet = Array.from(
+    new Set((resRes.data ?? []).map((r) => durasiOf((r as Resident).program_id))),
+  ).sort((a, b) => a - b);
 
   const residents = (resRes.data ?? []) as Resident[];
   const summaries = (sumRes.data ?? []) as Summary[];
@@ -225,7 +241,7 @@ export default async function RekapPage() {
     } else {
       eta = Math.ceil(remaining / pace);
       const projected = me + eta;
-      if (projected <= PROGRAM_BULAN) {
+      if (projected <= durasiOf(x.r.program_id)) {
         status = "Tepat waktu";
         color = "text-emerald-600 dark:text-emerald-400";
       } else {
@@ -468,8 +484,9 @@ export default async function RekapPage() {
           />
         </div>
         <p className="mb-2 text-xs text-slate-400 dark:text-slate-500">
-          Asumsi durasi pendidikan {PROGRAM_BULAN} bulan. Laju = capaian ÷ bulan
-          berjalan; estimasi = sisa target ÷ laju.
+          Durasi pendidikan mengikuti prodi masing-masing (
+          {durasiSet.length ? durasiSet.join(" / ") : PROGRAM_BULAN_DEFAULT} bulan).
+          Laju = capaian ÷ bulan berjalan; estimasi = sisa target ÷ laju.
         </p>
         <TableCard>
           <table className="w-full text-sm">

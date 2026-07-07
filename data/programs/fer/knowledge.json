@@ -1,0 +1,15 @@
+{
+  "sumber": "Tabel 29 — Penguasaan Pengetahuan Penatalaksanaan (FER)",
+  "ambang": { "osce_min": 75, "mcq_min": 75, "satuan": "persen" },
+  "pengetahuan_penatalaksanaan": [
+    { "no": 1, "kode": "KP-01", "topik": "Anamnesis endokrinologi reproduksi dan infertilitas" },
+    { "no": 2, "kode": "KP-02", "topik": "Pemeriksaan fisik endokrinologi reproduksi dan fertilitas" },
+    { "no": 3, "kode": "KP-03", "topik": "Pemilihan pemeriksaan penunjang endokrinologi reproduksi dan fertilitas" },
+    { "no": 4, "kode": "KP-04", "topik": "Interpretasi hasil endokrinologi reproduksi dan fertilitas" },
+    { "no": 5, "kode": "KP-05", "topik": "Diagnosis kerja & banding endokrinologi reproduksi dan fertilitas" },
+    { "no": 6, "kode": "KP-06", "topik": "Perencanaan terapi endokrinologi reproduksi dan fertilitas" },
+    { "no": 7, "kode": "KP-07", "topik": "Evaluasi respon endokrinologi reproduksi dan fertilitas" },
+    { "no": 8, "kode": "KP-08", "topik": "Penetapan prognosis endokrinologi reproduksi dan fertilitas" },
+    { "no": 9, "kode": "KP-09", "topik": "Dokumentasi & komunikasi endokrinologi reproduksi dan fertilitas" }
+  ]
+}

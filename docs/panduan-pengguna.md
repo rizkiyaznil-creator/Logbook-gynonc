@@ -15,13 +15,18 @@ pendaftaran**, **alur pengisian**, dan **alur verifikasi** laporan di aplikasi.
 
 | Peran | Hak akses utama |
 |---|---|
-| **Residen** | Mengisi logbook, karya ilmiah, melihat capaian & mencetak rekap dirinya. |
-| **Supervisor (DPJP)** | Memverifikasi entri & karya ilmiah residen yang ditujukan kepadanya. |
-| **Penguji** | Memberi penilaian pengetahuan (OSCE/MCQ). |
-| **KPS / Admin Prodi** | Verifikasi, rekap program, audit, dan manajemen pengguna. |
-| **Administrator** | Seluruh akses, termasuk manajemen pengguna & data. |
+| **Residen** | Mengisi logbook, karya ilmiah, melihat capaian & mencetak rekap dirinya. Terikat satu program studi. |
+| **Supervisor (DPJP)** | Memverifikasi entri & karya ilmiah residen yang ditujukan kepadanya. Lintas-prodi. |
+| **Ketua Prodi** | Verifikasi, penilaian, rekap, kurikulum, audit, dan manajemen pengguna — **terbatas pada prodi yang dikelolanya** (boleh lebih dari satu prodi). |
+| **SPS / Sekretaris Prodi** | Wewenang **identik dengan Ketua Prodi** (terbatas pada prodinya). |
+| **Admin Prodi** | **READ-ONLY** — memantau seluruh data prodinya (dashboard, verifikasi, penilaian, rekap, kurikulum, audit, daftar pengguna) tanpa dapat mengubah apa pun. |
+| **Administrator** | Akses penuh lintas seluruh program studi, termasuk pengaturan program & manajemen semua pengguna. |
 
 Menu yang tampil di sisi kiri menyesuaikan peran masing-masing.
+
+> **Komitmen anti-perundungan:** sekali setiap hari saat pertama membuka
+> aplikasi, semua pengguna menerima pernyataan **Komitmen Anti-Perundungan** yang
+> harus disetujui (tombol **“Saya Berkomitmen”**) sebelum melanjutkan.
 
 ---
 
@@ -34,18 +39,34 @@ Aplikasi ini **tidak menyediakan pendaftaran mandiri**. Akun dibuat oleh
 1. Masuk, buka menu **Manajemen User**.
 2. Pada formulir **Tambah Pengguna**, isi:
    - **Nama lengkap**
-   - **Peran** (Residen / Supervisor (DPJP) / Penguji / KPS / Administrator)
+   - **Peran** (lihat batas wewenang di bawah)
    - **Email** (dipakai untuk login)
    - **Password awal** (minimal 6 karakter; beritahukan ke pengguna)
+   - **Prodi** — untuk Residen (dan KPS, oleh Administrator).
 3. Simpan. Akun langsung aktif (email otomatis terkonfirmasi). Untuk peran
    **Residen**, data residen dibuat otomatis.
-4. Peran pengguna dapat diubah, dan pengguna dapat dihapus, dari halaman yang
-   sama.
+
+**Batas wewenang pembuatan & pengelolaan akun:**
+
+| | Ketua Prodi / SPS | Administrator |
+|---|---|---|
+| Membuat akun | Residen (prodinya), DPJP | Semua peran (termasuk staf prodi & Administrator) |
+| Mengubah peran | — (tidak bisa) | Semua pengguna |
+| Menghapus akun | Hanya residen di prodinya | Semua pengguna |
+| Daftar yang terlihat | Residen prodinya + DPJP (baca-saja) | Semua pengguna |
+| Atur prodi staf prodi | — | Ya (1 staf boleh >1 prodi) |
+
+Ketua Prodi & SPS **tidak** dapat membuat/mengubah/menghapus akun Administrator
+atau staf prodi lain, maupun residen prodi lain. **Admin Prodi** bersifat
+read-only — tidak dapat membuat/mengubah/menghapus pengguna sama sekali.
+Administrator mengatur peran & prodi tiap Ketua Prodi / SPS / Admin Prodi.
 
 ### 2.2 Masuk (login)
 1. Buka halaman aplikasi → layar **Masuk**.
 2. Masukkan **Email** dan **Kata sandi**, lalu **Masuk**.
 3. Berhasil masuk akan diarahkan ke **Dashboard**.
+4. Pada kunjungan pertama setiap hari, tampil pernyataan **Komitmen
+   Anti-Perundungan**; tekan **“Saya Berkomitmen”** untuk melanjutkan.
 
 ### 2.3 Lupa kata sandi
 1. Pada halaman masuk, pilih **Lupa kata sandi**.
@@ -68,7 +89,7 @@ Data ini muncul pada kop rekap/PDF, jadi sebaiknya diisi sebelum mencetak.
   - **Prosedur / Tindakan (Tabel 24)**
   - **Penatalaksanaan (Tabel 18)**
   - **Kasus / Spektrum penyakit**
-- **Pengetahuan Saya** — daftar capaian OSCE/MCQ (dinilai oleh Penguji).
+- **Pengetahuan Saya** — daftar capaian OSCE/MCQ (dinilai oleh Ketua Prodi / SPS).
 - **Karya Ilmiah** — sari pustaka, telaah jurnal, laporan kasus, tesis
   (bertahap), serta publikasi & presentasi.
 
@@ -116,8 +137,8 @@ muncul **catatan verifikator**. Perbaiki, lalu **ajukan ulang**.
 1. DPJP membuka menu **Verifikasi**. Halaman ini berisi dua bagian:
    - **Entri logbook menunggu**
    - **Karya ilmiah menunggu**
-   (Hanya menampilkan item yang ditujukan ke DPJP tersebut; KPS/Admin melihat
-   seluruhnya.)
+   (Hanya menampilkan item yang ditujukan ke DPJP tersebut. KPS melihat item
+   residen di prodi yang dikelolanya; Administrator melihat seluruh prodi.)
 2. Periksa rincian dan **bukti** yang dilampirkan.
 3. Pilih keputusan (boleh menambahkan **catatan**):
    - **Verifikasi** → status **Terverifikasi** (dihitung sebagai capaian).
@@ -133,8 +154,9 @@ Lonceng notifikasi & badge angka pada menu **Verifikasi** menunjukkan jumlah
 item yang menunggu.
 
 ### 4.3 Jejak audit
-Setiap pembuatan, pengajuan, dan keputusan verifikasi tercatat di **Audit Log**
-(dapat dilihat KPS/Admin) — mencatat siapa melakukan apa dan kapan.
+Setiap pembuatan, pengajuan, dan keputusan verifikasi tercatat di **Audit Log** —
+mencatat siapa melakukan apa dan kapan. KPS melihat jejak prodi yang dikelolanya;
+Administrator melihat seluruh prodi.
 
 ---
 
@@ -163,21 +185,31 @@ flowchart LR
 
 ---
 
-## 6. Penilaian Pengetahuan (Penguji)
+## 6. Penilaian Pengetahuan (Ketua Prodi / SPS / Admin)
 
-1. Penguji membuka menu **Penilaian**.
-2. Pilih residen dan butir pengetahuan (OSCE/MCQ), lalu catat hasilnya.
+1. Buka menu **Penilaian** — hanya **Ketua Prodi**, **SPS**, dan **Administrator**
+   yang dapat memberi nilai (Admin Prodi hanya memantau).
+2. Pilih residen dan butir pengetahuan yang dinilai (mis. WBA/OSCE/MCQ), lalu
+   catat hasilnya.
 3. Hasil penilaian muncul pada capaian **Pengetahuan** residen dan rekap.
+4. **Nilai boleh diberikan berulang** — nilai **tertinggi** otomatis dipakai
+   sebagai capaian yang tampil di dashboard residen.
 
 ---
 
 ## 7. Rekap & Pemantauan Program (KPS / Admin)
 
-- **Rekap** — ringkasan capaian seluruh residen, beban verifikasi per DPJP,
-  proyeksi kelulusan, dan rekap karya ilmiah. Data dapat **diekspor CSV**.
+- **Rekap** — ringkasan capaian residen, beban verifikasi per DPJP, proyeksi
+  kelulusan, dan rekap karya ilmiah. Data dapat **diekspor CSV**. KPS melihat
+  prodi yang dikelolanya; Administrator melihat seluruh prodi.
 - **Dashboard** menampilkan ringkasan capaian (residen) atau daftar residen &
   rekap agregat (staf).
-- **Audit Log** — jejak seluruh aktivitas penting.
+- **Kurikulum** — KPS/Administrator dapat melihat & mengelola data kompetensi
+  (prosedur, penatalaksanaan, pengetahuan, spektrum penyakit) sesuai cakupan
+  prodinya.
+- **Audit Log** — jejak seluruh aktivitas penting (sesuai cakupan prodi).
+- **Laporan Platform** — ringkasan agregat lintas seluruh prodi, **khusus
+  Administrator**.
 
 ---
 

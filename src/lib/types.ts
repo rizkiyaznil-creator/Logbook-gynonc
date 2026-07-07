@@ -1,7 +1,13 @@
 // Tipe ringkas untuk tabel & view yang dipakai aplikasi.
 // (Bisa diganti hasil `supabase gen types typescript` saat proyek live.)
 
-export type UserRole = "residen" | "supervisor" | "kps" | "penguji" | "admin";
+export type UserRole =
+  | "residen"
+  | "supervisor"
+  | "kps"
+  | "sps"
+  | "admin_prodi"
+  | "admin";
 export type EntryType = "prosedur" | "penatalaksanaan" | "kasus";
 export type SurgicalRole =
   | "operator_utama"
@@ -25,12 +31,33 @@ export type DokumentasiJenis =
   | "handover"
   | "lainnya";
 
+// --- Multi-program (platform) ---
+export interface ProgramConfig {
+  accent?: string;
+  label_tabel_prosedur?: string;
+  label_tabel_penatalaksanaan?: string;
+  figo_enabled?: boolean;
+  staging_options?: string[];
+  /** Durasi pendidikan (bulan) — proyeksi kelulusan. Subspesialis 24, spesialis 48. */
+  durasi_bulan?: number;
+}
+
+export interface Program {
+  id: string;
+  kode: string;
+  nama: string;
+  config: ProgramConfig;
+  aktif: boolean;
+}
+
 export interface Profile {
   id: string;
   full_name: string;
   email: string | null;
   role: UserRole;
   institution_id: string | null;
+  // Home program (residen & KPS); null untuk DPJP/penguji/admin.
+  program_id: string | null;
   no_telp: string | null;
   nip: string | null;
   jabatan: string | null;
@@ -73,6 +100,7 @@ export interface ClinicalCompetency {
 export interface LogEntry {
   id: string;
   resident_id: string;
+  program_id: string;
   entry_type: EntryType;
   entry_date: string;
   procedure_id: string | null;

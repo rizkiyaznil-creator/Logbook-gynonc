@@ -3,18 +3,21 @@ import "./globals.css";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 
 export const metadata: Metadata = {
-  title: "Logbook Onkologi Ginekologi",
+  title: "Logbook PPDS USU",
   description:
-    "Logbook interaktif PPDS Subspesialis Onkologi Ginekologi — pencatatan & pemantauan pencapaian kompetensi.",
+    "Logbook PPDS Universitas Sumatera Utara — platform multi-program untuk pencatatan & pemantauan pencapaian kompetensi.",
   manifest: "/manifest.webmanifest",
   icons: {
-    icon: "/icons/icon-192.png",
+    icon: [
+      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
     apple: "/icons/apple-touch-icon.png",
   },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Logbook Onko-Gin",
+    title: "Logbook USU",
   },
 };
 

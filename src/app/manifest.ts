@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Logbook Onkologi Ginekologi",
-    short_name: "Logbook Onko-Gin",
+    name: "Logbook PPDS USU",
+    short_name: "Logbook USU",
     description:
-      "Logbook PPDS Subspesialis Onkologi Ginekologi — pencatatan & pemantauan pencapaian kompetensi.",
+      "Logbook PPDS Universitas Sumatera Utara — platform multi-program untuk pencatatan & pemantauan pencapaian kompetensi.",
     start_url: "/dashboard",
     scope: "/",
     display: "standalone",

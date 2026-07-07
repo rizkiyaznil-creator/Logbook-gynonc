@@ -1,0 +1,26 @@
+{
+  "sumber": "Tabel 22 — Kompetensi Prosedur Klinis (Fetomaternal)",
+  "items": [
+    { "no": 1, "kode": "PR-01", "nama": "Tindakan invasif obstetri (amniosentesis, CVS, PUBS, amnioreduksi, amnioinfusi)", "target_min": 5, "satuan": "kasus", "peran": null, "syarat_tambahan": "Amniosentesis ≥5; Amnioreduksi ≥3; CVS ≥1; PUBS ≥1; Transfusi intrauterin ≥1; Fetoskopi/laser TTTS ≥1", "perlu_verifikasi": false },
+    { "no": 2, "kode": "PR-02", "nama": "Fetoskopi & laser ablation (TTTS)", "target_min": 1, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 3, "kode": "PR-03", "nama": "Cerclage", "target_min": 3, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 4, "kode": "PR-04", "nama": "Konseling genetik perinatal & rujukan", "target_min": 5, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 5, "kode": "PR-05", "nama": "Shunt fetal (thorakoamniotik/vesikoamniotik)", "target_min": 1, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 6, "kode": "PR-06", "nama": "Transfusi intrauterin", "target_min": 1, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 7, "kode": "PR-07", "nama": "Fetal surgery related to pregnancy termasuk EXIT", "target_min": 1, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 8, "kode": "PR-08", "nama": "USG skrining trimester 1", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 9, "kode": "PR-09", "nama": "USG obstetri lanjutan/targeted, ekokardiografi janin level madya & neurosonografi", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 10, "kode": "PR-10", "nama": "USG Doppler obstetri (a. uterina, a. serebri media, a. umbilikalis, duktus venosus)", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 11, "kode": "PR-11", "nama": "USG prediksi dan diagnosis preterm", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 12, "kode": "PR-12", "nama": "USG prediksi dan diagnosis preeklampsia", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 13, "kode": "PR-13", "nama": "USG prediksi dan diagnosis plasenta akreta", "target_min": 10, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 14, "kode": "PR-14", "nama": "Pemeriksaan USG 3D/4D madya dalam bidang obstetri", "target_min": 10, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 15, "kode": "PR-15", "nama": "Patologi kehamilan trimester 1 (akrania, anensefalus, kembar siam, omfalokel, gastroskisis)", "target_min": 10, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 16, "kode": "PR-16", "nama": "Kehamilan ganda dan penatalaksanaan komplikasinya (TTTS, kematian satu janin, TRAP)", "target_min": 3, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 17, "kode": "PR-17", "nama": "Penanganan kasus kritis (maternal intensive care): terapi cairan, asam-basa, ventilator", "target_min": 10, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 18, "kode": "PR-18", "nama": "Pertumbuhan janin terhambat kompleks: diagnosis dan tatalaksana", "target_min": 25, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 19, "kode": "PR-19", "nama": "Seksio sesarea pada kecurigaan plasenta akreta dengan penyulit", "target_min": 5, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 20, "kode": "PR-20", "nama": "Seksio sesarea kompleks", "target_min": 5, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false },
+    { "no": 21, "kode": "PR-21", "nama": "Reseksi miometrial pada plasenta akreta, inkreta, atau perkreta", "target_min": 5, "satuan": "kasus", "peran": null, "syarat_tambahan": null, "perlu_verifikasi": false }
+  ]
+}

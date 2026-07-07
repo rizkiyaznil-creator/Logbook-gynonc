@@ -12,7 +12,7 @@ export default async function ResidenDetailPage({
 }) {
   const profile = await requireProfile();
   // Hanya staf & supervisor yang boleh melihat detail residen lain.
-  if (!["supervisor", "kps", "admin"].includes(profile.role)) {
+  if (!["supervisor", "kps", "sps", "admin_prodi", "admin"].includes(profile.role)) {
     redirect("/dashboard");
   }
   const { id } = await params;

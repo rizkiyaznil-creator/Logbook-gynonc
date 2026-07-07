@@ -45,7 +45,7 @@ export async function ResidentIdentity({ residentId }: { residentId: string }) {
       {/* Kop institusi (letterhead) */}
       <div className="mb-3 flex items-center gap-3 border-b-2 border-slate-200 pb-3 dark:border-slate-700">
         <BrandLogo
-          src="/usu-logo.png"
+          src="/logo-mark.png"
           alt="Logo Universitas Sumatera Utara"
           className="h-14 w-14 shrink-0 object-contain"
         />

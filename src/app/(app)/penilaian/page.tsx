@@ -21,9 +21,11 @@ type RecentRow = {
 
 export default async function PenilaianPage() {
   const profile = await requireProfile();
-  if (!["penguji", "kps", "admin"].includes(profile.role)) {
+  if (!["kps", "sps", "admin", "admin_prodi"].includes(profile.role)) {
     redirect("/dashboard");
   }
+  // Penilai = Ketua Prodi, SPS, Administrator. Admin Prodi hanya membaca.
+  const canAssess = profile.role !== "admin_prodi";
 
   const supabase = await createClient();
   const [resRes, itemRes, recentRes] = await Promise.all([
@@ -58,12 +60,25 @@ export default async function PenilaianPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
-        Input Nilai Pengetahuan (OSCE / MCQ)
-      </h1>
+      <div>
+        <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+          Input Nilai Pengetahuan (OSCE / MCQ)
+        </h1>
+        <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+          Nilai boleh diberikan berulang — nilai tertinggi otomatis dipakai
+          sebagai capaian residen.
+        </p>
+      </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <AssessmentForm residents={residents} items={items} />
+        {canAssess ? (
+          <AssessmentForm residents={residents} items={items} />
+        ) : (
+          <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500 ring-1 ring-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:ring-slate-800">
+            Anda masuk sebagai Admin Prodi (read-only). Daftar nilai dapat
+            dilihat, tetapi input nilai tidak tersedia.
+          </p>
+        )}
 
         <section>
           <h2 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">

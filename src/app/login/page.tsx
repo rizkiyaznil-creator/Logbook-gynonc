@@ -18,38 +18,33 @@ export default function LoginPage() {
       <div className="relative w-full max-w-sm rounded-2xl bg-white/90 p-8 shadow-xl ring-1 ring-slate-200 backdrop-blur dark:bg-slate-900/90 dark:ring-slate-800">
         <div className="flex flex-col items-center text-center">
           <BrandLogo
-            src="/usu-logo.png"
-            alt="Logo Universitas Sumatera Utara"
-            className="h-16 w-16 object-contain"
+            src="/logo-lockup.png"
+            alt="ObgynUSU — Logbook PPDS Obstetri & Ginekologi USU"
+            className="h-auto w-60 object-contain"
             fallback={
               <span className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 text-base font-bold text-white shadow-sm">
                 USU
               </span>
             }
           />
-          <div className="mt-3 text-sm font-semibold leading-tight text-slate-800 dark:text-slate-100">
+          <div className="mt-4 text-sm font-semibold leading-tight text-slate-800 dark:text-slate-100">
             Universitas Sumatera Utara
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
             Fakultas Kedokteran
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400">
-            Prodi Subspesialis Obstetri &amp; Ginekologi
+            Prodi Spesialis - Subspesialis Obstetri dan Ginekologi
           </div>
-          <BrandLogo
-            src="/usu-excellence.png"
-            alt="The Era of Ultimate Excellence"
-            className="mt-3 h-5 object-contain"
-          />
         </div>
 
         <div className="my-5 border-t border-slate-200 dark:border-slate-800" />
 
         <h1 className="text-base font-semibold leading-tight text-slate-800 dark:text-slate-100">
-          Logbook Onkologi Ginekologi
+          Logbook PPDS USU
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          PPDS Subspesialis — masuk untuk melanjutkan.
+          Universitas Sumatera Utara — masuk untuk melanjutkan.
         </p>
 
         <form action={formAction} className="mt-5 space-y-4">

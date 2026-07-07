@@ -1,0 +1,12 @@
+{
+  "kode": "onkogin",
+  "nama": "Subspesialis Onkologi Ginekologi",
+  "urutan": 1,
+  "config": {
+    "accent": "teal",
+    "label_tabel_prosedur": "Tabel 24",
+    "label_tabel_penatalaksanaan": "Tabel 18",
+    "figo_enabled": true,
+    "staging_options": ["IA", "IB", "IC", "II", "IIIA", "IIIB", "IIIC", "IVA", "IVB"]
+  }
+}

@@ -5,7 +5,8 @@ import { AuditTable, type AuditRow } from "@/components/audit-table";
 
 export default async function AuditPage() {
   const me = await requireProfile();
-  if (!["kps", "admin"].includes(me.role)) redirect("/dashboard");
+  if (!["kps", "sps", "admin_prodi", "admin"].includes(me.role))
+    redirect("/dashboard");
 
   const supabase = await createClient();
   const { data } = await supabase

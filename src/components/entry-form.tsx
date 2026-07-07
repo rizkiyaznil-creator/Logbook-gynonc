@@ -10,6 +10,7 @@ import type {
   EntryType,
   LogEntry,
   SupervisorOption,
+  ProgramConfig,
 } from "@/lib/types";
 
 const input =
@@ -30,6 +31,7 @@ export function EntryForm({
   action,
   initial,
   lockType = false,
+  config,
 }: {
   diseases: Disease[];
   procedures: Procedure[];
@@ -40,11 +42,19 @@ export function EntryForm({
   initial?: Partial<LogEntry>;
   /** Kunci jenis entri (mode sunting). Saat prefill template tetap bisa diubah. */
   lockType?: boolean;
+  /** Konfigurasi program residen (label tabel, FIGO, opsi stadium). */
+  config?: ProgramConfig;
 }) {
   const [state, formAction, pending] = useActionState(action, null);
   const [type, setType] = useState<EntryType>(initial?.entry_type ?? "prosedur");
   const templateNameRef = useRef<HTMLInputElement>(null);
   const [tplError, setTplError] = useState<string | null>(null);
+
+  const figoEnabled = config?.figo_enabled ?? true;
+  const stagingOptions = config?.staging_options ?? [];
+  const labelProsedur = config?.label_tabel_prosedur?.trim();
+  const labelPenatalaksanaan = config?.label_tabel_penatalaksanaan?.trim();
+  const suffix = (s?: string) => (s ? ` (${s})` : "");
 
   return (
     <form action={formAction} className="max-w-2xl space-y-5">
@@ -59,11 +69,13 @@ export function EntryForm({
           disabled={lockType}
           className={input}
         >
-          <option value="prosedur">Prosedur / Tindakan (Tabel 24)</option>
-          <option value="penatalaksanaan">
-            Penatalaksanaan Klinis (Tabel 18)
+          <option value="prosedur">
+            Prosedur / Tindakan{suffix(labelProsedur)}
           </option>
-          <option value="kasus">Kasus / Encounter (Tabel 10)</option>
+          <option value="penatalaksanaan">
+            Penatalaksanaan Klinis{suffix(labelPenatalaksanaan)}
+          </option>
+          <option value="kasus">Kasus / Encounter</option>
         </select>
       </div>
 
@@ -229,15 +241,32 @@ export function EntryForm({
             }))}
           />
         </div>
-        <div>
-          <label className={label}>Stadium FIGO</label>
-          <input
-            name="figo_stage"
-            defaultValue={initial?.figo_stage ?? ""}
-            className={input}
-            placeholder="mis. IIIC"
-          />
-        </div>
+        {figoEnabled && (
+          <div>
+            <label className={label}>Stadium FIGO</label>
+            {stagingOptions.length > 0 ? (
+              <select
+                name="figo_stage"
+                defaultValue={initial?.figo_stage ?? ""}
+                className={input}
+              >
+                <option value="">—</option>
+                {stagingOptions.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                name="figo_stage"
+                defaultValue={initial?.figo_stage ?? ""}
+                className={input}
+                placeholder="mis. IIIC"
+              />
+            )}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">

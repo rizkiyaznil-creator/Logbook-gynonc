@@ -31,7 +31,7 @@ export default async function LogbookPage() {
     supabase
       .from("profiles")
       .select("id, full_name")
-      .in("role", ["supervisor", "kps", "admin"]),
+      .in("role", ["supervisor", "kps", "sps", "admin"]),
   ]);
 
   const rows = (entryRes.data ?? []) as unknown as Row[];

@@ -1,0 +1,33 @@
+{
+  "sumber": "Tabel 9 — Spektrum Penyakit (FER)",
+  "items": [
+    { "no": 1, "nama_id": "Kelainan diferensiasi seksual", "nama_en": "Malformative disorders of sex development", "icd10": "Q56.4", "icd11": "LD2A", "kelompok": "endokrin-reproduksi" },
+    { "no": 2, "nama_id": "Pubertas terlambat", "nama_en": "Delayed puberty", "icd10": "E30.0", "icd11": "5A91", "kelompok": "pubertas" },
+    { "no": 3, "nama_id": "Pubertas prekoks sentral", "nama_en": "Central precocious puberty", "icd10": "E22.8 E 30.1", "icd11": "5A60.3", "kelompok": "pubertas" },
+    { "no": 4, "nama_id": "Pubertas prekoks perifer", "nama_en": "Peripheral precocious puberty", "icd10": "E30.1", "icd11": "5A92", "kelompok": "pubertas" },
+    { "no": 5, "nama_id": "Amenorea primer", "nama_en": "Primary amenorrhea", "icd10": "N91.0", "icd11": "GA20.00", "kelompok": "menstruasi" },
+    { "no": 6, "nama_id": "Amenore sekunder dengan penyulit", "nama_en": "Secondary amenorrhoea", "icd10": "N91.1", "icd11": "GA20.01", "kelompok": "menstruasi" },
+    { "no": 7, "nama_id": "Perdarahan uterus abnormal dengan penyulit", "nama_en": "Excessive, frequent and irregular menstruation", "icd10": "N91-N93.9", "icd11": "GA20-GA20Z GA22 GA23", "kelompok": "menstruasi" },
+    { "no": 9, "nama_id": "SOPK (Sindrom Ovarium Polikistik) kompleks", "nama_en": "Polycystic ovary syndrome (PCOS)", "icd10": "E28.2", "icd11": "5A80.1", "kelompok": "endokrin-reproduksi" },
+    { "no": 10, "nama_id": "Hiperandrogenisme", "nama_en": "Clinical hyperandrogenism", "icd10": "E28.1", "icd11": "5A80.0", "kelompok": "endokrin-reproduksi" },
+    { "no": 11, "nama_id": "Endometriosis dengan penyulit/ terkait infertilitas", "nama_en": "Endometriosis", "icd10": "N80.0 – N80.9", "icd11": "GA10", "kelompok": "ginekologi" },
+    { "no": 12, "nama_id": "Adenomyosis dengan penyulit/ terkait infertilitas", "nama_en": "Endometriosis of uterus Adenomyosis", "icd10": "N80.0", "icd11": "GA11", "kelompok": "ginekologi" },
+    { "no": 13, "nama_id": "Infertilitas perempuan terkait anovulasi", "nama_en": "Female infertility associated with anovulation", "icd10": "N97.0", "icd11": "GA31.0 (female infertility)*", "kelompok": "infertilitas" },
+    { "no": 14, "nama_id": "Infertilitas perempuan – asal tuba", "nama_en": "Female infertility of tubal origin", "icd10": "N97.1", "icd11": "GA31.11 (secondary tubal)*", "kelompok": "infertilitas" },
+    { "no": 15, "nama_id": "Infertilitas perempuan terkait endometriosis", "nama_en": "Female infertility, unspecified Endometriosis", "icd10": "N97.8 N80", "icd11": "GA31.Z", "kelompok": "infertilitas" },
+    { "no": 16, "nama_id": "Infertilitas Perempuan akibat uterus", "nama_en": "Female infertility associated with uterine origin", "icd10": "N97.2", "icd11": "GA31.10", "kelompok": "infertilitas" },
+    { "no": 17, "nama_id": "Infertilitas akibat faktor pria", "nama_en": "Female infertility associated with male factor", "icd10": "N97.4", "icd11": "GA31.Z", "kelompok": "infertilitas" },
+    { "no": 18, "nama_id": "Keguguran berulang", "nama_en": "Recurrent pregnancy loss", "icd10": "N96", "icd11": "GA33", "kelompok": "infertilitas" },
+    { "no": 19, "nama_id": "Menopause", "nama_en": "Menopause and other menopausal disorder", "icd10": "N95", "icd11": "GA30.0Z", "kelompok": "menopause" },
+    { "no": 20, "nama_id": "Menopause with comorbid", "nama_en": "Menopause and female climacteric state", "icd10": "N95", "icd11": "GA30.00", "kelompok": "menopause" },
+    { "no": 22, "nama_id": "Kontrasepsi hormonal pada kasus kompleks", "nama_en": "Hormonal contraception", "icd10": "Y42", "icd11": "QA21.2", "kelompok": "kontrasepsi" },
+    { "no": 23, "nama_id": "Hiperprolaktinemia", "nama_en": "Hyperprolactinemia", "icd10": "E22.1", "icd11": "5A60.1", "kelompok": "endokrin-reproduksi" },
+    { "no": 24, "nama_id": "Kelainan tiroid terkait reproduksi", "nama_en": "Endocrine, nutritional, and metabolic disease Secondary amenorrhea Primary amenorrhea", "icd10": "E03-E05 E35.0 O99.2 N91.1 N91.2", "icd11": "5A00; 5A01 5A03; 5A0Y; 5A0Z GA 20.0 GA 20.01", "kelompok": "endokrin-reproduksi" },
+    { "no": 25, "nama_id": "Kelainan adrenal terkait reproduksi", "nama_en": "Endocrine, nutritional, and metabolic disease Secondary amenorrhea Primary amenorrhea", "icd10": "E25-E25.9 E27.1 N91.1 N91.2", "icd11": "5A71.01 5A70 5A74 5A71", "kelompok": "endokrin-reproduksi" },
+    { "no": 26, "nama_id": "Obesitas dan reproduksi", "nama_en": "Other obesity", "icd10": "E66/E66.8", "icd11": "5B81", "kelompok": "endokrin-reproduksi" },
+    { "no": 27, "nama_id": "Kelainan homeostasis glukosa dan reproduksi", "nama_en": "Endocrine, nutritional, and metabolic disease Secondary amenorrhea Primary amenorrhea", "icd10": "E10-E14.9 R73 N91.1 N91.2", "icd11": "5A10 5A11 5A14 5A40", "kelompok": "endokrin-reproduksi" },
+    { "no": 28, "nama_id": "Insufisiensi ovarium prematur", "nama_en": "Premature ovarian insufficiency / failure", "icd10": "E28.3", "icd11": "GA30.6", "kelompok": "endokrin-reproduksi" },
+    { "no": 29, "nama_id": "Endometritis kronik", "nama_en": "Chronic endometritis", "icd10": "N71.1", "icd11": "GA01.10", "kelompok": "ginekologi" },
+    { "no": 30, "nama_id": "Sindrom hiperstimulasi ovarium", "nama_en": "Ovarian hyperstimulation syndrome", "icd10": "N98.1", "icd11": "GA32.0", "kelompok": "infertilitas" }
+  ]
+}

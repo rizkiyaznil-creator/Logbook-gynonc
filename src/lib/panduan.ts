@@ -20,6 +20,52 @@ const LOGIN_STEP =
 const STATUS_NOTE =
   "Hanya laporan berstatus Terverifikasi yang dihitung sebagai capaian kompetensi.";
 
+// Berlaku untuk semua peran — ditambahkan ke akhir setiap panduan.
+const ANTIBULLY_SECTION: GuideSection = {
+  heading: "Komitmen anti-perundungan",
+  body:
+    "Sekali setiap hari saat pertama membuka aplikasi, tampil pernyataan Komitmen Anti-Perundungan. Bacalah, lalu tekan “Saya Berkomitmen” untuk melanjutkan. Pengingat ini berlaku untuk semua pengguna sebagai bagian dari budaya pendidikan yang aman dan saling menghormati.",
+};
+
+// Bagian panduan bersama untuk staf prodi berwewenang penuh (Ketua Prodi & SPS
+// — wewenang identik). Disalin per-peran agar penambahan ANTIBULLY_SECTION tidak
+// menggandakan pada array yang sama.
+const PRODI_STAFF_SECTIONS: GuideSection[] = [
+  { heading: "1. Masuk", steps: [LOGIN_STEP] },
+  {
+    heading: "2. Manajemen pengguna",
+    steps: [
+      "Buka menu Manajemen User.",
+      "Tambah pengguna: Anda dapat membuat akun Residen (otomatis masuk prodi Anda) dan DPJP/Supervisor. Isi nama, peran, email, dan password awal (min. 6 karakter), lalu beritahukan kredensial ke pengguna.",
+      "Daftar pengguna menampilkan residen di prodi Anda (dapat dihapus) serta DPJP (baca-saja).",
+    ],
+    note: "Batas wewenang: Anda tidak dapat membuat akun Administrator atau staf prodi lain, tidak dapat mengubah peran siapa pun, dan hanya dapat menghapus residen di prodinya. DPJP yang sudah ada tidak dapat diubah/dihapus. Semua akun dibuat di sini — tidak ada pendaftaran mandiri.",
+  },
+  {
+    heading: "3. Verifikasi",
+    body: "Buka menu Verifikasi untuk memutuskan entri & karya yang menunggu dari residen di prodi yang Anda kelola (Verifikasi / Minta revisi / Tolak).",
+  },
+  {
+    heading: "4. Penilaian",
+    body: "Melalui menu Penilaian, Anda mencatat penilaian pengetahuan residen di prodi Anda (mis. WBA/OSCE/MCQ). Nilai dapat diberikan berulang — nilai TERTINGGI otomatis ditampilkan pada capaian residen. Hanya Ketua Prodi, SPS, dan Administrator yang dapat memberi nilai.",
+  },
+  {
+    heading: "5. Rekap & ekspor",
+    steps: [
+      "Buka menu Rekap untuk ringkasan capaian residen, beban verifikasi per DPJP, proyeksi kelulusan, dan rekap karya ilmiah — terbatas pada prodi Anda.",
+      "Gunakan tombol Ekspor CSV untuk mengunduh data.",
+    ],
+  },
+  {
+    heading: "6. Kurikulum",
+    body: "Menu Kurikulum menampilkan dan memungkinkan Anda mengelola data kompetensi (prosedur, penatalaksanaan, pengetahuan, spektrum penyakit) untuk prodi yang Anda kelola.",
+  },
+  {
+    heading: "7. Audit Log",
+    body: "Menu Audit Log menampilkan jejak aktivitas penting (pembuatan, pengajuan, dan keputusan verifikasi) di prodi Anda — siapa melakukan apa dan kapan.",
+  },
+];
+
 const GUIDES: Record<UserRole, Guide> = {
   residen: {
     title: "Panduan Residen",
@@ -59,7 +105,9 @@ const GUIDES: Record<UserRole, Guide> = {
         heading: "4. Memantau capaian",
         steps: [
           "Dashboard menampilkan kartu capaian (prosedur, penatalaksanaan, pengetahuan, spektrum penyakit) dan ringkasan karya ilmiah.",
+          "Lini masa pendidikan menampilkan perkiraan kelulusan dan target tenggat berdasarkan tanggal mulai serta durasi program Anda.",
           "Periksa tabel kompetensi untuk melihat target yang sudah/ belum tercapai.",
+          "Lonceng notifikasi di bilah atas memberi tahu saat ada keputusan verifikasi atas entri/karya Anda.",
         ],
         note: STATUS_NOTE,
       },
@@ -83,7 +131,7 @@ const GUIDES: Record<UserRole, Guide> = {
   supervisor: {
     title: "Panduan Supervisor / DPJP",
     intro:
-      "Sebagai DPJP, Anda memverifikasi entri logbook dan karya ilmiah residen yang ditujukan kepada Anda. Keputusan Anda menentukan capaian kompetensi residen.",
+      "Sebagai DPJP, Anda memverifikasi entri logbook dan karya ilmiah residen yang ditujukan kepada Anda. Keputusan Anda menentukan capaian kompetensi residen. Peran DPJP bersifat lintas-prodi — Anda menangani entri dari residen prodi mana pun yang memilih Anda.",
     showStatus: true,
     sections: [
       {
@@ -113,53 +161,42 @@ const GUIDES: Record<UserRole, Guide> = {
     ],
   },
 
-  penguji: {
-    title: "Panduan Penguji",
+  kps: {
+    title: "Panduan Ketua Prodi",
     intro:
-      "Sebagai penguji, Anda mencatat hasil penilaian pengetahuan (OSCE/MCQ) residen.",
-    sections: [
-      { heading: "1. Masuk", steps: [LOGIN_STEP] },
-      {
-        heading: "2. Memberi penilaian",
-        steps: [
-          "Buka menu Penilaian.",
-          "Pilih residen dan butir pengetahuan (OSCE/MCQ) yang dinilai.",
-          "Catat hasil dan simpan. Hasil otomatis masuk ke capaian Pengetahuan residen.",
-        ],
-      },
-    ],
+      "Sebagai Ketua Prodi, Anda mengelola pengguna, memantau capaian residen, memverifikasi, menilai, mengelola kurikulum, dan menelusuri jejak aktivitas. Seluruh wewenang Anda terbatas pada program studi yang Anda kelola; seorang Ketua Prodi dapat membawahi lebih dari satu prodi.",
+    showStatus: true,
+    sections: [...PRODI_STAFF_SECTIONS],
   },
 
-  kps: {
-    title: "Panduan KPS / Admin Prodi",
+  sps: {
+    title: "Panduan SPS / Sekretaris Prodi",
     intro:
-      "Sebagai KPS/Admin Prodi, Anda mengelola pengguna, memantau capaian seluruh residen, melakukan verifikasi, dan menelusuri jejak aktivitas.",
+      "Sebagai SPS/Sekretaris Prodi, wewenang Anda identik dengan Ketua Prodi: mengelola pengguna, memverifikasi, menilai, mengelola kurikulum, rekap, dan audit — semuanya terbatas pada program studi yang Anda kelola (boleh lebih dari satu).",
+    showStatus: true,
+    sections: [...PRODI_STAFF_SECTIONS],
+  },
+
+  admin_prodi: {
+    title: "Panduan Admin Prodi",
+    intro:
+      "Sebagai Admin Prodi, akses Anda bersifat READ-ONLY. Anda dapat memantau seluruh data di program studi yang ditugaskan, tetapi tidak dapat mengubah apa pun.",
     showStatus: true,
     sections: [
       { heading: "1. Masuk", steps: [LOGIN_STEP] },
       {
-        heading: "2. Manajemen pengguna",
+        heading: "2. Lingkup akses",
+        body: "Semua akses Anda baca-saja dan terbatas pada program studi yang ditugaskan. Tombol/formulir untuk mengubah data tidak ditampilkan; percobaan mengubah data juga ditolak sistem.",
+      },
+      {
+        heading: "3. Yang dapat Anda lihat",
         steps: [
-          "Buka menu Manajemen User.",
-          "Tambah pengguna: isi nama, peran (residen/supervisor/penguji/KPS/admin), email, dan password awal (min. 6 karakter). Beritahukan kredensial ke pengguna.",
-          "Peran dapat diubah dan pengguna dapat dihapus dari halaman yang sama.",
+          "Dashboard & Rekap capaian residen prodi Anda (termasuk Ekspor CSV).",
+          "Antrean Verifikasi & daftar Penilaian — untuk memantau, tanpa memberi keputusan.",
+          "Kurikulum prodi — melihat, tanpa menyunting.",
+          "Audit Log aktivitas prodi Anda.",
+          "Daftar Pengguna prodi Anda — tanpa membuat/mengubah/menghapus.",
         ],
-        note: "Aplikasi tidak menyediakan pendaftaran mandiri — semua akun dibuat di sini.",
-      },
-      {
-        heading: "3. Verifikasi",
-        body: "Anda dapat membuka menu Verifikasi untuk melihat dan memutuskan seluruh entri & karya yang menunggu (tidak terbatas pada residen tertentu).",
-      },
-      {
-        heading: "4. Rekap & ekspor",
-        steps: [
-          "Buka menu Rekap untuk ringkasan capaian seluruh residen, beban verifikasi per DPJP, proyeksi kelulusan, dan rekap karya ilmiah.",
-          "Gunakan tombol Ekspor CSV untuk mengunduh data.",
-        ],
-      },
-      {
-        heading: "5. Audit Log",
-        body: "Menu Audit Log menampilkan jejak seluruh aktivitas penting (pembuatan, pengajuan, dan keputusan verifikasi) — siapa melakukan apa dan kapan.",
       },
     ],
   },
@@ -167,29 +204,41 @@ const GUIDES: Record<UserRole, Guide> = {
   admin: {
     title: "Panduan Administrator",
     intro:
-      "Sebagai Administrator, Anda memiliki akses penuh: manajemen pengguna, verifikasi, rekap, dan audit.",
+      "Sebagai Administrator (super-admin), Anda memiliki akses penuh lintas seluruh program studi: manajemen pengguna, pengaturan program/tenant, verifikasi, penilaian, kurikulum, rekap, audit, dan laporan platform.",
     showStatus: true,
     sections: [
       { heading: "1. Masuk", steps: [LOGIN_STEP] },
       {
         heading: "2. Manajemen pengguna",
         steps: [
-          "Buka menu Manajemen User untuk menambah, mengubah peran, atau menghapus pengguna.",
-          "Saat menambah pengguna, isi nama, peran, email, dan password awal (min. 6 karakter).",
+          "Buka menu Manajemen User untuk menambah, mengubah peran, atau menghapus pengguna apa pun (semua peran, termasuk KPS dan Administrator).",
+          "Saat menambah pengguna, isi nama, peran, email, dan password awal (min. 6 karakter). Untuk residen/KPS, pilih prodi rumahnya.",
+          "Atur prodi yang dikelola tiap KPS (satu KPS dapat membawahi beberapa prodi) pada bagian pengelolaan KPS.",
         ],
         note: "Semua akun dibuat di sini; tidak ada pendaftaran mandiri.",
       },
       {
-        heading: "3. Verifikasi, Rekap & Audit",
+        heading: "3. Program & kurikulum",
+        body: "Anda dapat mengelola daftar program studi (tenant) serta data kurikulum/kompetensi untuk semua prodi.",
+      },
+      {
+        heading: "4. Verifikasi, Penilaian, Rekap & Audit",
         steps: [
-          "Verifikasi: memutuskan seluruh entri & karya yang menunggu.",
-          "Rekap: memantau capaian program & mengekspor CSV.",
-          "Audit Log: menelusuri seluruh aktivitas.",
+          "Verifikasi & Penilaian: memutuskan dan menilai entri/karya seluruh prodi.",
+          "Rekap: memantau capaian semua program & mengekspor CSV.",
+          "Audit Log: menelusuri seluruh aktivitas lintas-prodi.",
         ],
+      },
+      {
+        heading: "5. Laporan Platform",
+        body: "Menu Laporan Platform menyajikan ringkasan agregat lintas seluruh program studi — khusus Administrator.",
       },
     ],
   },
 };
+
+// Tambahkan pengingat komitmen anti-perundungan ke akhir panduan semua peran.
+for (const g of Object.values(GUIDES)) g.sections.push(ANTIBULLY_SECTION);
 
 export function getGuide(role: UserRole): Guide {
   return GUIDES[role] ?? GUIDES.residen;

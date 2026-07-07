@@ -3,7 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { reviewEntry } from "@/app/(app)/logbook/actions";
 import { reviewWork } from "@/app/(app)/karya/actions";
 import { JENIS_LABEL, TAHAP_LABEL } from "@/components/academic-form";
-import type { AcademicWork, EntryType } from "@/lib/types";
+import { accentHex } from "@/lib/program";
+import type { AcademicWork, EntryType, ProgramConfig } from "@/lib/types";
+
+type ProgramRef = { nama: string; kode: string; config: ProgramConfig | null };
 
 type Row = {
   id: string;
@@ -15,26 +18,50 @@ type Row = {
   catatan: string | null;
   evidence_url: string | null;
   residents: { profiles: { full_name: string } | null } | null;
+  supervisor: { full_name: string } | null;
   procedures: { kode: string; nama: string } | null;
   clinical_competencies: { kode: string; komponen: string } | null;
+  programs: ProgramRef | null;
 };
 
+/** Badge nama program (antrean gabungan lintas program berlabel). */
+function ProgramBadge({ program }: { program: ProgramRef | null }) {
+  if (!program) return null;
+  const color = accentHex(program.config?.accent);
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium"
+      style={{ backgroundColor: `${color}1a`, color }}
+      title={program.nama}
+    >
+      <span
+        className="h-1.5 w-1.5 rounded-full"
+        style={{ backgroundColor: color }}
+        aria-hidden
+      />
+      {program.nama}
+    </span>
+  );
+}
+
 export default async function VerifikasiPage() {
-  await requireProfile();
+  const profile = await requireProfile();
+  // Admin Prodi: memantau antrean secara read-only (tanpa tombol keputusan).
+  const canDecide = profile.role !== "admin_prodi";
   const supabase = await createClient();
 
   const [{ data }, { data: workData }] = await Promise.all([
     supabase
       .from("log_entries")
       .select(
-        "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen)",
+        "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), supervisor:profiles!log_entries_supervisor_id_fkey(full_name), procedures(kode,nama), clinical_competencies(kode,komponen), programs(nama,kode,config)",
       )
       .eq("status", "diajukan")
       .order("entry_date"),
     supabase
       .from("academic_works")
       .select(
-        "id, jenis, tahap, judul, tanggal, evidence_url, catatan, resident_id, profiles!academic_works_resident_id_fkey(full_name)",
+        "id, jenis, tahap, judul, tanggal, evidence_url, catatan, resident_id, profiles!academic_works_resident_id_fkey(full_name), pembimbing:profiles!academic_works_pembimbing_id_fkey(full_name), programs(nama,kode,config)",
       )
       .eq("status", "diajukan")
       .order("tanggal"),
@@ -43,6 +70,8 @@ export default async function VerifikasiPage() {
   const rows = (data ?? []) as unknown as Row[];
   const works = (workData ?? []) as unknown as (AcademicWork & {
     profiles: { full_name: string } | null;
+    pembimbing: { full_name: string } | null;
+    programs: ProgramRef | null;
   })[];
 
   return (
@@ -53,6 +82,13 @@ export default async function VerifikasiPage() {
           {rows.length}
         </span>
       </h1>
+
+      {!canDecide && (
+        <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-500 ring-1 ring-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:ring-slate-800">
+          Mode Admin Prodi (read-only): Anda dapat memantau antrean, tetapi tidak
+          dapat memberi keputusan verifikasi.
+        </p>
+      )}
 
       {rows.length === 0 && (
         <p className="rounded-xl bg-white dark:bg-slate-900 p-8 text-center text-slate-400 dark:text-slate-500 shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
@@ -76,6 +112,9 @@ export default async function VerifikasiPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
+                  <div className="mb-1.5">
+                    <ProgramBadge program={r.programs} />
+                  </div>
                   <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
                     <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
                       {komp}
@@ -86,7 +125,13 @@ export default async function VerifikasiPage() {
                     {nama} · {r.entry_date}
                     {r.rumah_sakit ? ` · ${r.rumah_sakit}` : ""}
                     {r.surgical_role ? ` · ${r.surgical_role}` : ""}
-                    {r.figo_stage ? ` · FIGO ${r.figo_stage}` : ""}
+                    {/* FIGO hanya bila program entri mengaktifkannya. */}
+                    {(r.programs?.config?.figo_enabled ?? true) && r.figo_stage
+                      ? ` · FIGO ${r.figo_stage}`
+                      : ""}
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-teal-700 dark:text-teal-400">
+                    Diajukan ke DPJP: {r.supervisor?.full_name ?? "—"}
                   </div>
                   {r.catatan && (
                     <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{r.catatan}</p>
@@ -104,6 +149,7 @@ export default async function VerifikasiPage() {
                 </div>
               </div>
 
+              {canDecide && (
               <form action={reviewEntry} className="mt-3 flex items-center gap-2">
                 <input type="hidden" name="entry_id" value={r.id} />
                 <input
@@ -133,6 +179,7 @@ export default async function VerifikasiPage() {
                   Tolak
                 </button>
               </form>
+              )}
             </div>
           );
         })}
@@ -157,6 +204,9 @@ export default async function VerifikasiPage() {
                 key={w.id}
                 className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800"
               >
+                <div className="mb-1.5">
+                  <ProgramBadge program={w.programs} />
+                </div>
                 <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
                   <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
                     {JENIS_LABEL[w.jenis]}
@@ -167,6 +217,9 @@ export default async function VerifikasiPage() {
                 <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {w.profiles?.full_name ?? "Residen"}
                   {w.tanggal ? ` · ${w.tanggal}` : ""}
+                </div>
+                <div className="mt-1 text-xs font-medium text-teal-700 dark:text-teal-400">
+                  Diajukan ke pembimbing: {w.pembimbing?.full_name ?? "—"}
                 </div>
                 {w.catatan && (
                   <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
@@ -183,6 +236,7 @@ export default async function VerifikasiPage() {
                     Lihat berkas ↗
                   </a>
                 )}
+                {canDecide && (
                 <form action={reviewWork} className="mt-3 flex items-center gap-2">
                   <input type="hidden" name="work_id" value={w.id} />
                   <input
@@ -212,6 +266,7 @@ export default async function VerifikasiPage() {
                     Tolak
                   </button>
                 </form>
+                )}
               </div>
             ))}
           </div>

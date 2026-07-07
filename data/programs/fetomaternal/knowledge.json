@@ -1,0 +1,14 @@
+{
+  "sumber": "Tabel 28 — Penguasaan Pengetahuan Penatalaksanaan (Fetomaternal)",
+  "ambang": { "osce_min": 75, "mcq_min": 75, "satuan": "persen" },
+  "pengetahuan_penatalaksanaan": [
+    { "no": 1, "kode": "KP-01", "topik": "Penerapan pengetahuan anamnesis MFM risiko tinggi (maternal & janin)" },
+    { "no": 2, "kode": "KP-02", "topik": "Penerapan pengetahuan pemeriksaan fisik MFM" },
+    { "no": 3, "kode": "KP-03", "topik": "Pemilihan pemeriksaan penunjang MFM (USG, Doppler, lab, NIPT/amnio)" },
+    { "no": 4, "kode": "KP-04", "topik": "Interpretasi MFM (FGR/SGA, Doppler, CTG, akreta, timing persalinan)" },
+    { "no": 5, "kode": "KP-05", "topik": "Diagnosis kerja & banding MFM (preeklamsia, HELLP, PAS, GDM)" },
+    { "no": 6, "kode": "KP-06", "topik": "Perencanaan terapi MFM (protokol preeklamsia, steroid, terapi janin)" },
+    { "no": 7, "kode": "KP-07", "topik": "Evaluasi respon MFM (monitoring & indikator eskalasi)" },
+    { "no": 8, "kode": "KP-08", "topik": "Penetapan prognosis MFM (prematuritas, IUFD, kontinjensi)" }
+  ]
+}

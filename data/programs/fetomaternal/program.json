@@ -1,0 +1,13 @@
+{
+  "kode": "fetomaternal",
+  "nama": "Subspesialis Kedokteran Fetomaternal",
+  "urutan": 4,
+  "count_all_roles": true,
+  "config": {
+    "accent": "rose",
+    "label_tabel_prosedur": "Tabel 22",
+    "label_tabel_penatalaksanaan": "Tabel 16",
+    "figo_enabled": false,
+    "staging_options": []
+  }
+}

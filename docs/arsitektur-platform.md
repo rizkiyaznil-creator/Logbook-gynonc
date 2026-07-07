@@ -147,18 +147,153 @@ Tidak ada switcher: konteks program selalu diturunkan dari data/residen.
 
 - **Fase 0 — Ops:** environment **staging** + disiplin **backup** sebelum tiap
   migrasi produksi. (Wajib untuk platform.)
-- **Fase 1 — Fondasi multi-tenant:**
+- **Fase 1 — Fondasi multi-tenant:** ✅ **SELESAI** (migrasi
+  `0023_platform_multitenant.sql`).
   1. Buat `programs`; isi 1 baris **Onkologi Ginekologi** (program #1).
   2. Tambah `profiles.program_id` + `program_id` ke semua tabel terkait;
      **backfill** seluruh data lama ke program #1.
   3. Tulis ulang RLS (KPS dipersempit ke programnya, helper baru, super-admin).
   4. Buat views agregasi **program-aware**.
   - *Tanpa perubahan tampilan bagi user lama.*
+
+  **Detail implementasi Fase 1:**
+  - Tabel `programs (id, kode, nama, config jsonb, aktif)` + RLS (baca: semua
+    login; tulis: super-admin). Tenant pertama `onkogin` dengan config FIGO.
+  - `program_id` ditambahkan ke kurikulum (`procedures`,
+    `clinical_competencies`, `clinical_competency_subtargets`, `diseases`,
+    `knowledge_items`) **NOT NULL**, dan transaksional (`residents`,
+    `log_entries`, `academic_works`, `entry_templates`, `assessments` NOT NULL;
+    `audit_log`, `notifications`, `profiles` nullable).
+  - Unik kurikulum `kode`/`no` diubah dari **global → per-program**
+    (`unique(program_id, kode)`), agar program lain boleh memakai kode sama.
+  - Helper: `current_program()`, `is_super_admin()`, `is_kps_of(p_program)`,
+    `program_of(user)`.
+  - `program_id` data transaksional **diturunkan dari residen** lewat trigger
+    `set_program_from_resident` (BEFORE INSERT) — bukan dari akun pengisi
+    (penting untuk assessment yang diisi penguji). RLS INSERT residen memakai
+    `with check (program_id = current_program())`.
+  - `handle_new_user` mengisi home program (default `onkogin` bila metadata
+    kosong). Trigger audit/notifikasi mengisi `program_id`.
+  - Views `v_procedure_progress`, `v_clinical_progress`, `v_knowledge_progress`,
+    `v_disease_coverage`, `v_subtarget_progress`, `v_resident_summary` kini
+    **join `program_id`** (residen dihitung hanya terhadap kurikulum programnya).
+  - **Uji isolasi & program-aware view: LULUS** (residen/KPS program A tidak
+    melihat data program B; DPJP lintas-program lewat `supervisor_id`;
+    super-admin lihat semua; insert program_id salah ditolak RLS).
 - **Fase 2 — Config & branding dinamis + verifikasi gabungan berlabel.**
+  ✅ **SELESAI.**
+  - `src/lib/program.ts`: helper konteks program — `getProgram`,
+    `getProgramsByIds`, `withDefaults`, `accentHex`, `PLATFORM_NAME`.
+  - **Branding kontekstual di header** (`layout.tsx` + `topbar.tsx`):
+    residen/KPS melihat **nama + warna aksen program** rumahnya;
+    DPJP/penguji/admin (lintas program) memakai nama platform netral
+    "Logbook PPDS USU".
+  - **Form entri** (`entry-form.tsx`): label tabel ("Tabel 24/18"), tampil/
+    sembunyi **FIGO**, dan **opsi stadium** (dropdown) mengikuti
+    `programs.config` program residen (mode entri baru = program residen;
+    mode sunting = program entri).
+  - **Progress residen** (`resident-progress.tsx`): judul tabel kompetensi
+    memakai label tabel dari config program residen.
+  - **Verifikasi gabungan berlabel** (`verifikasi/page.tsx`): tiap entri &
+    karya ilmiah diberi **badge nama program** (warna aksen program), dan
+    baris **FIGO hanya tampil bila program entri mengaktifkannya** — header
+    tetap netral USU.
+  - **PWA/manifest = level platform** ("Logbook PPDS USU"); branding pra-login
+    & pop-up pasang aplikasi dinetralkan ke platform.
+  - *Catatan:* pewarnaan aksen menyeluruh (utility Tailwind) tidak di-refactor
+    total; aksen program disurfacing lewat indikator merek & badge program.
 - **Fase 3 — Seed 3 program baru** (butuh konten kurikulum dari pemilik).
-- **Fase 4 — Laporan lintas-program untuk super-admin.**
-- **(Nanti) Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi →
-  pemilik berubah dari operator menjadi penyedia platform).
+  ✅ **SELESAI.** Tiga program resmi (Kepkonsil 2026) di-seed dari data:
+  - **`obgin`** — Dokter Spesialis Obstetri & Ginekologi (73 penyakit,
+    9 penatalaksanaan, 53 prosedur).
+  - **`fer`** — Subspesialis Fertilitas & Endokrinologi Reproduksi
+    (28 penyakit, 8 penatalaksanaan, 27 prosedur).
+  - **`fetomaternal`** — Subspesialis Kedokteran Fetomaternal
+    (48 penyakit, 9 penatalaksanaan, 21 prosedur).
+
+  **Struktur & keputusan:**
+  - Data kurikulum pindah ke `data/programs/<kode>/` (tiap program = satu
+    folder berisi `program.json` + diseases/clinical-management/procedures/
+    knowledge). `scripts/generate-seed.mjs` mengiterasi semua program →
+    `supabase/seed.sql` (program insert + kurikulum, idempoten).
+  - Butir pengetahuan prosedur **auto-generate 1:1** dari daftar prosedur
+    (kode `K`+kode), konsisten dengan onkogin.
+  - Prosedur program baru: `target_min` = "Minimal N kasus / Volume minimal";
+    `peran_dihitung = '{}'` (hitung semua peran — banyak prosedur non-bedah).
+  - Penatalaksanaan FER & Fetomaternal memakai ambang **kualitas** (mis.
+    "Kelengkapan data ≥75%"), bukan jumlah kasus → `target_min = 1`
+    (checklist kualitatif). Penatalaksanaan Sp.OG memakai hitungan kasus asli.
+  - Config per program: `obgin` aksen biru, `fer` ungu, `fetomaternal` rose;
+    `figo_enabled=false` (hanya onkogin true); label tabel sesuai dokumen.
+  - **Catatan validitas:** angka ambang & kode ICD hasil ekstraksi PDF —
+    sumber resmi meminta verifikasi manual sebelum dipakai untuk keputusan.
+  - **Uji LULUS:** migrasi + seed 4 program bersih; isolasi multi-tenant
+    LULUS (tiap KPS/residen hanya lihat programnya; DPJP lintas-program;
+    view program-aware menghitung total kurikulum program masing-masing).
+- **Fase 4 — Laporan lintas-program untuk super-admin.** ✅ **SELESAI.**
+  - View rollup tingkat-program `v_program_overview` (migrasi `0024`): per
+    program → jumlah residen, ukuran kurikulum, capaian agregat per domain,
+    dan beban entri (total/menunggu/terverifikasi). `security_invoker` →
+    super-admin lihat semua program; KPS hanya angka programnya (program lain
+    ter-nol-kan otomatis lewat RLS, tanpa kebijakan tambahan).
+  - Halaman `/laporan` (**khusus role `admin`**): ringkasan platform +
+    tabel per program (indikator warna aksen, bar capaian agregat) + ekspor
+    CSV. KPS tetap memakai `/rekap` (per program).
+  - **Uji LULUS:** rollup 4 program benar; isolasi RLS LULUS (KPS obgin
+    hanya lihat residen/entri obgin, program lain nol); build hijau.
+- **Fase 5 — UI Manajemen Kurikulum** (onboarding mandiri prodi → pemilik
+  berubah dari operator menjadi penyedia platform). ✅ **SELESAI.**
+  - **Tanpa migrasi** — RLS Fase 1 sudah mengizinkan tulis kurikulum
+    (super-admin / KPS programnya) & tulis `programs` (super-admin). Fase 5
+    murni UI + server actions (RLS = pertahanan berlapis di balik guard peran).
+  - **Onboarding program** (`/kurikulum`, super-admin): buat program baru,
+    edit nama/aktif, dan **editor config** (aksen, label tabel, FIGO on/off,
+    opsi stadium). KPS diarahkan langsung ke kurikulum programnya.
+  - **CRUD prosedur & penatalaksanaan** (`/kurikulum/[id]`): tabel + tambah/
+    edit/hapus. Akses: super-admin (semua program) atau KPS programnya.
+    Menyimpan/menghapus prosedur **otomatis menyelaraskan butir pengetahuan
+    prosedur 1:1** (kode `K`+kode). Item yang sudah dirujuk entri logbook
+    tidak dapat dihapus (dijaga FK, pesan ramah).
+  - **Cakupan (keputusan pemilik):** penyakit & pengetahuan penatalaksanaan
+    tetap dikelola lewat `data/programs` + seed; prosedur & penatalaksanaan
+    (entitas yang dihitung kompetensi) dikelola lewat UI.
+  - **Uji LULUS:** KPS hanya bisa tulis kurikulum programnya (tulis program
+    lain & buat `programs` ditolak RLS); super-admin buat program & tulis
+    semua; sinkron pengetahuan 1:1 idempoten; hapus terhalang FK bila dirujuk
+    entri. Build hijau.
+
+- **Fase 6 — KPS lintas-beberapa-prodi.** ✅ **SELESAI.** (migrasi `0025`)
+  - **Konteks:** 1 KPS subspesialis membawahi 3 prodi (Fetomaternal, FER,
+    Onkogin); prodi Spesialis Obgin punya KPS sendiri. Model lama (1 KPS = 1
+    prodi via `profiles.program_id`) tidak cukup.
+  - **Skema:** tabel relasi **`kps_programs(kps_id, program_id)`** (banyak-ke-
+    banyak). `profiles.program_id` tetap dipakai sebagai **prodi utama** KPS
+    (branding/turunan). Backfill: KPS lama → 1 baris = `program_id`-nya.
+  - **RLS:** `is_kps_of(p_program)` ditulis ulang → cek keanggotaan di
+    `kps_programs` (bukan satu kolom). Semua policy yang sudah memakai
+    `is_kps_of(program_id)` otomatis mendukung multi-prodi. Policy baca
+    kurikulum ditambah `or is_kps_of(program_id)` agar KPS lihat semua prodinya.
+  - **UI:** Manajemen User — buat KPS dengan **centang beberapa prodi**;
+    super-admin punya panel **"Prodi yang Dikelola KPS"** untuk mengubah
+    penugasan KPS yang sudah ada. `/kurikulum` untuk KPS >1 prodi menampilkan
+    **daftar prodinya**. Branding: KPS >1 prodi → nama platform netral.
+  - **Uji isolasi wajib:** KPS subspesialis melihat rekap/verifikasi/audit/
+    kurikulum ketiga prodinya, **tetapi TIDAK** data prodi obgin (dan
+    sebaliknya). Build hijau.
+
+- **Fase 7 — Pengingat email & WhatsApp.** ✅ **SELESAI.** (lihat
+  `docs/notifikasi-setup.md`)
+  - **Kanal:** Email (Resend) + WhatsApp (Fonnte), provider-agnostik &
+    tahan-gagal (mati diam-diam bila env kosong). Modul `src/lib/notify`.
+  - **Real-time** lewat **Supabase DB Webhook** pada INSERT `notifications` →
+    `/api/notify/dispatch` (DPJP: entri menunggu verifikasi; residen: entri
+    diverifikasi/revisi). Satu titik integrasi: tiap notifikasi in-app ikut
+    keluar ke email/WA.
+  - **Mingguan** lewat **Vercel Cron** → `/api/notify/cron` (KPS: residen
+    berisiko terlambat; residen: capaian kurang & masa didik menipis). Durasi
+    proyeksi per-prodi (Fase durasi).
+  - **Konfigurasi pemilik:** env (RESEND_*, FONNTE_TOKEN, NOTIFY_WEBHOOK_SECRET,
+    CRON_SECRET, NEXT_PUBLIC_SITE_URL) + daftarkan webhook & cron. Build hijau.
 
 ---
 
