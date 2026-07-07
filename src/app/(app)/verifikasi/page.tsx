@@ -18,6 +18,7 @@ type Row = {
   catatan: string | null;
   evidence_url: string | null;
   residents: { profiles: { full_name: string } | null } | null;
+  supervisor: { full_name: string } | null;
   procedures: { kode: string; nama: string } | null;
   clinical_competencies: { kode: string; komponen: string } | null;
   programs: ProgramRef | null;
@@ -53,14 +54,14 @@ export default async function VerifikasiPage() {
     supabase
       .from("log_entries")
       .select(
-        "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), procedures(kode,nama), clinical_competencies(kode,komponen), programs(nama,kode,config)",
+        "id, entry_date, entry_type, surgical_role, figo_stage, rumah_sakit, catatan, evidence_url, residents(profiles(full_name)), supervisor:profiles!log_entries_supervisor_id_fkey(full_name), procedures(kode,nama), clinical_competencies(kode,komponen), programs(nama,kode,config)",
       )
       .eq("status", "diajukan")
       .order("entry_date"),
     supabase
       .from("academic_works")
       .select(
-        "id, jenis, tahap, judul, tanggal, evidence_url, catatan, resident_id, profiles!academic_works_resident_id_fkey(full_name), programs(nama,kode,config)",
+        "id, jenis, tahap, judul, tanggal, evidence_url, catatan, resident_id, profiles!academic_works_resident_id_fkey(full_name), pembimbing:profiles!academic_works_pembimbing_id_fkey(full_name), programs(nama,kode,config)",
       )
       .eq("status", "diajukan")
       .order("tanggal"),
@@ -69,6 +70,7 @@ export default async function VerifikasiPage() {
   const rows = (data ?? []) as unknown as Row[];
   const works = (workData ?? []) as unknown as (AcademicWork & {
     profiles: { full_name: string } | null;
+    pembimbing: { full_name: string } | null;
     programs: ProgramRef | null;
   })[];
 
@@ -127,6 +129,9 @@ export default async function VerifikasiPage() {
                     {(r.programs?.config?.figo_enabled ?? true) && r.figo_stage
                       ? ` · FIGO ${r.figo_stage}`
                       : ""}
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-teal-700 dark:text-teal-400">
+                    Diajukan ke DPJP: {r.supervisor?.full_name ?? "—"}
                   </div>
                   {r.catatan && (
                     <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{r.catatan}</p>
@@ -212,6 +217,9 @@ export default async function VerifikasiPage() {
                 <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                   {w.profiles?.full_name ?? "Residen"}
                   {w.tanggal ? ` · ${w.tanggal}` : ""}
+                </div>
+                <div className="mt-1 text-xs font-medium text-teal-700 dark:text-teal-400">
+                  Diajukan ke pembimbing: {w.pembimbing?.full_name ?? "—"}
                 </div>
                 {w.catatan && (
                   <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
