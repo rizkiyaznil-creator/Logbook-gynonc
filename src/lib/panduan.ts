@@ -36,10 +36,10 @@ const PRODI_STAFF_SECTIONS: GuideSection[] = [
     heading: "2. Manajemen pengguna",
     steps: [
       "Buka menu Manajemen User.",
-      "Tambah pengguna: Anda dapat membuat akun Residen (otomatis masuk prodi Anda), Penguji, dan DPJP/Supervisor. Isi nama, peran, email, dan password awal (min. 6 karakter), lalu beritahukan kredensial ke pengguna.",
-      "Daftar pengguna menampilkan residen di prodi Anda (dapat dihapus) serta penguji & DPJP (baca-saja).",
+      "Tambah pengguna: Anda dapat membuat akun Residen (otomatis masuk prodi Anda) dan DPJP/Supervisor. Isi nama, peran, email, dan password awal (min. 6 karakter), lalu beritahukan kredensial ke pengguna.",
+      "Daftar pengguna menampilkan residen di prodi Anda (dapat dihapus) serta DPJP (baca-saja).",
     ],
-    note: "Batas wewenang: Anda tidak dapat membuat akun Administrator atau staf prodi lain, tidak dapat mengubah peran siapa pun, dan hanya dapat menghapus residen di prodinya. Penguji/DPJP yang sudah ada tidak dapat diubah/dihapus. Semua akun dibuat di sini — tidak ada pendaftaran mandiri.",
+    note: "Batas wewenang: Anda tidak dapat membuat akun Administrator atau staf prodi lain, tidak dapat mengubah peran siapa pun, dan hanya dapat menghapus residen di prodinya. DPJP yang sudah ada tidak dapat diubah/dihapus. Semua akun dibuat di sini — tidak ada pendaftaran mandiri.",
   },
   {
     heading: "3. Verifikasi",
@@ -47,7 +47,7 @@ const PRODI_STAFF_SECTIONS: GuideSection[] = [
   },
   {
     heading: "4. Penilaian",
-    body: "Melalui menu Penilaian, Anda juga dapat mencatat/mengelola penilaian pengetahuan residen di prodi Anda (mis. WBA/OSCE/MCQ).",
+    body: "Melalui menu Penilaian, Anda mencatat penilaian pengetahuan residen di prodi Anda (mis. WBA/OSCE/MCQ). Nilai dapat diberikan berulang — nilai TERTINGGI otomatis ditampilkan pada capaian residen. Hanya Ketua Prodi, SPS, dan Administrator yang dapat memberi nilai.",
   },
   {
     heading: "5. Rekap & ekspor",
@@ -156,23 +156,6 @@ const GUIDES: Record<UserRole, Guide> = {
         steps: [
           "Buka Dashboard untuk melihat daftar residen, lalu pilih Lihat progress.",
           "Halaman detail residen dapat dicetak/disimpan sebagai PDF.",
-        ],
-      },
-    ],
-  },
-
-  penguji: {
-    title: "Panduan Penguji",
-    intro:
-      "Sebagai penguji, Anda mencatat hasil penilaian pengetahuan residen (mis. WBA/OSCE/MCQ). Peran penguji bersifat lintas-prodi.",
-    sections: [
-      { heading: "1. Masuk", steps: [LOGIN_STEP] },
-      {
-        heading: "2. Memberi penilaian",
-        steps: [
-          "Buka menu Penilaian.",
-          "Pilih residen dan butir pengetahuan yang dinilai (mis. WBA/OSCE/MCQ).",
-          "Catat hasil dan simpan. Hasil otomatis masuk ke capaian Pengetahuan residen.",
         ],
       },
     ],

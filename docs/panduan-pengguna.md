@@ -17,7 +17,6 @@ pendaftaran**, **alur pengisian**, dan **alur verifikasi** laporan di aplikasi.
 |---|---|
 | **Residen** | Mengisi logbook, karya ilmiah, melihat capaian & mencetak rekap dirinya. Terikat satu program studi. |
 | **Supervisor (DPJP)** | Memverifikasi entri & karya ilmiah residen yang ditujukan kepadanya. Lintas-prodi. |
-| **Penguji** | Memberi penilaian pengetahuan (mis. WBA/OSCE/MCQ). Lintas-prodi. |
 | **Ketua Prodi** | Verifikasi, penilaian, rekap, kurikulum, audit, dan manajemen pengguna — **terbatas pada prodi yang dikelolanya** (boleh lebih dari satu prodi). |
 | **SPS / Sekretaris Prodi** | Wewenang **identik dengan Ketua Prodi** (terbatas pada prodinya). |
 | **Admin Prodi** | **READ-ONLY** — memantau seluruh data prodinya (dashboard, verifikasi, penilaian, rekap, kurikulum, audit, daftar pengguna) tanpa dapat mengubah apa pun. |
@@ -51,10 +50,10 @@ Aplikasi ini **tidak menyediakan pendaftaran mandiri**. Akun dibuat oleh
 
 | | Ketua Prodi / SPS | Administrator |
 |---|---|---|
-| Membuat akun | Residen (prodinya), Penguji, DPJP | Semua peran (termasuk staf prodi & Administrator) |
+| Membuat akun | Residen (prodinya), DPJP | Semua peran (termasuk staf prodi & Administrator) |
 | Mengubah peran | — (tidak bisa) | Semua pengguna |
 | Menghapus akun | Hanya residen di prodinya | Semua pengguna |
-| Daftar yang terlihat | Residen prodinya + penguji & DPJP (baca-saja) | Semua pengguna |
+| Daftar yang terlihat | Residen prodinya + DPJP (baca-saja) | Semua pengguna |
 | Atur prodi staf prodi | — | Ya (1 staf boleh >1 prodi) |
 
 Ketua Prodi & SPS **tidak** dapat membuat/mengubah/menghapus akun Administrator
@@ -90,7 +89,7 @@ Data ini muncul pada kop rekap/PDF, jadi sebaiknya diisi sebelum mencetak.
   - **Prosedur / Tindakan (Tabel 24)**
   - **Penatalaksanaan (Tabel 18)**
   - **Kasus / Spektrum penyakit**
-- **Pengetahuan Saya** — daftar capaian OSCE/MCQ (dinilai oleh Penguji).
+- **Pengetahuan Saya** — daftar capaian OSCE/MCQ (dinilai oleh Ketua Prodi / SPS).
 - **Karya Ilmiah** — sari pustaka, telaah jurnal, laporan kasus, tesis
   (bertahap), serta publikasi & presentasi.
 
@@ -186,12 +185,15 @@ flowchart LR
 
 ---
 
-## 6. Penilaian Pengetahuan (Penguji / KPS / Admin)
+## 6. Penilaian Pengetahuan (Ketua Prodi / SPS / Admin)
 
-1. Buka menu **Penilaian** (tersedia bagi Penguji, KPS, dan Administrator).
+1. Buka menu **Penilaian** — hanya **Ketua Prodi**, **SPS**, dan **Administrator**
+   yang dapat memberi nilai (Admin Prodi hanya memantau).
 2. Pilih residen dan butir pengetahuan yang dinilai (mis. WBA/OSCE/MCQ), lalu
    catat hasilnya.
 3. Hasil penilaian muncul pada capaian **Pengetahuan** residen dan rekap.
+4. **Nilai boleh diberikan berulang** — nilai **tertinggi** otomatis dipakai
+   sebagai capaian yang tampil di dashboard residen.
 
 ---
 

@@ -18,7 +18,6 @@ const MULTI_PROGRAM_ROLES = ["kps", "sps", "admin_prodi"];
 const ROLE_OPTIONS: { value: string; label: string }[] = [
   { value: "residen", label: "Residen" },
   { value: "supervisor", label: "Supervisor (DPJP)" },
-  { value: "penguji", label: "Penguji" },
   { value: "kps", label: "Ketua Prodi" },
   { value: "sps", label: "SPS / Sekretaris Prodi" },
   { value: "admin_prodi", label: "Admin Prodi (read-only)" },

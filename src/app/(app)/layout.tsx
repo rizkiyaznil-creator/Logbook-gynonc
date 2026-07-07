@@ -12,7 +12,7 @@ import type { UserRole } from "@/lib/types";
 // Peran ber-lingkup-prodi (KPS, SPS, Admin Prodi) melihat menu yang sama.
 // Admin Prodi bersifat read-only — pembatasan aksi ada di tiap halaman.
 const PRODI = ["kps", "sps", "admin_prodi"] as const;
-const ALL: UserRole[] = ["residen", "supervisor", "penguji", "admin", ...PRODI];
+const ALL: UserRole[] = ["residen", "supervisor", "admin", ...PRODI];
 
 const NAV: (NavItem & { roles: UserRole[] })[] = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard", roles: ALL },
@@ -21,7 +21,7 @@ const NAV: (NavItem & { roles: UserRole[] })[] = [
   { href: "/pengetahuan", label: "Pengetahuan Saya", icon: "brain", roles: ["residen"] },
   { href: "/karya", label: "Karya Ilmiah", icon: "research", roles: ["residen"] },
   { href: "/verifikasi", label: "Verifikasi", icon: "verify", roles: ["supervisor", "admin", ...PRODI] },
-  { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["penguji", "admin", ...PRODI] },
+  { href: "/penilaian", label: "Penilaian", icon: "clipboard", roles: ["admin", ...PRODI] },
   { href: "/rekap", label: "Rekap", icon: "chart", roles: ["admin", ...PRODI] },
   { href: "/laporan", label: "Laporan Platform", icon: "activity", roles: ["admin"], group: "kelola" },
   { href: "/kurikulum", label: "Kurikulum", icon: "stethoscope", roles: ["admin", ...PRODI], group: "kelola" },

@@ -51,21 +51,18 @@ export default async function AdminPage() {
   if (isProdiScoped(me.role)) {
     myProgramIds = new Set(await getKpsProgramIds(supabase, me.id));
     allowedPrograms = allPrograms.filter((p) => myProgramIds.has(p.id));
-    // Lihat: residen prodinya + penguji & DPJP. Admin & staf prodi lain
+    // Lihat: residen prodinya + DPJP. Admin & staf prodi lain
     // (KPS/SPS/Admin Prodi lain) disembunyikan.
     profiles = profiles.filter(
       (p) =>
         (p.role === "residen" && p.program_id && myProgramIds.has(p.program_id)) ||
-        p.role === "supervisor" ||
-        p.role === "penguji",
+        p.role === "supervisor",
     );
   }
 
-  // Peran yang boleh dibuat: super-admin → semua; KPS/SPS → residen/penguji/DPJP;
+  // Peran yang boleh dibuat: super-admin → semua; KPS/SPS → residen & DPJP;
   // Admin Prodi → tak boleh membuat (form disembunyikan).
-  const creatableRoles = isStaff
-    ? ["residen", "supervisor", "penguji"]
-    : undefined;
+  const creatableRoles = isStaff ? ["residen", "supervisor"] : undefined;
 
   // Wewenang aksi per-baris: super-admin penuh; KPS/SPS hapus residen prodinya;
   // Admin Prodi tanpa aksi apa pun.

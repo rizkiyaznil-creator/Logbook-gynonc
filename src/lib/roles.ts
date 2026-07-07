@@ -4,7 +4,6 @@ import type { UserRole } from "@/lib/types";
 export const ROLE_LABEL: Record<UserRole, string> = {
   residen: "Residen",
   supervisor: "Supervisor / DPJP",
-  penguji: "Penguji",
   kps: "Ketua Prodi",
   sps: "SPS / Sekretaris Prodi",
   admin_prodi: "Admin Prodi",

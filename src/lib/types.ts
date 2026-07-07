@@ -7,7 +7,6 @@ export type UserRole =
   | "kps"
   | "sps"
   | "admin_prodi"
-  | "penguji"
   | "admin";
 export type EntryType = "prosedur" | "penatalaksanaan" | "kasus";
 export type SurgicalRole =

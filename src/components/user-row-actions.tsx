@@ -18,7 +18,7 @@ export function UserRowActions({
   /** Boleh hapus user. KPS: hanya residen di prodinya. */
   canDelete?: boolean;
 }) {
-  // Tanpa wewenang apa pun (mis. penguji/DPJP di mata KPS) → baca-saja.
+  // Tanpa wewenang apa pun (mis. DPJP di mata KPS) → baca-saja.
   if (!canEditRole && !canDelete) {
     return <span className="text-xs text-slate-400">—</span>;
   }
@@ -35,7 +35,6 @@ export function UserRowActions({
           >
             <option value="residen">Residen</option>
             <option value="supervisor">Supervisor</option>
-            <option value="penguji">Penguji</option>
             <option value="kps">Ketua Prodi</option>
             <option value="sps">SPS / Sekretaris Prodi</option>
             <option value="admin_prodi">Admin Prodi</option>
