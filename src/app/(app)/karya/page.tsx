@@ -125,7 +125,8 @@ export default async function KaryaPage({
     supabase
       .from("profiles")
       .select("id, full_name")
-      .eq("role", "supervisor")
+      // Pembimbing karya boleh Supervisor, Ketua Prodi, atau SPS.
+      .in("role", ["supervisor", "kps", "sps"])
       .order("full_name"),
   ]);
 

@@ -31,7 +31,8 @@ export default async function NewEntryPage({
     supabase
       .from("profiles")
       .select("id, full_name")
-      .eq("role", "supervisor")
+      // DPJP penanggung jawab boleh Supervisor, Ketua Prodi, atau SPS.
+      .in("role", ["supervisor", "kps", "sps"])
       .order("full_name"),
     supabase.from("log_entries").select("rumah_sakit"),
     supabase.from("entry_templates").select("*").order("nama"),
