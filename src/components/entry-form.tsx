@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { type MouseEvent, useActionState, useRef, useState } from "react";
 import { Combobox } from "@/components/combobox";
 import { saveTemplate } from "@/app/(app)/logbook/actions";
 import type {
@@ -16,6 +16,33 @@ import type {
 const input =
   "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500";
 const label = "block text-sm font-medium text-slate-700 dark:text-slate-200";
+
+/** Penanda field wajib. */
+function Star() {
+  return <span className="text-rose-500">*</span>;
+}
+
+// Field wajib saat DIAJUKAN (harus sama dengan validasi server di actions.ts).
+type ReqField = [name: string, label: string];
+const REQ_COMMON: ReqField[] = [
+  ["entry_date", "Tanggal"],
+  ["setting", "Setting"],
+  ["rumah_sakit", "Rumah Sakit"],
+  ["supervisor_id", "DPJP penanggung jawab"],
+  ["disease_id", "Diagnosis"],
+  ["patient_code", "Kode pasien"],
+  ["patient_age", "Usia"],
+  ["catatan", "Catatan"],
+];
+const REQ_BY_TYPE: Record<EntryType, ReqField[]> = {
+  prosedur: [
+    ["procedure_id", "Prosedur"],
+    ["surgical_role", "Peran"],
+    ["supervision_level", "Tingkat kemandirian"],
+  ],
+  penatalaksanaan: [["clinical_competency_id", "Komponen Penatalaksanaan"]],
+  kasus: [],
+};
 
 type FormAction = (
   prev: unknown,
@@ -49,6 +76,23 @@ export function EntryForm({
   const [type, setType] = useState<EntryType>(initial?.entry_type ?? "prosedur");
   const templateNameRef = useRef<HTMLInputElement>(null);
   const [tplError, setTplError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Validasi klien saat menekan "Ajukan": semua field wajib harus terisi.
+  // "Simpan draft" & "Simpan template" tidak divalidasi.
+  function handleAjukan(e: MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.form;
+    if (!form) return;
+    const fd = new FormData(form);
+    const req = [...REQ_COMMON, ...REQ_BY_TYPE[type]];
+    const missing = req
+      .filter(([name]) => !String(fd.get(name) ?? "").trim())
+      .map(([, lbl]) => lbl);
+    if (missing.length > 0) {
+      e.preventDefault();
+      setSubmitError(`Lengkapi dulu sebelum diajukan: ${missing.join(", ")}.`);
+    }
+  }
 
   const figoEnabled = config?.figo_enabled ?? true;
   const stagingOptions = config?.staging_options ?? [];
@@ -60,8 +104,16 @@ export function EntryForm({
     <form action={formAction} className="max-w-2xl space-y-5">
       {initial?.id && <input type="hidden" name="entry_id" value={initial.id} />}
 
+      <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500 ring-1 ring-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:ring-slate-800">
+        Field bertanda <Star /> wajib diisi sebelum{" "}
+        <b>Ajukan untuk verifikasi</b>. Anda tetap bisa <b>Simpan draft</b>{" "}
+        meski belum lengkap.
+      </p>
+
       <div>
-        <label className={label}>Jenis Entri</label>
+        <label className={label}>
+          Jenis Entri <Star />
+        </label>
         <select
           name="entry_type"
           value={type}
@@ -81,7 +133,9 @@ export function EntryForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={label}>Tanggal</label>
+          <label className={label}>
+            Tanggal <Star />
+          </label>
           <input
             type="date"
             name="entry_date"
@@ -91,7 +145,9 @@ export function EntryForm({
           />
         </div>
         <div>
-          <label className={label}>Setting</label>
+          <label className={label}>
+            Setting <Star />
+          </label>
           <select
             name="setting"
             defaultValue={initial?.setting ?? ""}
@@ -108,10 +164,7 @@ export function EntryForm({
 
       <div>
         <label className={label}>
-          Rumah Sakit{" "}
-          <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
-            (wajib saat diajukan)
-          </span>
+          Rumah Sakit <Star />
         </label>
         <input
           name="rumah_sakit"
@@ -130,10 +183,7 @@ export function EntryForm({
 
       <div>
         <label className={label}>
-          DPJP penanggung jawab{" "}
-          <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
-            (wajib saat diajukan)
-          </span>
+          DPJP penanggung jawab <Star />
         </label>
         <Combobox
           name="supervisor_id"
@@ -146,7 +196,9 @@ export function EntryForm({
       {type === "prosedur" && (
         <>
           <div>
-            <label className={label}>Prosedur</label>
+            <label className={label}>
+              Prosedur <Star />
+            </label>
             <Combobox
               name="procedure_id"
               defaultValue={initial?.procedure_id ?? ""}
@@ -159,7 +211,9 @@ export function EntryForm({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={label}>Peran</label>
+              <label className={label}>
+                Peran <Star />
+              </label>
               <select
                 name="surgical_role"
                 defaultValue={initial?.surgical_role ?? "operator_utama"}
@@ -172,7 +226,9 @@ export function EntryForm({
               </select>
             </div>
             <div>
-              <label className={label}>Tingkat kemandirian</label>
+              <label className={label}>
+                Tingkat kemandirian <Star />
+              </label>
               <select
                 name="supervision_level"
                 defaultValue={initial?.supervision_level ?? ""}
@@ -200,7 +256,9 @@ export function EntryForm({
       {type === "penatalaksanaan" && (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={label}>Komponen Penatalaksanaan</label>
+            <label className={label}>
+              Komponen Penatalaksanaan <Star />
+            </label>
             <Combobox
               name="clinical_competency_id"
               defaultValue={initial?.clinical_competency_id ?? ""}
@@ -230,7 +288,9 @@ export function EntryForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={label}>Diagnosis (spektrum penyakit)</label>
+          <label className={label}>
+            Diagnosis (spektrum penyakit) <Star />
+          </label>
           <Combobox
             name="disease_id"
             defaultValue={initial?.disease_id ?? ""}
@@ -271,7 +331,9 @@ export function EntryForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className={label}>Kode pasien (tersamar)</label>
+          <label className={label}>
+            Kode pasien (tersamar) <Star />
+          </label>
           <input
             name="patient_code"
             defaultValue={initial?.patient_code ?? ""}
@@ -280,7 +342,9 @@ export function EntryForm({
           />
         </div>
         <div>
-          <label className={label}>Usia</label>
+          <label className={label}>
+            Usia <Star />
+          </label>
           <input
             type="number"
             name="patient_age"
@@ -291,7 +355,9 @@ export function EntryForm({
       </div>
 
       <div>
-        <label className={label}>Catatan</label>
+        <label className={label}>
+          Catatan <Star />
+        </label>
         <textarea
           name="catatan"
           rows={3}
@@ -360,11 +426,19 @@ export function EntryForm({
         )}
       </div>
 
+      {submitError && (
+        <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-500/30">
+          {submitError}
+        </p>
+      )}
+
       <div className="flex gap-3">
         <button
           type="submit"
           name="aksi"
           value="draft"
+          formNoValidate
+          onClick={() => setSubmitError(null)}
           disabled={pending}
           className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 disabled:opacity-50"
         >
@@ -374,6 +448,7 @@ export function EntryForm({
           type="submit"
           name="aksi"
           value="ajukan"
+          onClick={handleAjukan}
           disabled={pending}
           className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
         >

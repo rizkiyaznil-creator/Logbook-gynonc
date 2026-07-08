@@ -4,6 +4,37 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+// Field wajib saat entri DIAJUKAN untuk verifikasi (draft tetap bebas).
+type ReqField = [name: string, label: string];
+const REQ_COMMON: ReqField[] = [
+  ["entry_date", "Tanggal"],
+  ["setting", "Setting"],
+  ["rumah_sakit", "Rumah Sakit"],
+  ["supervisor_id", "DPJP penanggung jawab"],
+  ["disease_id", "Diagnosis"],
+  ["patient_code", "Kode pasien"],
+  ["patient_age", "Usia"],
+  ["catatan", "Catatan"],
+];
+const REQ_BY_TYPE: Record<string, ReqField[]> = {
+  prosedur: [
+    ["procedure_id", "Prosedur"],
+    ["surgical_role", "Peran"],
+    ["supervision_level", "Tingkat kemandirian"],
+  ],
+  penatalaksanaan: [["clinical_competency_id", "Komponen Penatalaksanaan"]],
+  kasus: [],
+};
+
+/** Daftar label field wajib yang masih kosong (untuk pengajuan). */
+function missingRequired(
+  entryType: string,
+  val: (k: string) => string | null,
+): string[] {
+  const req = [...REQ_COMMON, ...(REQ_BY_TYPE[entryType] ?? [])];
+  return req.filter(([name]) => !val(name)).map(([, label]) => label);
+}
+
 export async function createEntry(_prev: unknown, formData: FormData) {
   const supabase = await createClient();
   const {
@@ -27,11 +58,13 @@ export async function createEntry(_prev: unknown, formData: FormData) {
   const supervisorId = val("supervisor_id");
   const rumahSakit = val("rumah_sakit");
 
-  if (status === "diajukan" && !supervisorId) {
-    return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
-  }
-  if (status === "diajukan" && !rumahSakit) {
-    return { error: "Isi Rumah Sakit sebelum mengajukan." };
+  if (status === "diajukan") {
+    const missing = missingRequired(entryType, val);
+    if (missing.length > 0) {
+      return {
+        error: `Lengkapi dulu sebelum mengajukan: ${missing.join(", ")}.`,
+      };
+    }
   }
 
   const { error } = await supabase.from("log_entries").insert({
@@ -88,11 +121,13 @@ export async function updateEntry(_prev: unknown, formData: FormData) {
   const supervisorId = val("supervisor_id");
   const rumahSakit = val("rumah_sakit");
 
-  if (status === "diajukan" && !supervisorId) {
-    return { error: "Pilih DPJP penanggung jawab sebelum mengajukan." };
-  }
-  if (status === "diajukan" && !rumahSakit) {
-    return { error: "Isi Rumah Sakit sebelum mengajukan." };
+  if (status === "diajukan") {
+    const missing = missingRequired(entryType, val);
+    if (missing.length > 0) {
+      return {
+        error: `Lengkapi dulu sebelum mengajukan: ${missing.join(", ")}.`,
+      };
+    }
   }
 
   const { error } = await supabase
