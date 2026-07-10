@@ -30,7 +30,7 @@ const REQ_COMMON: ReqField[] = [
   ["rumah_sakit", "Rumah Sakit"],
   ["supervisor_id", "DPJP penanggung jawab"],
   ["disease_id", "Diagnosis"],
-  ["patient_code", "Kode pasien"],
+  ["patient_code", "Kode pasien / No. RM"],
   ["patient_age", "Usia"],
   ["catatan", "Catatan"],
 ];
@@ -332,7 +332,7 @@ export function EntryForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className={label}>
-            Kode pasien (tersamar) <Star />
+            Kode pasien / No. RM (tersamar) <Star />
           </label>
           <input
             name="patient_code"
@@ -360,9 +360,10 @@ export function EntryForm({
         </label>
         <textarea
           name="catatan"
-          rows={3}
+          rows={4}
           defaultValue={initial?.catatan ?? ""}
           className={input}
+          placeholder="Resume medis pasien — riwayat singkat, temuan, tindakan, dan hasil. Jaga identitas pasien tetap tersamar."
         />
       </div>
 
@@ -381,8 +382,9 @@ export function EntryForm({
           placeholder="https://drive.google.com/…"
         />
         <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-          Setel akses tautan ke “siapa saja yang memiliki link → Pelihat”, dan
-          pastikan identitas pasien tersamar.
+          Dapat ditautkan laporan operasi, foto atau video tindakan, maupun
+          resume medis pasien. Setel akses tautan ke “siapa saja yang memiliki
+          link → Pelihat”, dan pastikan seluruh identitas pasien tersamar.
         </p>
       </div>
 

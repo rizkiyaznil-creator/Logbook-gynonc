@@ -12,7 +12,7 @@ const REQ_COMMON: ReqField[] = [
   ["rumah_sakit", "Rumah Sakit"],
   ["supervisor_id", "DPJP penanggung jawab"],
   ["disease_id", "Diagnosis"],
-  ["patient_code", "Kode pasien"],
+  ["patient_code", "Kode pasien / No. RM"],
   ["patient_age", "Usia"],
   ["catatan", "Catatan"],
 ];
