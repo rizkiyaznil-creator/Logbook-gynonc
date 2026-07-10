@@ -89,6 +89,42 @@ function escapeHtml(s: string): string {
   );
 }
 
+/** Email ringkasan MINGGUAN antrean verifikasi untuk DPJP (entri + karya). */
+export function emailDigestHtml(
+  name: string | null,
+  entri: string[],
+  karya: string[],
+): string {
+  const url = SITE ? `${SITE}/verifikasi` : "";
+  const total = entri.length + karya.length;
+  const CAP = 15;
+  const li = (s: string) => `<li style="margin:2px 0">${escapeHtml(s)}</li>`;
+  const block = (judul: string, items: string[]) => {
+    if (items.length === 0) return "";
+    const shown = items.slice(0, CAP).map(li).join("");
+    const extra =
+      items.length > CAP
+        ? `<li style="margin:2px 0;color:#64748b">…dan ${items.length - CAP} lainnya</li>`
+        : "";
+    return `<p style="margin:14px 0 4px;font-weight:bold;font-size:14px;color:#0f172a">${escapeHtml(judul)} (${items.length})</p><ul style="margin:0;padding-left:18px;font-size:13px;color:#334155;line-height:1.5">${shown}${extra}</ul>`;
+  };
+  return `<!doctype html><html lang="id"><body style="margin:0;background:#f1f5f9;padding:24px;font-family:Arial,Helvetica,sans-serif">
+  <table role="presentation" width="100%" style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0">
+    <tr><td style="background:#0f766e;padding:16px 24px;color:#fff;font-weight:bold;font-size:15px">Logbook PPDS USU</td></tr>
+    <tr><td style="padding:24px">
+      <h1 style="margin:0 0 8px;font-size:18px;color:#0f172a">Ringkasan Mingguan — Antrean Verifikasi</h1>
+      <p style="margin:0 0 4px;font-size:14px;color:#334155">Yth. ${escapeHtml(name ?? "Dokter")},</p>
+      <p style="margin:0 0 4px;font-size:14px;color:#334155;line-height:1.5">Ada <b>${total}</b> item menunggu verifikasi Anda pekan ini:</p>
+      ${block("Entri logbook", entri)}
+      ${block("Karya ilmiah", karya)}
+      <div style="margin-top:20px">
+        <a href="${url}" style="display:inline-block;background:#0f766e;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-size:14px">Buka halaman Verifikasi</a>
+      </div>
+    </td></tr>
+    <tr><td style="padding:12px 24px;background:#f8fafc;color:#94a3b8;font-size:12px">Pengingat mingguan otomatis — mohon tidak membalas email ini.</td></tr>
+  </table></body></html>`;
+}
+
 export type Recipient = {
   name?: string | null;
   email?: string | null;
