@@ -35,7 +35,7 @@ Menu yang tampil di sisi kiri menyesuaikan peran masing-masing.
 Aplikasi ini **tidak menyediakan pendaftaran mandiri**. Akun dibuat oleh
 **KPS/Admin** untuk menjaga keabsahan data.
 
-### 2.1 Pembuatan akun (oleh KPS/Admin)
+### 2.1 Pembuatan akun (oleh Ketua Prodi / SPS / Admin)
 1. Masuk, buka menu **Manajemen User**.
 2. Pada formulir **Tambah Pengguna**, isi:
    - **Nama lengkap**
@@ -94,20 +94,31 @@ Data ini muncul pada kop rekap/PDF, jadi sebaiknya diisi sebelum mencetak.
   (bertahap), serta publikasi & presentasi.
 
 ### 3.2 Menambah entri logbook
+
+> **Field wajib bertanda ✱ (merah)** harus terisi sebelum entri **diajukan**.
+> Anda tetap bisa **Simpan draft** walau belum lengkap; tombol **Ajukan** akan
+> menolak bila masih ada field wajib kosong dan menyebutkan field yang kurang.
+
 1. Buka **Entri Baru**.
 2. Pilih **Jenis Entri** (Prosedur / Penatalaksanaan / Kasus).
-3. Isi data umum: **Tanggal**, **Setting**, **Rumah sakit**, dan
-   **Pembimbing/DPJP** (wajib dipilih saat akan diajukan).
+3. Isi data umum: **Tanggal**, **Setting**, **Rumah Sakit**, dan
+   **DPJP penanggung jawab**. Pilihan DPJP mencakup **Supervisor, Ketua Prodi,
+   dan SPS**.
 4. Lengkapi data sesuai jenis:
    - **Prosedur:** prosedur, peran (operator utama/asisten), tingkat
-     kemandirian, komplikasi (bila ada).
+     kemandirian, komplikasi (opsional).
    - **Penatalaksanaan:** komponen penatalaksanaan, jenis dokumentasi
      (MDT / Breaking bad news / Handover / lainnya untuk PK-09).
-   - **Kasus:** diagnosis (spektrum penyakit), stadium FIGO.
-5. Isi **kode pasien tersamar** & **usia** (jaga kerahasiaan — jangan tulis
-   identitas pasien).
-6. Tambahkan **Catatan** dan **Tautan bukti** (URL Google Drive/cloud) bila ada.
-7. Simpan dengan salah satu tombol:
+   - **Diagnosis (spektrum penyakit)** untuk semua jenis; stadium FIGO opsional.
+5. Isi **Kode pasien / No. RM (tersamar)** & **Usia** (jaga kerahasiaan — jangan
+   tulis identitas asli pasien).
+6. **Catatan:** isi **ringkasan/resume medis pasien** (riwayat singkat, temuan,
+   tindakan, hasil).
+7. **Tautan bukti** (opsional): boleh menautkan **laporan operasi, foto/video
+   tindakan, atau resume medis pasien** — pastikan **seluruh identitas pasien
+   tersamar**, dan setel akses tautan ke "siapa saja yang memiliki link →
+   Pelihat".
+8. Simpan dengan salah satu tombol:
    - **Simpan draft** — tersimpan, belum dikirim ke DPJP (masih bisa diubah).
    - **Ajukan untuk verifikasi** — dikirim ke DPJP, status menjadi **Menunggu**.
 
@@ -131,14 +142,16 @@ muncul **catatan verifikator**. Perbaiki, lalu **ajukan ulang**.
 
 ---
 
-## 4. Alur Verifikasi (DPJP / KPS)
+## 4. Alur Verifikasi (DPJP / Ketua Prodi / SPS)
 
 ### 4.1 Memverifikasi entri & karya
-1. DPJP membuka menu **Verifikasi**. Halaman ini berisi dua bagian:
+1. Verifikator membuka menu **Verifikasi**. Halaman ini berisi dua bagian:
    - **Entri logbook menunggu**
    - **Karya ilmiah menunggu**
-   (Hanya menampilkan item yang ditujukan ke DPJP tersebut. KPS melihat item
-   residen di prodi yang dikelolanya; Administrator melihat seluruh prodi.)
+   (DPJP hanya melihat item yang ditujukan kepadanya. Ketua Prodi/SPS melihat
+   item residen di prodi yang dikelolanya; Administrator melihat seluruh prodi.)
+   Tiap kartu menampilkan **"Diajukan ke DPJP: …"** sehingga terlihat entri
+   ditujukan ke verifikator siapa.
 2. Periksa rincian dan **bukti** yang dilampirkan.
 3. Pilih keputusan (boleh menambahkan **catatan**):
    - **Verifikasi** → status **Terverifikasi** (dihitung sebagai capaian).
@@ -146,12 +159,13 @@ muncul **catatan verifikator**. Perbaiki, lalu **ajukan ulang**.
    - **Tolak** → status **Ditolak**.
 
 ### 4.2 Notifikasi
-Sistem mengirim notifikasi otomatis:
-- Saat residen **mengajukan** → DPJP/pembimbing diberi tahu.
-- Saat DPJP **memutuskan** (verifikasi/revisi/tolak) → residen diberi tahu.
-
-Lonceng notifikasi & badge angka pada menu **Verifikasi** menunjukkan jumlah
-item yang menunggu.
+- **Lonceng in-app (real-time):** memberi tahu DPJP/pembimbing setiap kali ada
+  entri/karya baru ditujukan kepadanya, dan memberi tahu residen saat ada
+  keputusan verifikasi. Badge angka pada menu **Verifikasi** menunjukkan jumlah
+  yang menunggu.
+- **Email ringkasan mingguan (Senin pagi):** tiap DPJP yang **punya antrian**
+  menerima **satu email** berisi seluruh entri & karya yang menunggu
+  verifikasinya pekan itu — bukan email per item. (WhatsApp tidak digunakan.)
 
 ### 4.3 Jejak audit
 Setiap pembuatan, pengajuan, dan keputusan verifikasi tercatat di **Audit Log** —

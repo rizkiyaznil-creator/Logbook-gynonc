@@ -15,7 +15,7 @@ export type Guide = {
 };
 
 const LOGIN_STEP =
-  "Masuk memakai email & kata sandi yang dibuatkan KPS/Admin. Lupa sandi? Gunakan tautan “Lupa kata sandi” di halaman masuk.";
+  "Masuk memakai email & kata sandi yang dibuatkan Ketua Prodi/SPS/Admin. Lupa sandi? Gunakan tautan “Lupa kata sandi” di halaman masuk.";
 
 const STATUS_NOTE =
   "Hanya laporan berstatus Terverifikasi yang dihitung sebagai capaian kompetensi.";
@@ -43,7 +43,7 @@ const PRODI_STAFF_SECTIONS: GuideSection[] = [
   },
   {
     heading: "3. Verifikasi",
-    body: "Buka menu Verifikasi untuk memutuskan entri & karya yang menunggu dari residen di prodi yang Anda kelola (Verifikasi / Minta revisi / Tolak).",
+    body: "Buka menu Verifikasi untuk memutuskan entri & karya yang menunggu dari residen di prodi yang Anda kelola (Verifikasi / Minta revisi / Tolak). Tiap kartu menampilkan “Diajukan ke DPJP: …” sehingga terlihat entri ditujukan ke verifikator siapa. Anda pun dapat dipilih residen sebagai DPJP/pembimbing; bila punya antrian, Anda menerima email ringkasan setiap Senin pagi.",
   },
   {
     heading: "4. Penilaian",
@@ -84,10 +84,13 @@ const GUIDES: Record<UserRole, Guide> = {
       {
         heading: "2. Menambah entri logbook",
         steps: [
-          "Buka Entri Baru, pilih Jenis Entri: Prosedur (Tabel 24), Penatalaksanaan (Tabel 18), atau Kasus.",
-          "Isi data umum: Tanggal, Setting, Rumah sakit, dan Pembimbing/DPJP (wajib saat diajukan).",
-          "Lengkapi data sesuai jenis: prosedur (peran, tingkat kemandirian, komplikasi); penatalaksanaan (komponen + jenis dokumentasi); kasus (diagnosis & stadium FIGO).",
-          "Isi kode pasien tersamar & usia, tambahkan catatan dan tautan bukti bila ada.",
+          "Buka Entri Baru, pilih Jenis Entri: Prosedur/Tindakan, Penatalaksanaan Klinis, atau Kasus.",
+          "Field bertanda ✱ (merah) wajib diisi sebelum diajukan. Anda tetap bisa Simpan draft walau belum lengkap; tombol Ajukan akan menolak bila masih ada yang kosong dan menyebut field yang kurang.",
+          "Isi data umum: Tanggal, Setting, Rumah Sakit, dan DPJP penanggung jawab. Pilihan DPJP mencakup Supervisor, Ketua Prodi, dan SPS.",
+          "Lengkapi data sesuai jenis: prosedur (peran, tingkat kemandirian, komplikasi opsional); penatalaksanaan (komponen + jenis dokumentasi); serta Diagnosis (spektrum penyakit).",
+          "Isi Kode pasien / No. RM (tersamar) & Usia.",
+          "Catatan: isi ringkasan/resume medis pasien (riwayat singkat, temuan, tindakan, hasil).",
+          "Tautan bukti (opsional): boleh menautkan laporan operasi, foto/video tindakan, atau resume medis pasien — pastikan SELURUH identitas pasien tersamar, dan setel akses tautan ke “siapa saja yang memiliki link → Pelihat”.",
           "Klik Simpan draft (masih bisa diubah) atau Ajukan untuk verifikasi (dikirim ke DPJP, status menjadi Menunggu).",
         ],
         note: "Entri yang sering berulang bisa disimpan sebagai template agar pengisian berikutnya lebih cepat.",
@@ -149,7 +152,7 @@ const GUIDES: Record<UserRole, Guide> = {
       },
       {
         heading: "3. Notifikasi",
-        body: "Anda menerima notifikasi saat residen mengajukan entri/karya, dan residen menerima notifikasi saat Anda memberi keputusan.",
+        body: "Lonceng di bilah atas memberi tahu secara langsung setiap kali ada entri/karya baru ditujukan kepada Anda. Selain itu, setiap Senin pagi Anda menerima SATU email ringkasan berisi seluruh antrian verifikasi Anda pekan itu (bukan email per entri; WhatsApp tidak digunakan). Residen menerima notifikasi lonceng saat Anda memberi keputusan.",
       },
       {
         heading: "4. Melihat progres residen",
@@ -211,9 +214,9 @@ const GUIDES: Record<UserRole, Guide> = {
       {
         heading: "2. Manajemen pengguna",
         steps: [
-          "Buka menu Manajemen User untuk menambah, mengubah peran, atau menghapus pengguna apa pun (semua peran, termasuk KPS dan Administrator).",
-          "Saat menambah pengguna, isi nama, peran, email, dan password awal (min. 6 karakter). Untuk residen/KPS, pilih prodi rumahnya.",
-          "Atur prodi yang dikelola tiap KPS (satu KPS dapat membawahi beberapa prodi) pada bagian pengelolaan KPS.",
+          "Buka menu Manajemen User untuk menambah, mengubah peran, atau menghapus pengguna apa pun (semua peran, termasuk Ketua Prodi, SPS, Admin Prodi, dan Administrator).",
+          "Saat menambah pengguna, isi nama, peran, email, dan password awal (min. 6 karakter). Untuk residen serta staf prodi (Ketua Prodi/SPS/Admin Prodi), pilih prodinya.",
+          "Atur prodi yang dibawahi tiap Ketua Prodi/SPS/Admin Prodi (boleh lebih dari satu) pada bagian pengelolaan prodi staf.",
         ],
         note: "Semua akun dibuat di sini; tidak ada pendaftaran mandiri.",
       },
