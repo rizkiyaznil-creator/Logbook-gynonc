@@ -16,11 +16,14 @@ export function Combobox({
   options,
   defaultValue,
   placeholder = "Ketik untuk mencari…",
+  onValueChange,
 }: {
   name: string;
   options: ComboOption[];
   defaultValue?: string | null;
   placeholder?: string;
+  /** Dipanggil saat nilai (value/id) terpilih berubah. */
+  onValueChange?: (value: string) => void;
 }) {
   const initial = options.find((o) => o.value === defaultValue);
   const [value, setValue] = useState(defaultValue ?? "");
@@ -47,6 +50,7 @@ export function Combobox({
 
   function choose(o: ComboOption) {
     setValue(o.value);
+    onValueChange?.(o.value);
     setQuery(o.label);
     setOpen(false);
   }
@@ -80,6 +84,7 @@ export function Combobox({
     );
     if (exact) {
       setValue(exact.value);
+      onValueChange?.(exact.value);
       setQuery(exact.label);
     } else {
       const current = options.find((o) => o.value === value);
@@ -101,6 +106,7 @@ export function Combobox({
         onChange={(e) => {
           setQuery(e.target.value);
           setValue("");
+          onValueChange?.("");
           setOpen(true);
           setHighlight(0);
         }}
