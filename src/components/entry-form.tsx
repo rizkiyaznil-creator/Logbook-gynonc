@@ -77,6 +77,14 @@ export function EntryForm({
   const templateNameRef = useRef<HTMLInputElement>(null);
   const [tplError, setTplError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Komponen penatalaksanaan terpilih — untuk menampilkan "Jenis dokumentasi"
+  // hanya saat komponen PK-09 (Dokumentasi & Komunikasi Hasil) dipilih.
+  const [competencyId, setCompetencyId] = useState(
+    initial?.clinical_competency_id ?? "",
+  );
+  const isPk09 = competencies.some(
+    (c) => c.id === competencyId && c.kode === "PK-09",
+  );
 
   // Validasi klien saat menekan "Ajukan": semua field wajib harus terisi.
   // "Simpan draft" & "Simpan template" tidak divalidasi.
@@ -254,7 +262,7 @@ export function EntryForm({
       )}
 
       {type === "penatalaksanaan" && (
-        <div className="grid grid-cols-2 gap-4">
+        <>
           <div>
             <label className={label}>
               Komponen Penatalaksanaan <Star />
@@ -263,27 +271,36 @@ export function EntryForm({
               name="clinical_competency_id"
               defaultValue={initial?.clinical_competency_id ?? ""}
               placeholder="Cari komponen…"
+              onValueChange={setCompetencyId}
               options={competencies.map((c) => ({
                 value: c.id,
                 label: `${c.kode} — ${c.komponen}`,
               }))}
             />
           </div>
-          <div>
-            <label className={label}>Jenis dokumentasi (untuk PK-09)</label>
-            <select
-              name="dokumentasi_jenis"
-              defaultValue={initial?.dokumentasi_jenis ?? ""}
-              className={input}
-            >
-              <option value="">—</option>
-              <option value="mdt">Presentasi MDT</option>
-              <option value="breaking_bad_news">Breaking bad news</option>
-              <option value="handover">Handover (SBAR)</option>
-              <option value="lainnya">Lainnya</option>
-            </select>
-          </div>
-        </div>
+          {/* Khusus PK-09 (Dokumentasi & Komunikasi Hasil): tandai jenis
+              kegiatan agar terhitung ke sub-target (MDT, breaking bad news). */}
+          {isPk09 && (
+            <div>
+              <label className={label}>Jenis dokumentasi (untuk PK-09)</label>
+              <select
+                name="dokumentasi_jenis"
+                defaultValue={initial?.dokumentasi_jenis ?? ""}
+                className={input}
+              >
+                <option value="">—</option>
+                <option value="mdt">Presentasi MDT</option>
+                <option value="breaking_bad_news">Breaking bad news</option>
+                <option value="handover">Handover (SBAR)</option>
+                <option value="lainnya">Lainnya</option>
+              </select>
+              <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                Pilih jenis kegiatan PK-09 agar terhitung ke sub-target (mis.
+                Presentasi MDT, Breaking bad news).
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       <div className="grid grid-cols-2 gap-4">
